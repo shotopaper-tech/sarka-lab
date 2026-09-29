@@ -1,10 +1,13 @@
 :root {
-  --background: #F4F0E8;
-  --text: #161616;
-  --cobalt: #2457FF;
-  --sky: #A8B9FF;
-  --red: #E7473C;
-  --border: #D8D3C8;
+  --background: #FFF7FA;
+  --surface: #FFFFFF;
+  --text: #241B320;
+  --muted: #806F77;
+  --pink: #F08BAE;
+  --pink-dark: #D85F88;
+  --pink-soft: #F9DCE6;
+  --accent: #6FCFC1;
+    --border: #E8D6DD;
 } 
 * {
   box-sizing: border-box;
