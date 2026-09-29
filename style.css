@@ -146,6 +146,52 @@ h1  {
   cursor: pointer;
 }
 search-box button:hover { 
-  background: var(--cobalt-dark);
+  background: var(--pink-dark);
+  /* Explore */
+  .explore h2 {
+    padding: 30px 0 80px;
+  }
+  .explore-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .explore-card {
+    display: inline-block;
+    padding: 13px 20px;
+    background: var(--pink-light);
+    color: var(--pink-dark);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    text-decoration: none;
+    transition: 0.2s ease;
+  }
+  .explore-card h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+  .explore-card p {
+    display: none;
 }
+ .explore-card:hover {
+   background: var(--pink-dark);
+   color: white;
+   transform: translateY(-3px);
+ }
+
+  /* TEAL BUBBLES */
+  .explore-card:nth-child(2),
+  .explore-card:nth-child(5) {
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    border-color: #B9E4DF;
+  }
+   .explore-card:nth-child(2):hover,
+  .explore-card:nth-child(5):hover {
+    background: var(--teal-dark);
+    color: white;
+  }
   
+   
+   
