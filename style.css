@@ -9,6 +9,9 @@
 * {
   box-sizing: border-box;
 }
+html { 
+  scroll-behavior: smoooth;
+}
 body{
   margin: 0;
   background: var(--background);
@@ -16,40 +19,79 @@ body{
   font-family: Arial, sans-serif;
   line-height: 1.6;
 }
-
+/* Navigation */
 nav {
-  border-bottom: 2px solid var(--text);
+  display: flex;
+  align-items: center;
+  gap: 26px;
   padding: 18px 30px;
+  border-bottom: 2px solid var(--text)
+  background: var(--background);
 } 
+nav strong {
+  color: var(--text)
+  font-size: 1.1rem;
+  margin-right: 10px;
+}
+
 nav a {
   color: var(--text);
   text-decoration: none;
-  margin-right: 24px;
-  font-weigth: bold;
+  font-weigth: 600;
+  padding: 5px 0;
 }
 nav a:hover  {
   color: var(--cobalt);
 }
-h1, h2 {
-  line-height: 1.2;
+nav a.active {
+  color: var(--cobalt);
+  border-bottom: 3px solid var(--cobalt);
 }
-
+/* Main content */
 .container  {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 50px 30px;
+  padding: 70px 30px;
 }
-
-button {
-  background: var(--cobalt)
-  color: white:
-  border: none;
-  padding: 12px 20px 
-  cursor: pointer;
+h1 {
+  font-size: 3rem;
+  line-height: 1.1;
+  margin-bottom: 15px;
 }
-button:hover  {
-  background: #1745D1;
+p { 
+  max-width: 720px;
+  color: var(muted);
 }
+a {
+  color:var(--cobalt);
+}
+a:hover {
+  color: var(--cobalt-dark):
+  }
+  /* Mobile */
+  @media (max-width: 700px) {
+    nav {
+      gap: 18 px;
+      padding: 16px 20px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    nav::-webkit-scrollbar {
+      display: none;
+    }
+    nav strong {
+      flex-shrink: 0;
+    }
+    nav a {
+      flex-shrink: 0;
+    }
+. container {
+  padding: 45px 20px 
+}
+h1  {
+  font-size: 2.3rem;
+}
+  }
   
   
   
