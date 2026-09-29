@@ -68,10 +68,10 @@ p {
   color: var(muted);
 }
 a {
-  color:var(--cobalt);
+  color:var(--pink);
 }
 a:hover {
-  color: var(--cobalt-dark):
+  color: var(--pink-dark):
   }
   /* Mobile */
   @media (max-width: 700px) {
@@ -128,7 +128,7 @@ h1  {
 .search-box input {
   flex: 1;
   padding: 15px 18px;
-  border: 2px solid var(--cobalt);
+  border: 2px solid var(--pink);
   border-right: none;
   font-size: 1rem;
   outline: none;
@@ -139,8 +139,8 @@ h1  {
 
 .search-box button {
   padding: 15px 24px;
-  border: 2px solid var(--cobalt);
-  background: var(--cobalt);
+  border: 2px solid var(--pink);
+  background: var(--pink-dark);
   color: white;
   font-weight: 700;
   cursor: pointer;
