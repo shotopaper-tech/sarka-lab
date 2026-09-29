@@ -92,5 +92,55 @@ h1  {
   font-size: 2.3rem;
 }
   }
+/* Hero */
+.hero {
+  padding: 0px 0 70px;
+  max-width: 760px;
+}
+
+.hero-label {
+  color: var(--cobalt);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14rem;
+  margin-bottom: 18px;
+}
+.hero h1 {
+  font-size: 4.5rem;
+  line-height: 1;
+  margin: 0 0 24px;
+}
+.hero-description {
+  max-width: 650px;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+.search-box {
+  display: flex;
+  max-width: 650px;
+}
+.search-box input {
+  flex: 1;
+  padding: 15px 18px;
+  border: 2px solid var(--cobalt);
+  border-right: none;
+  font-size: 1rem;
+  outline: none;
+}
+.search-box input:focus {
+  box-shadow: 000 3px rgba(61,104, 255, 0.15);
+}
+
+.search-box button {
+  padding: 15px 24px;
+  border: 2px solid var(--cobalt);
+  background: var(--cobalt);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+search-box button:hover { 
+  background: var(--cobalt-dark);
 }
   
