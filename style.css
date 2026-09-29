@@ -1,13 +1,15 @@
 :root {
-  --background: #FFF7FA;
+  --background: #FFF5F8;
   --surface: #FFFFFF;
   --text: #241B320;
   --muted: #806F77;
   --pink: #F08BAE;
-  --pink-dark: #D85F88;
-  --pink-soft: #F9DCE6;
-  --accent: #6FCFC1;
-    --border: #E8D6DD;
+  --pink-dark: #C94F78;
+  --pink-light: #FBD5E2;
+  --teal: #63C7BE;
+  --teal-dark: #3DA69D;
+  --teal-light: #D9F3F0;
+  --border: #E9C8D4;
 } 
 * {
   box-sizing: border-box;
