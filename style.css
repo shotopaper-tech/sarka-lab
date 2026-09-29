@@ -192,6 +192,63 @@ search-box button:hover {
     background: var(--teal-dark);
     color: white;
   }
-  
+  /* DISCOVER */
+  .discover {
+    padding: 30px 0 80px;
+  }
+  .section-label {
+    margin-bottom: 12px;
+    color: var{--pink-dark);
+               font-size: 0.75rem;
+               font-weight: 700;
+               letter-spacing: 0.12em;
+              }
+    .discover h2 {
+      margin-bottom: 10px;
+    }
+    .discover > p:not( .section-label) {
+      color: var(--muted);
+      margin-bottom: 25px;
+    }
+    .topic-bubbles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .topic-bubble {
+      display: inline-block;
+      padding: 10px 17px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: 0.2s ease;
+    }
+    .topic-bubble. pink {
+      background: var(--pink-light);
+      color: var(--pink-dark);
+    }
+    .topic-bubble. teal {
+      background: var(--teal-light);
+      color: var(--teal-dark);
+    }
+    .topic-bubble:hover {
+      transform: translateY(-2px);
+    }
+    /* CURRENTLY EXPLORING */
+    .currently {
+      padding: 0 0  80px;
+    }
+    .explore-question {
+      padding: 18px 0;
+      border-bottom: 1px solid
+      var(--border);
+    }
+    .explore-question h3 {
+      margin: 0 0 6px;
+      color: var(--text)
+      font-size: 0.8rem;
+    }
+      
+    
    
    
