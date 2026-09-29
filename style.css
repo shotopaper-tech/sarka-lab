@@ -10,7 +10,7 @@
   box-sizing: border-box;
 }
 html { 
-  scroll-behavior: smoooth;
+  scroll-behavior: smooth;
 }
 body{
   margin: 0;
@@ -91,7 +91,90 @@ a:hover {
 h1  {
   font-size: 2.3rem;
 }
+    /* Sarka Space Scene */
+    . space-scene {
+      position: relative;
+      height: 230px;
+      margin-bottom: 40px;
+      overflow: hidden;
+      border: 2px solid var(--text);
+      background: #10182B;
+      color: white;
+      ease-in-out infinite alternate;
+    }
+    .stars-one {
+      top: 35px;
+      left: 10%;
+    }
+  .stars-two { 
+    top: 90px;
+    right: 10%;
+    animation-delay: 1.5s;
   }
-  
+    .moon {
+      position: absolute;
+      top: 25px;
+      right: 20%;
+      color: yellow;
+    font-size: 42px;
+  }
+.planet {
+  position: absolute;
+      bottom: 35px;
+      right: 25%
+      color: var(--cobalt);
+    font-size: 50px;
+animation: float 4s ease-in-out infinite;
+}
+.astrounaut { 
+  position: absolute;
+      bottom: 25px;
+      leftt: 8%;
+      font-size: 28px;
+    animation: astronoutWalk 12s linear infinite;
+  @keyrframes astronautWalk {
+    0% {
+    left: 5%;
+    bottom: 25px;
+    transform: rotate(0deg); }
+  35% {
+  left: 35%;
+    bottom: 25px;  
+    transform: rotate(0deg); }
+45% {
+ left: 42%;
+    bottom: 55px;
+    transform: rotate(-8deg); }
+55% {
+  left: 49%;
+    bottom: 25px;
+    transform: rotate(0deg); }
+
+100% {
+left: 90%;
+    bottom: 25px;
+    transform: rotate(0deg); }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform:
+    translateY(-15px);
+  }
+}
+
+@keyframes twinkle {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+    
   
   
