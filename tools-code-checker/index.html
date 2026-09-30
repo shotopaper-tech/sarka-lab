@@ -12,7 +12,7 @@
   <body>
     <h1>Sarka Code Checker</h1>
     <textarea 
-      id="codeinput"
+      id="codeInput"
       placeholder="Paste your code here..."></textarea>
     <button id="CheckButton">
       Check Code</button>
@@ -25,8 +25,8 @@
       const checkButton =
         document.getElemenById("checkButton");
         const result =
-          document.getElemenById("result");
-      checkButton.addEventListener("click",function () {
+          document.getElementById("result");
+      checkButton.addEventListener("click", function () {
         const code = codeInput.value;
         if (code.trim() === "") {
           result.textContent = "please enter some code.";
@@ -37,7 +37,7 @@
          result.innerHTML = `<strong>√ No syntax error detected</strong>
          <p>Your JavaScript code looks Syntatically correct.</p>`;
        }
-        cacth(error) {
+        catch(error) {
         result.innerHTML = ` <strong>☓ Syntax Error</strong>
         <p>${error.message}</p>`;}     
       });
