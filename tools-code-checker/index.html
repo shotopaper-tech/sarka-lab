@@ -34,10 +34,12 @@
         }
        try {
          new Function(code);
-         result.textContent = "No syntax error detected.";
+         result.innerHTML = `<strong>√ No syntax error detected</strong>
+         <p>Your JavaScript code looks Syntaticcally correct.</p>`;
        }
         cacth(error) {
-        result.texttcontent = "syntax error: "+ error.message;}     
+        result.innerHTML =   ` <strong>☓ Syntax Error</strong>
+        <p>${error.message}</p>`;}     
       });
       
     </script>
