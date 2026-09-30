@@ -248,7 +248,266 @@ search-box button:hover {
       color: var(--text)
       font-size: 0.8rem;
     }
-      
+      /* HOMEPAGE POLISH */
+
+
+/* DISCOVER */
+
+.discover {
+    padding: 50px 0 80px;
+}
+
+.discover .section-label {
+    margin-bottom: 10px;
+}
+
+.discover h2 {
+    font-size: 2rem;
+    margin-bottom: 12px;
+}
+
+.discover > p:not(.section-label) {
+    max-width: 600px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 30px;
+}
+
+
+/* TOPIC BUBBLES */
+
+.topic-bubbles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.topic-bubble {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 11px 18px;
+
+    border-radius: 999px;
+
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    border: 1px solid transparent;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.topic-bubble.pink {
+    background: var(--pink-light);
+    color: var(--pink-dark);
+    border-color: #F3B7CA;
+}
+
+.topic-bubble.teal {
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    border-color: #B9E4DF;
+}
+
+.topic-bubble:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(36, 27, 32, 0.08);
+}
+
+
+/* CURRENTLY EXPLORING */
+
+.currently {
+    padding: 10px 0 90px;
+}
+
+.currently .section-label {
+    margin-bottom: 20px;
+}
+
+
+/* QUESTION CARDS */
+
+.explore-question {
+    position: relative;
+
+    padding: 22px 24px;
+    margin-bottom: 12px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: 16px;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.explore-question::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 14px;
+    bottom: 14px;
+
+    width: 4px;
+
+    background: var(--pink);
+    border-radius: 0 4px 4px 0;
+}
+
+.explore-question:nth-child(3)::before {
+    background: var(--teal);
+}
+
+.explore-question:nth-child(4)::before {
+    background: var(--pink-dark);
+}
+
+.explore-question:hover {
+    transform: translateX(4px);
+
+    border-color: #DFA9BB;
+
+    box-shadow: 0 8px 24px rgba(36, 27, 32, 0.07);
+}
+
+.explore-question h3 {
+    margin: 0 0 8px;
+
+    font-size: 1rem;
+    line-height: 1.5;
+
+    color: var(--text);
+}
+
+.explore-question span {
+    display: inline-block;
+
+    padding: 5px 10px;
+
+    border-radius: 999px;
+
+    background: var(--pink-light);
+    color: var(--pink-dark);
+
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+
+/* EXPLORE SECTION */
+
+.explore {
+    padding: 40px 0 70px;
+}
+
+.explore h2 {
+    font-size: 2rem;
+    margin-bottom: 24px;
+}
+
+.explore-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.explore-card {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 13px 20px;
+
+    background: var(--pink-light);
+    color: var(--pink-dark);
+
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    text-decoration: none;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.explore-card h3 {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.explore-card:hover {
+    transform: translateY(-3px);
+
+    background: var(--pink-dark);
+    color: white;
+
+    box-shadow: 0 7px 18px rgba(36, 27, 32, 0.08);
+}
+
+
+/* TEAL EXPLORE BUBBLES */
+
+.explore-card:nth-child(2),
+.explore-card:nth-child(5) {
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    border-color: #B9E4DF;
+}
+
+.explore-card:nth-child(2):hover,
+.explore-card:nth-child(5):hover {
+    background: var(--teal-dark);
+    color: white;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .discover,
+    .explore {
+        padding-top: 30px;
+        padding-bottom: 55px;
+    }
+
+    .currently {
+        padding-bottom: 60px;
+    }
+
+    .discover h2,
+    .explore h2 {
+        font-size: 1.6rem;
+    }
+
+    .explore-question {
+        padding: 18px 20px;
+    }
+
+    .explore-question h3 {
+        font-size: 0.95rem;
+    }
+
+    .topic-bubble,
+    .explore-card {
+        padding: 10px 15px;
+        font-size: 0.85rem;
+    }
+}
     
    
    
