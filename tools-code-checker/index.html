@@ -14,16 +14,16 @@
     <textarea 
       id="codeInput"
       placeholder="Paste your code here..."></textarea>
-    <button id="CheckButton">
+    <button id="checkButton">
       Check Code</button>
     <div id="result">
       Result will appear here.
     </div>
     <script>
       const codeInput =
-        document.getElemenById("codeInput");
+        document.getElementById("codeInput");
       const checkButton =
-        document.getElemenById("checkButton");
+        document.getElementById("checkButton");
         const result =
           document.getElementById("result");
       checkButton.addEventListener("click", function () {
@@ -35,7 +35,7 @@
        try {
          new Function(code);
          result.innerHTML = `<strong>√ No syntax error detected</strong>
-         <p>Your JavaScript code looks Syntatically correct.</p>`;
+         <p>Your JavaScript code looks syntatically correct.</p>`;
        }
         catch(error) {
         result.innerHTML = ` <strong>☓ Syntax Error</strong>
