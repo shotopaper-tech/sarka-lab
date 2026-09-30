@@ -32,8 +32,12 @@
           result.textContent = "please enter some code.";
           return;
         }
-        {
-        result.textContent = "Code received. Checker is working.";
+       try {
+         new Function(code);
+         result.textContent = "No syntax error detected.";
+       }
+        cacth(error) {
+        result.texttcontent = "syntax error: "+ error.message;}     
       });
       
     </script>
