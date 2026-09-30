@@ -1,0 +1,182 @@
+
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>2D Tools | Sarka Workshop</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .drawing-area {
+            margin-top: 30px;
+            padding: 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+        }
+
+        .drawing-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .drawing-controls select,
+        .drawing-controls input,
+        .drawing-controls button {
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font: inherit;
+        }
+
+        .drawing-controls button {
+            background: var(--pink);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .drawing-controls button:hover {
+            background: var(--pink-dark);
+        }
+
+        #drawingCanvas {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            display: block;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="container">
+
+        <p class="section-label">SARKA WORKSHOP</p>
+
+        <h1>2D Tools</h1>
+
+        <p>
+            Create simple technical drawings and work with dimensions.
+        </p>
+
+
+        <section class="drawing-area">
+
+            <div class="drawing-controls">
+
+                <select id="shape">
+                    <option value="rectangle">Rectangle</option>
+                    <option value="circle">Circle</option>
+                </select>
+
+                <input
+                    type="number"
+                    id="width"
+                    placeholder="Width"
+                    min="1"
+                    value="100"
+                >
+
+                <input
+                    type="number"
+                    id="height"
+                    placeholder="Height"
+                    min="1"
+                    value="50"
+                >
+
+                <button type="button" id="drawButton">
+                    Draw
+                </button>
+
+            </div>
+
+
+            <canvas
+                id="drawingCanvas"
+                width="700"
+                height="400"
+            ></canvas>
+
+        </section>
+
+    </main>
+
+
+    <script>
+        const canvas = document.getElementById("drawingCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const shape = document.getElementById("shape");
+        const widthInput = document.getElementById("width");
+        const heightInput = document.getElementById("height");
+        const drawButton = document.getElementById("drawButton");
+
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+
+        function drawShape() {
+
+            clearCanvas();
+
+            const width = Number(widthInput.value);
+            const height = Number(heightInput.value);
+
+            if (width <= 0 || height <= 0) {
+                return;
+            }
+
+            ctx.strokeStyle = "#C94F78";
+            ctx.lineWidth = 3;
+
+
+            if (shape.value === "rectangle") {
+
+                ctx.strokeRect(
+                    100,
+                    100,
+                    width * 2,
+                    height * 2
+                );
+
+            }
+
+
+            if (shape.value === "circle") {
+
+                const radius = width;
+
+                ctx.beginPath();
+
+                ctx.arc(
+                    250,
+                    200,
+                    radius,
+                    0,
+                    Math.PI * 2
+                );
+
+                ctx.stroke();
+            }
+        }
+
+
+        drawButton.addEventListener("click", drawShape);
+    </script>
+
+</body>
+</html>
+  </style>
