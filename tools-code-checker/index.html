@@ -15,7 +15,23 @@
       placeholder="Paste Your Code here..."></textarea>
     <button id="CheckButton">Check Code</button>
     <div id="result">
-      Ressult Will appear here.
+      Ressult will appear here.
     </div>
+    <script>
+      const codeInput =
+        document.getElemenById("codeInput");
+      const codeInput =
+        document.getElemenById("checkButton");
+        const result =
+          document.getElemenById("result");
+      checkButton.addEventListener("click",function () {
+        const code = codeInput.value;
+        if (code.trim() === "") {
+          result.textContent = "please enter some code.";
+          return;
+        }
+        result.textContent = "Code received. Checker is working.";
+      });
+    </script>
   </body>
 </html>
