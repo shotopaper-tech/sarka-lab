@@ -35,10 +35,10 @@
        try {
          new Function(code);
          result.innerHTML = `<strong>√ No syntax error detected</strong>
-         <p>Your JavaScript code looks Syntaticcally correct.</p>`;
+         <p>Your JavaScript code looks Syntatically correct.</p>`;
        }
         cacth(error) {
-        result.innerHTML =   ` <strong>☓ Syntax Error</strong>
+        result.innerHTML = ` <strong>☓ Syntax Error</strong>
         <p>${error.message}</p>`;}     
       });
       
