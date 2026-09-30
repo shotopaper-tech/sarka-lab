@@ -248,9 +248,10 @@ search-box button:hover {
       color: var(--text)
       font-size: 0.8rem;
     }
-    
-    
-    /* HOMEPAGE POLISH */
+    /* =================================
+   HOMEPAGE POLISH
+   ================================= */
+
 
 /* DISCOVER */
 
@@ -323,7 +324,9 @@ search-box button:hover {
 }
 
 
-/* CURRENTLY EXPLORING */
+/* =================================
+   CURRENTLY EXPLORING
+   ================================= */
 
 .currently {
     padding: 10px 0 90px;
@@ -408,7 +411,9 @@ search-box button:hover {
 }
 
 
-/* EXPLORE SECTION */
+/* =================================
+   EXPLORE SECTION
+   ================================= */
 
 .explore {
     padding: 40px 0 70px;
@@ -476,7 +481,9 @@ search-box button:hover {
 }
 
 
-/* MOBILE */
+/* =================================
+   MOBILE
+   ================================= */
 
 @media (max-width: 600px) {
 
@@ -509,6 +516,4 @@ search-box button:hover {
         font-size: 0.85rem;
     }
 }
-    
-   
-   
+  
