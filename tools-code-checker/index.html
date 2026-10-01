@@ -1,575 +1,1983 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Cakrawala Workstation</title>
+    <title>Cakrawala Workstation</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            background: #0d1117;
+            color: #e6edf3;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #8b949e;
+            margin-bottom: 30px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 16px;
+            resize: vertical;
+            background: #161b22;
+            color: #e6edf3;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #58a6ff;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            background: #238636;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            opacity: 0.85;
+        }
+
+        #clearButton {
+            background: #30363d;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            line-height: 1.6;
+        }
+
+        .success {
+            border-color: #238636;
+        }
+
+        .warning {
+            border-color: #d29922;
+        }
+
+        .error {
+            border-color: #f85149;
+        }
+    </style>
 </head>
 
 <body>
 
-  <h1>Cakrawala Workstation</h1>
+<div class="container">
 
-  <section id="code-editor">
+    <h1>Cakrawala Workstation</h1>
 
-    <h2>Code Editor</h2>
-
-    <textarea
-      id="codeInput"
-      placeholder="Paste your code here..."
-      rows="15"
-      cols="60"></textarea>
-
-    <br><br>
-
-    <button id="checkButton">
-      Check Code
-    </button>
-
-    <button id="clearButton">
-      Clear
-    </button>
-
-    <h2>Code Checker</h2>
-
-    <div id="result">
-      Result will appear here.
+    <div class="subtitle">
+        NJOS-powered code analysis workstation
     </div>
 
-  </section>
+    <textarea
+        id="codeInput"
+        placeholder="Write JavaScript code here..."
+    ></textarea>
 
-  <script>
+    <div class="buttons">
+
+        <button id="checkButton">
+            Check Code
+        </button>
+
+        <button id="clearButton">
+            Clear
+        </button>
+
+    </div>
+
+    <div
+        id="result"
+        class="result"
+    >
+        Ready.
+    </div>
+
+</div>
+
+<script>
+
+const NJOS = {
+
+    version: "0.2.0",
+
+    state: {},
+
+    context: {},
+
+    events: {},
+
+    errors: [],
+
+    tools: {},
+
+    setState(key, value) {
+
+        this.state[key] = value;
+
+        this.emit(
+            "state.changed",
+            {
+                key,
+                value
+            }
+        );
+
+    },
+
+    getState(key) {
+
+        return this.state[key];
+
+    },
+
+    setContext(key, value) {
+
+        this.context[key] = value;
+
+    },
+
+    getContext(key) {
+
+        return this.context[key];
+
+    },
+
+    clearContext() {
+
+        this.context = {};
+
+    },
+
+    on(event, callback) {
+
+        if (!this.events[event]) {
+
+            this.events[event] = [];
+
+        }
+
+        this.events[event].push(
+            callback
+        );
+
+    },
+
+    emit(event, data) {
+
+        const listeners =
+            this.events[event];
+
+        if (!listeners) {
+
+            return;
+
+        }
+
+        listeners.forEach(
+            callback => {
+
+                try {
+
+                    callback(data);
+
+                } catch (error) {
+
+                    this.reportError({
+
+                        message:
+                            error.message,
+
+                        source:
+                            "NJOS Event",
+
+                        severity:
+                            "internal"
+
+                    });
+
+                }
+
+            }
+        );
+
+    },
+
+    reportError(error) {
+
+        const entry = {
+
+            id:
+                "ERR-" +
+                Date.now() +
+                "-" +
+                Math.floor(
+                    Math.random() * 10000
+                ),
+
+            message:
+                error.message ||
+                "Unknown error",
+
+            source:
+                error.source ||
+                "NJOS",
+
+            severity:
+                error.severity ||
+                "error",
+
+            timestamp:
+                new Date().toISOString()
+
+        };
+
+        this.errors.push(entry);
+
+        this.emit(
+            "error.reported",
+            entry
+        );
+
+        return entry;
+
+    },
+
+    getErrors() {
+
+        return [
+            ...this.errors
+        ];
+
+    },
+
+    clearErrors() {
+
+        this.errors = [];
+
+    },
+
+    registerTool(name, tool) {
+
+        this.tools[name] = tool;
+
+        this.emit(
+            "tool.registered",
+            {
+                name,
+                tool
+            }
+        );
+
+    },
+
+    getTool(name) {
+
+        return this.tools[name];
+
+    },
+
+    hasTool(name) {
+
+        return !!this.tools[name];
+
+    },
+
+    listTools() {
+
+        return Object.keys(
+            this.tools
+        );
+
+    },
+
+    info() {
+
+        return {
+
+            name: "NJOS",
+
+            version:
+                this.version,
+
+            tools:
+                this.listTools(),
+
+            errors:
+                this.errors.length
+
+        };
+
+    }
+
+};
+
 
 const CakrawalaNexus = {
 
-  context: {},
+    version: "0.2.0",
 
-  events: {},
+    njos: NJOS,
 
-  setContext(key, value) {
-    this.context[key] = value;
-  },
+    connect() {
 
-  getContext(key) {
-    return this.context[key];
-  },
-
-  emit(event, data) {
-
-    if (!this.events[event]) {
-      return;
-    }
-
-    this.events[event].forEach(callback => {
-      callback(data);
-    });
-
-  },
-
-  on(event, callback) {
-
-    if (!this.events[event]) {
-      this.events[event] = [];
-    }
-
-    this.events[event].push(callback);
-
-  }
-
-};
-
-
-const ErrorAnalyzer = {
-
-  analyzer(data) {
-
-    if (data.success) {
-
-      return {
-        hasError: false,
-        type: null,
-        message: null,
-        explanation: null,
-        line: null,
-        column: null
-      };
-
-    }
-
-    const error = data.error;
-
-    let explanation =
-      "Periksa kembali struktur kode Anda.";
-
-    let line = null;
-    let column = null;
-
-    const locationMatch =
-      error.match(
-        /line\s+(\d+)|\((\d+):(\d+)\)|:(\d+):(\d+)/i
-      );
-
-    if (locationMatch) {
-
-      if (locationMatch[1]) {
-        line = Number(locationMatch[1]);
-      }
-
-      if (locationMatch[2]) {
-        line = Number(locationMatch[2]);
-        column = Number(locationMatch[3]);
-      }
-
-      if (locationMatch[4]) {
-        line = Number(locationMatch[4]);
-        column = Number(locationMatch[5]);
-      }
-
-    }
-
-    if (error.includes("Unexpected token")) {
-
-      explanation =
-        "Ada simbol atau bagian kode yang berada di posisi yang tidak sesuai.";
-
-    } else if (error.includes("Unexpected end")) {
-
-      explanation =
-        "Kode berhenti sebelum struktur program selesai.";
-
-    } else if (error.includes("Unexpected identifier")) {
-
-      explanation =
-        "Ada nama variabel atau identifier yang berada di posisi yang tidak sesuai.";
-
-    } else if (error.includes("missing")) {
-
-      explanation =
-        "Ada bagian sintaks yang kemungkinan belum lengkap.";
-
-    }
-
-    return {
-
-      hasError: true,
-      type: "Syntax Error",
-      message: error,
-      explanation: explanation,
-      line: line,
-      column: column
-
-    };
-
-  }
-
-};
-
-
-const BugDetector = {
-
-  detect(code) {
-
-    const undeclared = [];
-    const unused = [];
-
-    const declaredVariables = [];
-
-    const declarationRegex =
-      /\b(?:const|let|var)\s+([a-zA-Z_$][\w$]*)/g;
-
-    let match;
-
-    while (
-      (match = declarationRegex.exec(code)) !== null
-    ) {
-
-      const name = match[1];
-
-      const line =
-        code
-          .substring(0, match.index)
-          .split("\n")
-          .length;
-
-      declaredVariables.push({
-        name: name,
-        line: line
-      });
-
-    }
-
-    const parameterRegex =
-      /function\s*[a-zA-Z_$][\w$]*\s*\(([^)]*)\)/g;
-
-    while (
-      (match = parameterRegex.exec(code)) !== null
-    ) {
-
-      const parameters =
-        match[1]
-          .split(",")
-          .map(parameter => parameter.trim())
-          .filter(parameter => parameter !== "");
-
-      parameters.forEach(parameter => {
-
-        if (
-          /^[a-zA-Z_$][\w$]*$/.test(parameter)
-        ) {
-
-          const line =
-            code
-              .substring(0, match.index)
-              .split("\n")
-              .length;
-
-          declaredVariables.push({
-            name: parameter,
-            line: line
-          });
-
-        }
-
-      });
-
-    }
-
-    const cleanedCode =
-      code
-        .replace(/(["'`])(?:\\.|(?!\1).)*\1/g, "")
-        .replace(/\/\/.*$/gm, "")
-        .replace(/\/\*[\s\S]*?\*\//g, "");
-
-    const identifierRegex =
-      /\b[a-zA-Z_$][\w$]*\b/g;
-
-    const ignoredWords = [
-      "const",
-      "let",
-      "var",
-      "function",
-      "return",
-      "if",
-      "else",
-      "for",
-      "while",
-      "do",
-      "switch",
-      "case",
-      "break",
-      "continue",
-      "new",
-      "class",
-      "this",
-      "true",
-      "false",
-      "null",
-      "undefined",
-      "console",
-      "log"
-    ];
-
-    while (
-      (match = identifierRegex.exec(cleanedCode)) !== null
-    ) {
-
-      const name = match[0];
-
-      const position =
-        match.index;
-
-      const before =
-        cleanedCode[position - 1];
-
-      const after =
-        cleanedCode[position + name.length];
-
-      if (
-        before === "." ||
-        after === ":"
-      ) {
-
-        continue;
-
-      }
-
-      if (
-        ignoredWords.includes(name)
-      ) {
-
-        continue;
-
-      }
-
-      const declaration =
-        declaredVariables.find(
-          variable =>
-            variable.name === name
+        NJOS.emit(
+            "nexus.connected",
+            {
+                version:
+                    this.version
+            }
         );
 
-      if (!declaration) {
+    },
 
-        const line =
-          cleanedCode
-            .substring(0, position)
-            .split("\n")
-            .length;
+    setContext(key, value) {
 
-        const alreadyReported =
-          undeclared.some(
-            variable =>
-              variable.name === name
-          );
+        NJOS.setContext(
+            key,
+            value
+        );
 
-        if (!alreadyReported) {
+    },
 
-          undeclared.push({
-            name: name,
-            line: line
-          });
+    getContext(key) {
 
-        }
+        return NJOS.getContext(
+            key
+        );
 
-      }
+    },
+
+    on(event, callback) {
+
+        NJOS.on(
+            event,
+            callback
+        );
+
+    },
+
+    emit(event, data) {
+
+        NJOS.emit(
+            event,
+            data
+        );
+
+    },
+
+    registerTool(name, tool) {
+
+        NJOS.registerTool(
+            name,
+            tool
+        );
+
+    },
+
+    getTool(name) {
+
+        return NJOS.getTool(
+            name
+        );
 
     }
-
-    declaredVariables.forEach(variable => {
-
-      const occurrences =
-        cleanedCode.match(
-          new RegExp(
-            "\\b" + variable.name + "\\b",
-            "g"
-          )
-        ) || [];
-
-      if (
-        occurrences.length <= 1
-      ) {
-
-        unused.push({
-          name: variable.name,
-          line: variable.line
-        });
-
-      }
-
-    });
-
-    return {
-
-      undeclared: undeclared,
-      unused: unused
-
-    };
-
-  }
 
 };
 
 
-const codeInput =
-  document.getElementById("codeInput");
+const CodeChecker = {
 
-const checkButton =
-  document.getElementById("checkButton");
+    name: "CodeChecker",
 
-const clearButton =
-  document.getElementById("clearButton");
+    version: "0.2.0",
 
-const result =
-  document.getElementById("result");
+    check(code) {
 
+        if (
+            typeof code !== "string"
+        ) {
 
-CakrawalaNexus.on(
-  "code.checked",
-  function(data) {
+            return {
 
-    const analysis =
-      ErrorAnalyzer.analyzer(data);
+                success: false,
 
-    const bugReport =
-      BugDetector.detect(
-        CakrawalaNexus.getContext("lastCode")
-      );
+                error: {
 
-    const warnings =
-      bugReport.undeclared;
+                    message:
+                        "Code input must be a string.",
 
-    const unusedVariables =
-      bugReport.unused;
+                    source:
+                        "CodeChecker",
 
-    if (!analysis.hasError) {
+                    severity:
+                        "error"
 
-      let warningHTML = "";
-      let unusedHTML = "";
+                }
 
-      if (warnings.length > 0) {
-
-        warningHTML = `
-          <p>
-            <strong>Potensi variable tidak dikenal:</strong>
-            ${warnings.map(
-              warning =>
-                `${warning.name} (baris ${warning.line})`
-            ).join(", ")}
-          </p>
-        `;
-
-      } else {
-
-        warningHTML = `
-          <p>
-            ✓ Tidak ditemukan variable tidak dikenal.
-          </p>
-        `;
-
-      }
-
-      if (unusedVariables.length > 0) {
-
-        unusedHTML = `
-          <p>
-            <strong>Variable tidak digunakan:</strong>
-            ${unusedVariables.map(
-              variable =>
-                `${variable.name} (baris ${variable.line})`
-            ).join(", ")}
-          </p>
-        `;
-
-      } else {
-
-        unusedHTML = `
-          <p>
-            ✓ Tidak ditemukan variable yang tidak digunakan.
-          </p>
-        `;
-
-      }
-
-      result.innerHTML = `
-        <strong>✓ Tidak ada kesalahan sintaksis</strong>
-
-        <p>
-          Kode JavaScript Anda terlihat benar secara sintaksis.
-        </p>
-
-        ${warningHTML}
-
-        ${unusedHTML}
-      `;
-
-    } else {
-
-      let location = "";
-
-      if (analysis.line) {
-
-        location =
-          `<p>Baris: ${analysis.line}`;
-
-        if (analysis.column) {
-
-          location +=
-            `, Kolom: ${analysis.column}`;
+            };
 
         }
 
-        location += `</p>`;
+        if (
+            code.trim() === ""
+        ) {
 
-      }
+            return {
 
-      result.innerHTML = `
-        <strong>✕ Kesalahan Sintaksis</strong>
+                success: false,
 
-        <p>
-          ${analysis.message}
-        </p>
+                error: {
 
-        <p>
-          ${analysis.explanation}
-        </p>
+                    message:
+                        "Code is empty.",
 
-        ${location}
-      `;
+                    source:
+                        "CodeChecker",
+
+                    severity:
+                        "warning"
+
+                }
+
+            };
+
+        }
+
+        try {
+
+            new Function(code);
+
+        } catch (error) {
+
+            return {
+
+                success: false,
+
+                error: {
+
+                    message:
+                        error.message,
+
+                    source:
+                        "CodeChecker",
+
+                    severity:
+                        "syntax"
+
+                }
+
+            };
+
+        }
+
+        return {
+
+            success: true,
+
+            error: null
+
+        };
 
     }
 
-  }
+};
+
+
+CakrawalaNexus.registerTool(
+    "CodeChecker",
+    CodeChecker
 );
 
 
-checkButton.addEventListener(
-  "click",
-  function() {
+const NJOSParser = {
 
-    const code =
-      codeInput.value;
+    name: "Parser",
 
-    CakrawalaNexus.setContext(
-      "lastCode",
-      code
+    version: "0.2.0",
+
+    parse(code) {
+
+        const ast = {
+
+            type:
+                "Program",
+
+            source:
+                code,
+
+            declarations: [],
+
+            functions: [],
+
+            parameters: [],
+
+            scopes: [],
+
+            references: []
+
+        };
+
+        if (
+            !code ||
+            code.trim() === ""
+        ) {
+
+            this.createGlobalScope(
+                code,
+                ast
+            );
+
+            return ast;
+
+        }
+
+        const cleaned =
+            this.clean(code);
+
+        this.createGlobalScope(
+            code,
+            ast
+        );
+
+        this.parseDeclarations(
+            code,
+            cleaned,
+            ast
+        );
+
+        this.parseFunctions(
+            code,
+            cleaned,
+            ast
+        );
+
+        this.parseParameters(
+            code,
+            cleaned,
+            ast
+        );
+
+        this.parseScopes(
+            code,
+            cleaned,
+            ast
+        );
+
+        this.parseReferences(
+            code,
+            cleaned,
+            ast
+        );
+
+        return ast;
+
+    },
+
+    clean(code) {
+
+        return code
+
+            .replace(
+                /(["'`])(?:\\.|(?!\1)[\s\S])*\1/g,
+                match =>
+                    match.replace(
+                        /[^\n]/g,
+                        " "
+                    )
+            )
+
+            .replace(
+                /\/\/.*$/gm,
+                match =>
+                    match.replace(
+                        /[^\n]/g,
+                        " "
+                    )
+            )
+
+            .replace(
+                /\/\*[\s\S]*?\*\//g,
+                match =>
+                    match.replace(
+                        /[^\n]/g,
+                        " "
+                    )
+            );
+
+    },
+
+    location(code, position) {
+
+        const before =
+            code.substring(
+                0,
+                position
+            );
+
+        const line =
+            before.split("\n").length;
+
+        const lastNewLine =
+            before.lastIndexOf("\n");
+
+        const column =
+            position -
+            lastNewLine;
+
+        return {
+
+            line,
+            column,
+            position
+
+        };
+
+    },
+
+    createGlobalScope(
+        code,
+        ast
+    ) {
+
+        ast.scopes.push({
+
+            id: 0,
+
+            type:
+                "global",
+
+            parent:
+                null,
+
+            start: 0,
+
+            end:
+                code.length,
+
+            children: []
+
+        });
+
+    },
+
+    parseDeclarations(
+        code,
+        cleaned,
+        ast
+    ) {
+
+        const regex =
+            /\b(const|let|var)\s+([a-zA-Z_$][\w$]*)/g;
+
+        let match;
+
+        while (
+            (match =
+                regex.exec(cleaned))
+            !== null
+        ) {
+
+            const kind =
+                match[1];
+
+            const name =
+                match[2];
+
+            const position =
+                match.index +
+                match[0].lastIndexOf(
+                    name
+                );
+
+            const location =
+                this.location(
+                    code,
+                    position
+                );
+
+            ast.declarations.push({
+
+                type:
+                    "VariableDeclaration",
+
+                kind,
+
+                name,
+
+                line:
+                    location.line,
+
+                column:
+                    location.column,
+
+                position:
+                    location.position
+
+            });
+
+        }
+
+    },
+
+    parseFunctions(
+        code,
+        cleaned,
+        ast
+    ) {
+
+        const regex =
+            /\bfunction\s+([a-zA-Z_$][\w$]*)\s*\(([^)]*)\)/g;
+
+        let match;
+
+        while (
+            (match =
+                regex.exec(cleaned))
+            !== null
+        ) {
+
+            const name =
+                match[1];
+
+            const position =
+                match.index +
+                match[0].indexOf(
+                    name
+                );
+
+            const location =
+                this.location(
+                    code,
+                    position
+                );
+
+            ast.functions.push({
+
+                type:
+                    "FunctionDeclaration",
+
+                name,
+
+                line:
+                    location.line,
+
+                column:
+                    location.column,
+
+                position:
+                    location.position
+
+            });
+
+        }
+
+    },
+
+    parseParameters(
+        code,
+        cleaned,
+        ast
+    ) {
+
+        const regex =
+            /\bfunction\s+([a-zA-Z_$][\w$]*)\s*\(([^)]*)\)/g;
+
+        let match;
+
+        while (
+            (match =
+                regex.exec(cleaned))
+            !== null
+        ) {
+
+            const parameters =
+                match[2];
+
+            if (
+                !parameters.trim()
+            ) {
+
+                continue;
+
+            }
+
+            const start =
+                match.index +
+                match[0].indexOf(
+                    parameters
+                );
+
+            const parameterRegex =
+                /[a-zA-Z_$][\w$]*/g;
+
+            let parameter;
+
+            while (
+                (parameter =
+                    parameterRegex.exec(
+                        parameters
+                    ))
+                !== null
+            ) {
+
+                const name =
+                    parameter[0];
+
+                const position =
+                    start +
+                    parameter.index;
+
+                const location =
+                    this.location(
+                        code,
+                        position
+                    );
+
+                ast.parameters.push({
+
+                    type:
+                        "Parameter",
+
+                    name,
+
+                    line:
+                        location.line,
+
+                    column:
+                        location.column,
+
+                    position
+
+                });
+
+            }
+
+        }
+
+    },
+
+    parseScopes(
+        code,
+        cleaned,
+        ast
+    ) {
+
+        let nextId = 1;
+
+        const stack = [
+            ast.scopes[0]
+        ];
+
+        for (
+            let i = 0;
+            i < cleaned.length;
+            i++
+        ) {
+
+            if (
+                cleaned[i] === "{"
+            ) {
+
+                const parent =
+                    stack[
+                        stack.length - 1
+                    ];
+
+                const scope = {
+
+                    id:
+                        nextId++,
+
+                    type:
+                        "block",
+
+                    parent:
+                        parent.id,
+
+                    start:
+                        i,
+
+                    end:
+                        code.length,
+
+                    children: []
+
+                };
+
+                ast.scopes.push(
+                    scope
+                );
+
+                parent.children.push(
+                    scope.id
+                );
+
+                stack.push(
+                    scope
+                );
+
+            }
+
+            if (
+                cleaned[i] === "}"
+            ) {
+
+                if (
+                    stack.length > 1
+                ) {
+
+                    const scope =
+                        stack.pop();
+
+                    scope.end =
+                        i;
+
+                }
+
+            }
+
+        }
+
+    },
+
+    parseReferences(
+        code,
+        cleaned,
+        ast
+    ) {
+
+        const ignored =
+            new Set([
+
+                "const",
+                "let",
+                "var",
+
+                "function",
+
+                "return",
+
+                "if",
+                "else",
+
+                "for",
+                "while",
+                "do",
+
+                "switch",
+                "case",
+
+                "break",
+                "continue",
+
+                "new",
+
+                "class",
+
+                "try",
+                "catch",
+                "finally",
+
+                "throw",
+
+                "true",
+                "false",
+
+                "null",
+                "undefined",
+
+                "this",
+
+                "typeof",
+                "instanceof",
+
+                "in",
+                "of",
+
+                "async",
+                "await",
+
+                "console",
+                "log"
+
+            ]);
+
+        const regex =
+            /\b[a-zA-Z_$][\w$]*\b/g;
+
+        let match;
+
+        while (
+            (match =
+                regex.exec(cleaned))
+            !== null
+        ) {
+
+            const name =
+                match[0];
+
+            if (
+                ignored.has(name)
+            ) {
+
+                continue;
+
+            }
+
+            const position =
+                match.index;
+
+            const before =
+                cleaned[position - 1];
+
+            const after =
+                cleaned[
+                    position + name.length
+                ];
+
+            if (
+                before === "."
+            ) {
+
+                continue;
+
+            }
+
+            if (
+                after === ":"
+            ) {
+
+                continue;
+
+            }
+
+            const declaration =
+                ast.declarations.some(
+                    item =>
+                        item.position ===
+                        position
+                );
+
+            if (
+                declaration
+            ) {
+
+                continue;
+
+            }
+
+            const functionName =
+                ast.functions.some(
+                    item =>
+                        item.position ===
+                        position
+                );
+
+            if (
+                functionName
+            ) {
+
+                continue;
+
+            }
+
+            const parameter =
+                ast.parameters.some(
+                    item =>
+                        item.position ===
+                        position
+                );
+
+            if (
+                parameter
+            ) {
+
+                continue;
+
+            }
+
+            const location =
+                this.location(
+                    code,
+                    position
+                );
+
+            ast.references.push({
+
+                type:
+                    "IdentifierReference",
+
+                name,
+
+                line:
+                    location.line,
+
+                column:
+                    location.column,
+
+                position
+
+            });
+
+        }
+
+    }
+
+};
+
+
+CakrawalaNexus.registerTool(
+    "Parser",
+    NJOSParser
+);
+
+
+const SymbolTable = {
+
+    name:
+        "SymbolTable",
+
+    version:
+        "0.2.0",
+
+    build(ast) {
+
+        const symbols = [];
+
+        ast.declarations.forEach(
+            declaration => {
+
+                symbols.push({
+
+                    name:
+                        declaration.name,
+
+                    kind:
+                        declaration.kind,
+
+                    type:
+                        "variable",
+
+                    line:
+                        declaration.line,
+
+                    column:
+                        declaration.column,
+
+                    position:
+                        declaration.position
+
+                });
+
+            }
+        );
+
+        ast.functions.forEach(
+            fn => {
+
+                symbols.push({
+
+                    name:
+                        fn.name,
+
+                    kind:
+                        "function",
+
+                    type:
+                        "function",
+
+                    line:
+                        fn.line,
+
+                    column:
+                        fn.column,
+
+                    position:
+                        fn.position
+
+                });
+
+            }
+        );
+
+        ast.parameters.forEach(
+            parameter => {
+
+                symbols.push({
+
+                    name:
+                        parameter.name,
+
+                    kind:
+                        "parameter",
+
+                    type:
+                        "parameter",
+
+                    line:
+                        parameter.line,
+
+                    column:
+                        parameter.column,
+
+                    position:
+                        parameter.position
+
+                });
+
+            }
+        );
+
+        return {
+
+            type:
+                "SymbolTable",
+
+            symbols
+
+        };
+
+    }
+
+};
+
+
+CakrawalaNexus.registerTool(
+    "SymbolTable",
+    SymbolTable
+);
+
+
+const TypoDetector = {
+
+    name:
+        "TypoDetector",
+
+    version:
+        "0.1.0",
+
+    analyze(
+        ast,
+        symbolTable
+    ) {
+
+        const issues = [];
+
+        const symbols =
+            symbolTable.symbols;
+
+        const symbolNames =
+            [
+                ...new Set(
+                    symbols.map(
+                        symbol =>
+                            symbol.name
+                    )
+                )
+            ];
+
+        ast.references.forEach(
+            reference => {
+
+                const exists =
+                    symbolNames.includes(
+                        reference.name
+                    );
+
+                if (
+                    exists
+                ) {
+
+                    return;
+
+                }
+
+                const suggestion =
+                    this.findSuggestion(
+                        reference.name,
+                        symbolNames
+                    );
+
+                if (
+                    !suggestion
+                ) {
+
+                    return;
+
+                }
+
+                issues.push({
+
+                    type:
+                        "possible-typo",
+
+                    severity:
+                        "warning",
+
+                    name:
+                        reference.name,
+
+                    suggestion:
+                        suggestion.name,
+
+                    distance:
+                        suggestion.distance,
+
+                    line:
+                        reference.line,
+
+                    column:
+                        reference.column,
+
+                    message:
+                        `Possible typo "${reference.name}". Did you mean "${suggestion.name}"?`
+
+                });
+
+            }
+        );
+
+        return {
+
+            issues
+
+        };
+
+    },
+
+    findSuggestion(
+        target,
+        candidates
+    ) {
+
+        let best =
+            null;
+
+        candidates.forEach(
+            candidate => {
+
+                if (
+                    candidate === target
+                ) {
+
+                    return;
+
+                }
+
+                const lowerTarget =
+                    target.toLowerCase();
+
+                const lowerCandidate =
+                    candidate.toLowerCase();
+
+                const distance =
+                    this.levenshtein(
+                        lowerTarget,
+                        lowerCandidate
+                    );
+
+                const maxLength =
+                    Math.max(
+                        target.length,
+                        candidate.length
+                    );
+
+                const threshold =
+                    maxLength <= 4
+                        ? 1
+                        : maxLength <= 8
+                            ? 2
+                            : 3;
+
+                if (
+                    distance >
+                    threshold
+                ) {
+
+                    return;
+
+                }
+
+                if (
+                    !best ||
+                    distance <
+                    best.distance
+                ) {
+
+                    best = {
+
+                        name:
+                            candidate,
+
+                        distance
+
+                    };
+
+                }
+
+            }
+        );
+
+        return best;
+
+    },
+
+    levenshtein(
+        a,
+        b
+    ) {
+
+        const matrix = [];
+
+        for (
+            let i = 0;
+            i <= b.length;
+            i++
+        ) {
+
+            matrix[i] = [
+                i
+            ];
+
+        }
+
+        for (
+            let j = 0;
+            j <= a.length;
+            j++
+        ) {
+
+            matrix[0][j] =
+                j;
+
+        }
+
+        for (
+            let i = 1;
+            i <= b.length;
+            i++
+        ) {
+
+            for (
+                let j = 1;
+                j <= a.length;
+                j++
+            ) {
+
+                if (
+                    b.charAt(i - 1) ===
+                    a.charAt(j - 1)
+                ) {
+
+                    matrix[i][j] =
+                        matrix[i - 1][j - 1];
+
+                } else {
+
+                    matrix[i][j] =
+                        Math.min(
+
+                            matrix[i - 1][j] + 1,
+
+                            matrix[i][j - 1] + 1,
+
+                            matrix[i - 1][j - 1] + 1
+
+                        );
+
+                }
+
+            }
+
+        }
+
+        return matrix[b.length][a.length];
+
+    }
+
+};
+
+
+CakrawalaNexus.registerTool(
+    "TypoDetector",
+    TypoDetector
+);
+
+
+const Analyzer = {
+
+    name:
+        "Analyzer",
+
+    version:
+        "0.2.0",
+
+    analyze(
+        ast,
+        symbolTable
+    ) {
+
+        const issues = [];
+
+        const typoDetector =
+            CakrawalaNexus.getTool(
+                "TypoDetector"
+            );
+
+        const typoResult =
+            typoDetector.analyze(
+                ast,
+                symbolTable
+            );
+
+        issues.push(
+            ...typoResult.issues
+        );
+
+        ast.references.forEach(
+            reference => {
+
+                const exists =
+                    symbolTable.symbols.some(
+                        symbol =>
+                            symbol.name ===
+                            reference.name
+                    );
+
+                if (
+                    exists
+                ) {
+
+                    return;
+
+                }
+
+                const hasTypo =
+                    typoResult.issues.some(
+                        issue =>
+                            issue.name ===
+                            reference.name &&
+                            issue.line ===
+                            reference.line &&
+                            issue.column ===
+                            reference.column
+                    );
+
+                if (
+                    hasTypo
+                ) {
+
+                    return;
+
+                }
+
+                issues.push({
+
+                    type:
+                        "undeclared-variable",
+
+                    severity:
+                        "warning",
+
+                    name:
+                        reference.name,
+
+                    line:
+                        reference.line,
+
+                    column:
+                        reference.column,
+
+                    message:
+                        `Identifier "${reference.name}" is not declared.`
+
+                });
+
+            }
+        );
+
+        ast.declarations.forEach(
+            declaration => {
+
+                const used =
+                    ast.references.some(
+                        reference =>
+                            reference.name ===
+                            declaration.name
+                    );
+
+                if (
+                    !used
+                ) {
+
+                    issues.push({
+
+                        type:
+                            "unused-variable",
+
+                        severity:
+                            "info",
+
+                        name:
+                            declaration.name,
+
+                        line:
+                            declaration.line,
+
+                        column:
+                            declaration.column,
+
+                        message:
+                            `Variable "${declaration.name}" is declared but never used.`
+
+                    });
+
+                }
+
+            }
+        );
+
+        return {
+
+            issues
+
+        };
+
+    }
+
+};
+
+
+CakrawalaNexus.registerTool(
+    "Analyzer",
+    Analyzer
+);
+
+
+CakrawalaNexus.on(
+    "code.checked",
+    function(checkResult) {
+
+        if (
+            !checkResult.success
+        ) {
+
+            return;
+
+        }
+
+        const code =
+            NJOS.getContext(
+                "lastCode"
+            );
+
+        const parser =
+            CakrawalaNexus.getTool(
+                "Parser"
+            );
+
+        const symbolTableTool =
+            CakrawalaNexus.getTool(
+                "SymbolTable"
+            );
+
+        const analyzer =
+            CakrawalaNexus.getTool(
+                "Analyzer"
+            );
+
+        const ast =
+            parser.parse(code);
+
+        NJOS.setContext(
+            "ast",
+            ast
+        );
+
+        const symbolTable =
+            symbolTableTool.build(
+                ast
+            );
+
+        NJOS.setContext(
+            "symbolTable",
+            symbolTable
+        );
+
+        const analysis =
+            analyzer.analyze(
+                ast,
+                symbolTable
+            );
+
+        NJOS.setContext(
+            "analysis",
+            analysis
+        );
+
+        CakrawalaNexus.emit(
+            "analysis.completed",
+            analysis
+        );
+
+    }
+);
+
+
+const codeInput =
+    document.getElementById(
+        "codeInput"
     );
 
-    if (code.trim() === "") {
+const checkButton =
+    document.getElementById(
+        "checkButton"
+    );
 
-      result.textContent =
-        "Silakan masukkan kode terlebih dahulu.";
+const clearButton =
+    document.getElementById(
+        "clearButton"
+    );
 
-      return;
+const result =
+    document.getElementById(
+        "result"
+    );
+
+
+checkButton.addEventListener(
+    "click",
+    function() {
+
+        const code =
+            codeInput.value;
+
+        NJOS.setContext(
+            "lastCode",
+            code
+        );
+
+        NJOS.clearErrors();
+
+        NJOS.setState(
+            "status",
+            "checking"
+        );
+
+        const checker =
+            CakrawalaNexus.getTool(
+                "CodeChecker"
+            );
+
+        const checkResult =
+            checker.check(code);
+
+        if (
+            !checkResult.success
+        ) {
+
+            NJOS.reportError(
+                checkResult.error
+            );
+
+            NJOS.setState(
+                "status",
+                "error"
+            );
+
+            result.className =
+                "result error";
+
+            result.textContent =
+                "ERROR\n\n" +
+                checkResult.error.message;
+
+            CakrawalaNexus.emit(
+                "code.checked",
+                checkResult
+            );
+
+            return;
+
+        }
+
+        CakrawalaNexus.emit(
+            "code.checked",
+            checkResult
+        );
+
+        const analysis =
+            NJOS.getContext(
+                "analysis"
+            );
+
+        const ast =
+            NJOS.getContext(
+                "ast"
+            );
+
+        const symbols =
+            NJOS.getContext(
+                "symbolTable"
+            );
+
+        let output =
+            "CAKRAWALA ANALYSIS\n";
+
+        output +=
+            "==============================\n\n";
+
+        output +=
+            "Syntax: OK\n";
+
+        output +=
+            `Declarations: ${ast.declarations.length}\n`;
+
+        output +=
+            `Functions: ${ast.functions.length}\n`;
+
+        output +=
+            `Parameters: ${ast.parameters.length}\n`;
+
+        output +=
+            `Scopes: ${ast.scopes.length}\n`;
+
+        output +=
+            `Symbols: ${symbols.symbols.length}\n`;
+
+        output +=
+            `References: ${ast.references.length}\n\n`;
+
+        output +=
+            "ISSUES\n";
+
+        output +=
+            "==============================\n\n";
+
+        if (
+            analysis.issues.length === 0
+        ) {
+
+            output +=
+                "No issues detected.";
+
+            result.className =
+                "result success";
+
+        } else {
+
+            analysis.issues.forEach(
+                (issue, index) => {
+
+                    output +=
+                        `${index + 1}. ` +
+                        `[${issue.severity}] ` +
+                        issue.message +
+                        "\n" +
+                        `   Line ${issue.line}, ` +
+                        `Column ${issue.column}\n\n`;
+
+                }
+            );
+
+            result.className =
+                "result warning";
+
+        }
+
+        result.textContent =
+            output;
+
+        NJOS.setState(
+            "status",
+            "complete"
+        );
 
     }
-
-    try {
-
-      new Function(code);
-
-      CakrawalaNexus.emit(
-        "code.checked",
-        {
-          success: true
-        }
-      );
-
-    } catch (error) {
-
-      CakrawalaNexus.emit(
-        "code.checked",
-        {
-          success: false,
-          error: error.message
-        }
-      );
-
-    }
-
-  }
 );
 
 
 clearButton.addEventListener(
-  "click",
-  function() {
+    "click",
+    function() {
 
-    codeInput.value = "";
+        codeInput.value = "";
 
-    result.textContent =
-      "Hasil akan muncul di sini.";
+        result.textContent =
+            "Ready.";
 
-    CakrawalaNexus.setContext(
-      "lastCode",
-      ""
-    );
+        result.className =
+            "result";
 
-  }
+        NJOS.clearContext();
+
+        NJOS.clearErrors();
+
+        NJOS.setState(
+            "status",
+            "idle"
+        );
+
+    }
 );
 
-  </script>
+
+CakrawalaNexus.connect();
+
+console.log(
+    "NJOS:",
+    NJOS.info()
+);
+
+console.log(
+    "Tools:",
+    NJOS.listTools()
+);
+
+</script>
 
 </body>
-
 </html>
