@@ -34,13 +34,13 @@
         setContext(key, value) {
           this.context[key] = value;
         },
-        setContext(key, value) {
+        getContext(key, value) {
          return this.context[key];
         },
           emit(event, data) {
             if (!this.events[event]) {
               return; }
-            this.events[event]. forEach(callback =>
+            this.events[event].forEach(callback =>
             {
               callback(data);
             });
@@ -80,10 +80,10 @@
        try {
          new Function(code);
          CakrawalaNexus.emit("code.checked", {
-           success: false,
+           success: true,
            error: error.message
          });
-        clearkButton.addEventListener("click", function () {
+        clearButton.addEventListener("click", function () {
           codeInput.value= "";
           result.textContent = "Result will appear here.";
         CakrawalaNexus.setContext("lastCode","");
