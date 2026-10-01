@@ -34,7 +34,7 @@
         setContext(key, value) {
           this.context[key] = value;
         },
-        getContext(key, value) {
+        getContext(key) {
          return this.context[key];
         },
           emit(event, data) {
@@ -80,7 +80,10 @@
        try {
          new Function(code);
          CakrawalaNexus.emit("code.checked", {
-           success: true,
+           success: true });
+         catch (error) 
+         CakrawalaNexus.emit("code.checked", {
+           success: false,
            error: error.message
          });
         clearButton.addEventListener("click", function () {
