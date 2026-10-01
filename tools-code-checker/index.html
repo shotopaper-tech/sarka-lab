@@ -16,11 +16,17 @@
     <textarea 
       id="codeInput"
       placeholder="Paste your code here..."></textarea>
-    <button id="checkButton">
+    <br><br>
+      <button id="checkButton">
       Check Code</button>
+      <button id="clearButton">
+        Clear
+      </button>
+      <h2>Code Checker</h2>
     <div id="result">
       Result will appear here.
     </div>
+    </section>
     <script>
       const CakrawalaNexus = {
         context: {},
@@ -32,8 +38,9 @@
          return this.context[key];
         },
           emit(event, data) {
-            if (!this.events[event]) return;
-            if (!this.events[event]). forEach(callback =>
+            if (!this.events[event]) {
+              return; }
+            this.events[event]. forEach(callback =>
             {
               callback(data);
             });
@@ -49,6 +56,8 @@
         document.getElementById("codeInput");
       const checkButton =
         document.getElementById("checkButton");
+      const clearButton =
+        document.getElementById("clearButton");
         const result =
           document.getElementById("result");
       CakrawalaNexus.on("code.checked",function(data) {
@@ -58,7 +67,7 @@
        }
         else {
         result.innerHTML = ` <strong>☓ Syntax Error</strong>
-        <p>${error.message}</p>`;}     
+        <p>${data.error}</p>`;}     
       });
       checkButton.addEventListener("click", function () {
         const code = codeInput.value;
@@ -71,18 +80,14 @@
        try {
          new Function(code);
          CakrawalaNexus.emit("code.checked", {
-           successs; false,
+           success: false,
            error: error.message
          });
-        checkButton.addEventListener("click", function () {
+        clearkButton.addEventListener("click", function () {
           codeInput.value= "";
           result.textContent = "Result will appear here.";
         CakrawalaNexus.setContext("lastCode","");
         });
-    </script>
-    <!--TES JAVASCRIPT-->
-    <script>
-      alert("Sarka JS hidup!");
-    </script>
+         </script>
   </body>
 </html>
