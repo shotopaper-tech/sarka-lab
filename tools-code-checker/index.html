@@ -99,8 +99,9 @@
         let column = null;
 
         const locationMatch =
-          error.match(/line\s+(\d+)|\((\d+):(\d+)\)|:(\d+):/i);
-      if (locationMatch) {
+          error.match(/line\s+(\d+)|\((\d+):(\d+)\)|:(\d+):(\d+):/i);
+     
+        if (locationMatch) {
         if (locationMatch[1]) {
         line = Number(locationMatch[1]);
       }
@@ -114,8 +115,6 @@
         line = Number(locationMatch[4]);
         column = Number(locationMatch[5]);
       }
-
-    }
         if (error.includes("Unexpected token")) {
           explanation = 
             "Anda simbol atau bagian kode yang berada di posisi yang tidak sesuai.";
@@ -123,20 +122,21 @@
           (error.includes("Unexpected end")) {
             explanation = 
               "Kode berhenti sebelum struktur program selesai.";
-          
             } else if
-              (error.includes("Unexpected identifier")) {
+              (error.includes("Unexpected 
+                              identifier")) {
                 explanation = 
               "Ada nama variabel atau identifier yang berada di posisi yang tidak sesuai.";
         } else if
             (error.includes("missing")) {
               explanation = 
-              "Ada bagian sintaks yang kemungkinan belum lengkap.";}
+              "Ada bagian sintaks yang kemungkinan belum lengkap.";
+            }
         return {
           hasError: true,
           type: "Syntax Error",
           message: error,
-          explanation: explanation
+          explanation: explanation,
           line: line,
           column: column
         };
