@@ -85,13 +85,34 @@
           return {
             hasError: false,
             type: null,
-            message: null
+            message: null,
+            explanation: null
           };
         }
+        const error = data.error;
+
+        let explanation =
+          "Periksa kembali struktur kode Anda.";
+        if (error.includes("Unexpected token")) {
+          explanation = 
+            "Anda simbol atau bagian kode yang berada di posisi yang tidak sesuai.";
+        } else if
+          (error.includes("Unexpected end")) {
+            explanation = 
+              "Kode berhenti sebelum struktur program selesai.";
+          } else if
+            (error.includes("missing")) {
+              explanation = 
+              "Ada bagian sintaks yang kemungkinan belum lengkap.";
+            } else if
+              (error.includes("Unexpected identifier")) {
+                explanation = 
+              "Ada nama variabel atau identifier yang berada di posisi yang tidak sesuai.";}
         return {
           hasError: true,
           type: "Syntax Error",
-          message: data.erroe
+          message: error,
+          explanation: explanation
         };
       }
     };
