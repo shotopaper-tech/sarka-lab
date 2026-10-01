@@ -247,7 +247,10 @@ CakrawalaNexus.on(
 
     const analysis =
       ErrorAnalyzer.analyzer(data);
-
+    const warnings =
+      BugDentector.detect(
+        CakrawalaNexus.getContext("lastCode")
+        );
     if (!analysis.hasError) {
 
       result.innerHTML = `
