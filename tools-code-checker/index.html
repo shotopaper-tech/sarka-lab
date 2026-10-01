@@ -81,11 +81,14 @@
         }
        try {
          new Function(code);
-         CakrawalaNexus.emit("code.checked", {
+         CakrawalaNexus.emit("code.checked",function () {
+           alert("CHECK BUTTON BERFUNGSI");
            success: false,
            error: error.message
          });
         clearkButton.addEventListener("click", function () {
+          alert("CLEAR BUTTON BERFUNGSI");
+        });
           codeInput.value= "";
           result.textContent = "Result will appear here.";
         CakrawalaNexus.setContext("lastCode","");
