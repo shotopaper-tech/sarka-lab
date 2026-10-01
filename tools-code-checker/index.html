@@ -79,7 +79,23 @@
       }
 
     };
-
+    const ErrorAnalyzer = {
+      analyzer(data) {
+        if (data.success) {
+          return {
+            hasError: false,
+            type: null,
+            message: null
+          };
+        }
+        return {
+          hasError: true,
+          type: "Syntax Error",
+          message: data.erroe
+        };
+      }
+    };
+    
     const codeInput =
       document.getElementById("codeInput");
 
@@ -95,9 +111,9 @@
     CakrawalaNexus.on(
       "code.checked",
       function(data) {
-
-        if (data.success) {
-
+        const analysis =
+          ErrorAnalyzer.analyzer(data);
+        if (!analysis.hasError) {
           result.innerHTML = `
             <strong>✓ No syntax error detected</strong>
             <p>
@@ -111,7 +127,7 @@
           result.innerHTML = `
             <strong>✕ Syntax Error</strong>
             <p>
-              ${data.error}
+              ${analysis.message}
             </p>
           `;
 
