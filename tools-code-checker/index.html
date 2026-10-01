@@ -9,7 +9,7 @@
 </head>
 
 <body>
-<h1 style="color:red;">VERSI BARU</h1>
+
   <h1>Cakrawala Workstation</h1>
 
   <section id="code-editor">
@@ -165,12 +165,14 @@ const ErrorAnalyzer = {
   }
 
 };
- 
-  const BugDetector = {
+
+
+const BugDetector = {
 
   detect(code) {
 
-    const warnings = [];
+    const undeclared = [];
+    const unused = [];
 
     const declaredVariables = [];
 
@@ -282,49 +284,45 @@ const ErrorAnalyzer = {
       }
 
       if (
-        declaredVariables.includes(name)
+        !declaredVariables.includes(name) &&
+        !undeclared.includes(name)
       ) {
 
-        continue;
-
-      }
-
-      if (
-        !warnings.includes(name)
-      ) {
-
-        warnings.push(name);
+        undeclared.push(name);
 
       }
 
     }
 
-    return warnings;
+    declaredVariables.forEach(name => {
 
-  }
-
-};
-
-        continue;
-
-      }
+      const occurrences =
+        cleanedCode.match(
+          new RegExp("\\b" + name + "\\b", "g")
+        ) || [];
 
       if (
-        !warnings.includes(name)
+        occurrences.length <= 1
       ) {
 
-        warnings.push(name);
+        unused.push(name);
 
       }
 
-    }
+    });
 
-    return warnings;
+    return {
+
+      undeclared: undeclared,
+      unused: unused
+
+    };
 
   }
 
 };
-    
+
+
 const codeInput =
   document.getElementById("codeInput");
 
@@ -344,34 +342,71 @@ CakrawalaNexus.on(
 
     const analysis =
       ErrorAnalyzer.analyzer(data);
+
     const bugReport =
-      
       BugDetector.detect(
         CakrawalaNexus.getContext("lastCode")
-        );
-    const warnings = bugReport.undeclared;
-    const unusedVariables = bugReport.unused;
+      );
+
+    const warnings =
+      bugReport.undeclared;
+
+    const unusedVariables =
+      bugReport.unused;
+
     if (!analysis.hasError) {
+
       let warningHTML = "";
+      let unusedHTML = "";
+
       if (warnings.length > 0) {
-        warningHTML =`
-        <p>
-        potensi masalah:
-        ${warnings.join(", ")}
-        </p> `;
-      } else {
+
         warningHTML = `
-        <P>
-        ✓ Tidak ditemukan variable mencurigakan.
-        </p> `;
+          <p>
+            <strong>Potensi variable tidak dikenal:</strong>
+            ${warnings.join(", ")}
+          </p>
+        `;
+
+      } else {
+
+        warningHTML = `
+          <p>
+            ✓ Tidak ditemukan variable tidak dikenal.
+          </p>
+        `;
+
+      }
+
+      if (unusedVariables.length > 0) {
+
+        unusedHTML = `
+          <p>
+            <strong>Variable tidak digunakan:</strong>
+            ${unusedVariables.join(", ")}
+          </p>
+        `;
+
+      } else {
+
+        unusedHTML = `
+          <p>
+            ✓ Tidak ditemukan variable yang tidak digunakan.
+          </p>
+        `;
+
       }
 
       result.innerHTML = `
         <strong>✓ Tidak ada kesalahan sintaksis</strong>
+
         <p>
           Kode JavaScript Anda terlihat benar secara sintaksis.
         </p>
+
         ${warningHTML}
+
+        ${unusedHTML}
       `;
 
     } else {
@@ -396,8 +431,11 @@ CakrawalaNexus.on(
 
       result.innerHTML = `
         <strong>✕ Kesalahan Sintaksis</strong>
+
         <p>${analysis.message}</p>
+
         <p>${analysis.explanation}</p>
+
         ${location}
       `;
 
@@ -454,6 +492,7 @@ checkButton.addEventListener(
   }
 );
 
+
 clearButton.addEventListener(
   "click",
   function() {
@@ -472,6 +511,7 @@ clearButton.addEventListener(
 );
 
   </script>
+
 </body>
 
 </html>
