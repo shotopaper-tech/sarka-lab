@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Cakrawala Workstation</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/acorn@8/dist/acorn.min.js"></script>
 
     <style>
         * {
@@ -113,11 +115,10 @@
 
     <textarea
         id="codeInput"
-        placeholder="Write JavaScript code here..."
+        placeholder="Tulis JavaScript di sini..."
     ></textarea>
 
     <div class="buttons">
-
         <button id="checkButton">
             Check Code
         </button>
@@ -125,13 +126,9 @@
         <button id="clearButton">
             Clear
         </button>
-
     </div>
 
-    <div
-        id="result"
-        class="result"
-    >
+    <div id="result" class="result">
         Ready.
     </div>
 
@@ -141,7 +138,7 @@
 
 const NJOS = {
 
-    version: "0.2.0",
+    version: "0.5.0",
 
     state: {},
 
@@ -157,91 +154,61 @@ const NJOS = {
 
         this.state[key] = value;
 
-        this.emit(
-            "state.changed",
-            {
-                key,
-                value
-            }
-        );
+        this.emit("state.changed", {
+            key,
+            value
+        });
 
     },
 
     getState(key) {
-
         return this.state[key];
-
     },
 
     setContext(key, value) {
-
         this.context[key] = value;
-
     },
 
     getContext(key) {
-
         return this.context[key];
-
     },
 
     clearContext() {
-
         this.context = {};
-
     },
 
     on(event, callback) {
 
         if (!this.events[event]) {
-
             this.events[event] = [];
-
         }
 
-        this.events[event].push(
-            callback
-        );
-
+        this.events[event].push(callback);
     },
 
     emit(event, data) {
 
-        const listeners =
-            this.events[event];
+        const listeners = this.events[event];
 
         if (!listeners) {
-
             return;
-
         }
 
-        listeners.forEach(
-            callback => {
+        listeners.forEach(callback => {
 
-                try {
+            try {
+                callback(data);
+            } catch (error) {
 
-                    callback(data);
-
-                } catch (error) {
-
-                    this.reportError({
-
-                        message:
-                            error.message,
-
-                        source:
-                            "NJOS Event",
-
-                        severity:
-                            "internal"
-
-                    });
-
-                }
+                this.reportError({
+                    message: error.message,
+                    source: "NJOS Event",
+                    severity: "internal"
+                });
 
             }
-        );
+
+        });
 
     },
 
@@ -282,55 +249,26 @@ const NJOS = {
         );
 
         return entry;
-
-    },
-
-    getErrors() {
-
-        return [
-            ...this.errors
-        ];
-
     },
 
     clearErrors() {
-
         this.errors = [];
+    },
 
+    getErrors() {
+        return [...this.errors];
     },
 
     registerTool(name, tool) {
-
         this.tools[name] = tool;
-
-        this.emit(
-            "tool.registered",
-            {
-                name,
-                tool
-            }
-        );
-
     },
 
     getTool(name) {
-
         return this.tools[name];
-
-    },
-
-    hasTool(name) {
-
-        return !!this.tools[name];
-
     },
 
     listTools() {
-
-        return Object.keys(
-            this.tools
-        );
-
+        return Object.keys(this.tools);
     },
 
     info() {
@@ -357,7 +295,7 @@ const NJOS = {
 
 const CakrawalaNexus = {
 
-    version: "0.2.0",
+    version: "0.5.0",
 
     njos: NJOS,
 
@@ -373,153 +311,52 @@ const CakrawalaNexus = {
 
     },
 
-    setContext(key, value) {
-
-        NJOS.setContext(
-            key,
-            value
-        );
-
-    },
-
-    getContext(key) {
-
-        return NJOS.getContext(
-            key
-        );
-
-    },
-
     on(event, callback) {
-
-        NJOS.on(
-            event,
-            callback
-        );
-
+        NJOS.on(event, callback);
     },
 
     emit(event, data) {
+        NJOS.emit(event, data);
+    },
 
-        NJOS.emit(
-            event,
-            data
-        );
+    setContext(key, value) {
+        NJOS.setContext(key, value);
+    },
 
+    getContext(key) {
+        return NJOS.getContext(key);
     },
 
     registerTool(name, tool) {
-
-        NJOS.registerTool(
-            name,
-            tool
-        );
-
+        NJOS.registerTool(name, tool);
     },
 
     getTool(name) {
-
-        return NJOS.getTool(
-            name
-        );
-
+        return NJOS.getTool(name);
     }
 
 };
 
 
-const CodeChecker = {
+const CodeParser = {
 
-    name: "CodeChecker",
+    name:
+        "JavaScriptParser",
 
-    version: "0.2.0",
+    version:
+        "0.5.0",
 
-    check(code) {
+    parse(code) {
 
-        if (
-            typeof code !== "string"
-        ) {
-
-            return {
-
-                success: false,
-
-                error: {
-
-                    message:
-                        "Code input must be a string.",
-
-                    source:
-                        "CodeChecker",
-
-                    severity:
-                        "error"
-
-                }
-
-            };
-
-        }
-
-        if (
-            code.trim() === ""
-        ) {
-
-            return {
-
-                success: false,
-
-                error: {
-
-                    message:
-                        "Code is empty.",
-
-                    source:
-                        "CodeChecker",
-
-                    severity:
-                        "warning"
-
-                }
-
-            };
-
-        }
-
-        try {
-
-            new Function(code);
-
-        } catch (error) {
-
-            return {
-
-                success: false,
-
-                error: {
-
-                    message:
-                        error.message,
-
-                    source:
-                        "CodeChecker",
-
-                    severity:
-                        "syntax"
-
-                }
-
-            };
-
-        }
-
-        return {
-
-            success: true,
-
-            error: null
-
-        };
+        return acorn.parse(
+            code,
+            {
+                ecmaVersion: "latest",
+                sourceType: "script",
+                locations: true,
+                allowHashBang: true
+            }
+        );
 
     }
 
@@ -527,642 +364,39 @@ const CodeChecker = {
 
 
 CakrawalaNexus.registerTool(
-    "CodeChecker",
-    CodeChecker
+    "JavaScriptParser",
+    CodeParser
 );
 
 
-const NJOSParser = {
+const Normalizer = {
 
-    name: "Parser",
+    name:
+        "NormalizedAST",
 
-    version: "0.2.0",
+    version:
+        "0.5.0",
 
-    parse(code) {
+    create(ast) {
 
-        const ast = {
+        return {
+
+            language:
+                "javascript",
 
             type:
                 "Program",
 
-            source:
-                code,
+            sourceType:
+                ast.sourceType,
 
-            declarations: [],
+            body:
+                ast.body,
 
-            functions: [],
-
-            parameters: [],
-
-            scopes: [],
-
-            references: []
-
-        };
-
-        if (
-            !code ||
-            code.trim() === ""
-        ) {
-
-            this.createGlobalScope(
-                code,
+            raw:
                 ast
-            );
-
-            return ast;
-
-        }
-
-        const cleaned =
-            this.clean(code);
-
-        this.createGlobalScope(
-            code,
-            ast
-        );
-
-        this.parseDeclarations(
-            code,
-            cleaned,
-            ast
-        );
-
-        this.parseFunctions(
-            code,
-            cleaned,
-            ast
-        );
-
-        this.parseParameters(
-            code,
-            cleaned,
-            ast
-        );
-
-        this.parseScopes(
-            code,
-            cleaned,
-            ast
-        );
-
-        this.parseReferences(
-            code,
-            cleaned,
-            ast
-        );
-
-        return ast;
-
-    },
-
-    clean(code) {
-
-        return code
-
-            .replace(
-                /(["'`])(?:\\.|(?!\1)[\s\S])*\1/g,
-                match =>
-                    match.replace(
-                        /[^\n]/g,
-                        " "
-                    )
-            )
-
-            .replace(
-                /\/\/.*$/gm,
-                match =>
-                    match.replace(
-                        /[^\n]/g,
-                        " "
-                    )
-            )
-
-            .replace(
-                /\/\*[\s\S]*?\*\//g,
-                match =>
-                    match.replace(
-                        /[^\n]/g,
-                        " "
-                    )
-            );
-
-    },
-
-    location(code, position) {
-
-        const before =
-            code.substring(
-                0,
-                position
-            );
-
-        const line =
-            before.split("\n").length;
-
-        const lastNewLine =
-            before.lastIndexOf("\n");
-
-        const column =
-            position -
-            lastNewLine;
-
-        return {
-
-            line,
-            column,
-            position
 
         };
-
-    },
-
-    createGlobalScope(
-        code,
-        ast
-    ) {
-
-        ast.scopes.push({
-
-            id: 0,
-
-            type:
-                "global",
-
-            parent:
-                null,
-
-            start: 0,
-
-            end:
-                code.length,
-
-            children: []
-
-        });
-
-    },
-
-    parseDeclarations(
-        code,
-        cleaned,
-        ast
-    ) {
-
-        const regex =
-            /\b(const|let|var)\s+([a-zA-Z_$][\w$]*)/g;
-
-        let match;
-
-        while (
-            (match =
-                regex.exec(cleaned))
-            !== null
-        ) {
-
-            const kind =
-                match[1];
-
-            const name =
-                match[2];
-
-            const position =
-                match.index +
-                match[0].lastIndexOf(
-                    name
-                );
-
-            const location =
-                this.location(
-                    code,
-                    position
-                );
-
-            ast.declarations.push({
-
-                type:
-                    "VariableDeclaration",
-
-                kind,
-
-                name,
-
-                line:
-                    location.line,
-
-                column:
-                    location.column,
-
-                position:
-                    location.position
-
-            });
-
-        }
-
-    },
-
-    parseFunctions(
-        code,
-        cleaned,
-        ast
-    ) {
-
-        const regex =
-            /\bfunction\s+([a-zA-Z_$][\w$]*)\s*\(([^)]*)\)/g;
-
-        let match;
-
-        while (
-            (match =
-                regex.exec(cleaned))
-            !== null
-        ) {
-
-            const name =
-                match[1];
-
-            const position =
-                match.index +
-                match[0].indexOf(
-                    name
-                );
-
-            const location =
-                this.location(
-                    code,
-                    position
-                );
-
-            ast.functions.push({
-
-                type:
-                    "FunctionDeclaration",
-
-                name,
-
-                line:
-                    location.line,
-
-                column:
-                    location.column,
-
-                position:
-                    location.position
-
-            });
-
-        }
-
-    },
-
-    parseParameters(
-        code,
-        cleaned,
-        ast
-    ) {
-
-        const regex =
-            /\bfunction\s+([a-zA-Z_$][\w$]*)\s*\(([^)]*)\)/g;
-
-        let match;
-
-        while (
-            (match =
-                regex.exec(cleaned))
-            !== null
-        ) {
-
-            const parameters =
-                match[2];
-
-            if (
-                !parameters.trim()
-            ) {
-
-                continue;
-
-            }
-
-            const start =
-                match.index +
-                match[0].indexOf(
-                    parameters
-                );
-
-            const parameterRegex =
-                /[a-zA-Z_$][\w$]*/g;
-
-            let parameter;
-
-            while (
-                (parameter =
-                    parameterRegex.exec(
-                        parameters
-                    ))
-                !== null
-            ) {
-
-                const name =
-                    parameter[0];
-
-                const position =
-                    start +
-                    parameter.index;
-
-                const location =
-                    this.location(
-                        code,
-                        position
-                    );
-
-                ast.parameters.push({
-
-                    type:
-                        "Parameter",
-
-                    name,
-
-                    line:
-                        location.line,
-
-                    column:
-                        location.column,
-
-                    position
-
-                });
-
-            }
-
-        }
-
-    },
-
-    parseScopes(
-        code,
-        cleaned,
-        ast
-    ) {
-
-        let nextId = 1;
-
-        const stack = [
-            ast.scopes[0]
-        ];
-
-        for (
-            let i = 0;
-            i < cleaned.length;
-            i++
-        ) {
-
-            if (
-                cleaned[i] === "{"
-            ) {
-
-                const parent =
-                    stack[
-                        stack.length - 1
-                    ];
-
-                const scope = {
-
-                    id:
-                        nextId++,
-
-                    type:
-                        "block",
-
-                    parent:
-                        parent.id,
-
-                    start:
-                        i,
-
-                    end:
-                        code.length,
-
-                    children: []
-
-                };
-
-                ast.scopes.push(
-                    scope
-                );
-
-                parent.children.push(
-                    scope.id
-                );
-
-                stack.push(
-                    scope
-                );
-
-            }
-
-            if (
-                cleaned[i] === "}"
-            ) {
-
-                if (
-                    stack.length > 1
-                ) {
-
-                    const scope =
-                        stack.pop();
-
-                    scope.end =
-                        i;
-
-                }
-
-            }
-
-        }
-
-    },
-
-    parseReferences(
-        code,
-        cleaned,
-        ast
-    ) {
-
-        const ignored =
-            new Set([
-
-                "const",
-                "let",
-                "var",
-
-                "function",
-
-                "return",
-
-                "if",
-                "else",
-
-                "for",
-                "while",
-                "do",
-
-                "switch",
-                "case",
-
-                "break",
-                "continue",
-
-                "new",
-
-                "class",
-
-                "try",
-                "catch",
-                "finally",
-
-                "throw",
-
-                "true",
-                "false",
-
-                "null",
-                "undefined",
-
-                "this",
-
-                "typeof",
-                "instanceof",
-
-                "in",
-                "of",
-
-                "async",
-                "await",
-
-                "console",
-                "log"
-
-            ]);
-
-        const regex =
-            /\b[a-zA-Z_$][\w$]*\b/g;
-
-        let match;
-
-        while (
-            (match =
-                regex.exec(cleaned))
-            !== null
-        ) {
-
-            const name =
-                match[0];
-
-            if (
-                ignored.has(name)
-            ) {
-
-                continue;
-
-            }
-
-            const position =
-                match.index;
-
-            const before =
-                cleaned[position - 1];
-
-            const after =
-                cleaned[
-                    position + name.length
-                ];
-
-            if (
-                before === "."
-            ) {
-
-                continue;
-
-            }
-
-            if (
-                after === ":"
-            ) {
-
-                continue;
-
-            }
-
-            const declaration =
-                ast.declarations.some(
-                    item =>
-                        item.position ===
-                        position
-                );
-
-            if (
-                declaration
-            ) {
-
-                continue;
-
-            }
-
-            const functionName =
-                ast.functions.some(
-                    item =>
-                        item.position ===
-                        position
-                );
-
-            if (
-                functionName
-            ) {
-
-                continue;
-
-            }
-
-            const parameter =
-                ast.parameters.some(
-                    item =>
-                        item.position ===
-                        position
-                );
-
-            if (
-                parameter
-            ) {
-
-                continue;
-
-            }
-
-            const location =
-                this.location(
-                    code,
-                    position
-                );
-
-            ast.references.push({
-
-                type:
-                    "IdentifierReference",
-
-                name,
-
-                line:
-                    location.line,
-
-                column:
-                    location.column,
-
-                position
-
-            });
-
-        }
 
     }
 
@@ -1170,113 +404,1191 @@ const NJOSParser = {
 
 
 CakrawalaNexus.registerTool(
-    "Parser",
-    NJOSParser
+    "Normalizer",
+    Normalizer
 );
 
 
-const SymbolTable = {
+const ScopeResolver = {
 
     name:
-        "SymbolTable",
+        "ScopeResolver",
 
     version:
-        "0.2.0",
+        "0.5.0",
 
-    build(ast) {
+    nextId:
+        0,
 
-        const symbols = [];
+    reset() {
+        this.nextId = 0;
+    },
 
-        ast.declarations.forEach(
-            declaration => {
+    createScope(
+        type,
+        parent,
+        node
+    ) {
 
-                symbols.push({
+        const scope = {
 
-                    name:
-                        declaration.name,
+            id:
+                this.nextId++,
 
-                    kind:
-                        declaration.kind,
+            type,
 
-                    type:
-                        "variable",
+            parent:
+                parent
+                    ? parent.id
+                    : null,
 
-                    line:
-                        declaration.line,
+            start:
+                node &&
+                node.start !== undefined
+                    ? node.start
+                    : 0,
 
-                    column:
-                        declaration.column,
+            end:
+                node &&
+                node.end !== undefined
+                    ? node.end
+                    : Infinity,
 
-                    position:
-                        declaration.position
+            symbols: [],
 
-                });
+            children: []
 
-            }
+        };
+
+        if (parent) {
+            parent.children.push(
+                scope.id
+            );
+        }
+
+        return scope;
+    },
+
+    resolve(ast) {
+
+        this.reset();
+
+        const scopes = [];
+
+        const globalScope =
+            this.createScope(
+                "global",
+                null,
+                ast
+            );
+
+        scopes.push(
+            globalScope
         );
 
-        ast.functions.forEach(
-            fn => {
+        const scopeStack = [
+            globalScope
+        ];
 
-                symbols.push({
+        const declarations = [];
+        const references = [];
 
-                    name:
-                        fn.name,
+        const currentScope =
+            () =>
+                scopeStack[
+                    scopeStack.length - 1
+                ];
 
-                    kind:
-                        "function",
+        const addSymbol =
+            (
+                name,
+                kind,
+                node,
+                scope,
+                options = {}
+            ) => {
+
+                if (!name) {
+                    return null;
+                }
+
+                const symbol = {
+
+                    id:
+                        "SYM-" +
+                        declarations.length,
+
+                    name,
+
+                    kind,
 
                     type:
-                        "function",
-
-                    line:
-                        fn.line,
-
-                    column:
-                        fn.column,
+                        options.type ||
+                        kind,
 
                     position:
-                        fn.position
+                        node.start,
+
+                    end:
+                        node.end,
+
+                    line:
+                        node.loc.start.line,
+
+                    column:
+                        node.loc.start.column + 1,
+
+                    scope:
+                        scope.id,
+
+                    references: [],
+
+                    declaration:
+                        node
+
+                };
+
+                scope.symbols.push(
+                    symbol
+                );
+
+                declarations.push(
+                    symbol
+                );
+
+                return symbol;
+            };
+
+        const addReference =
+            (
+                name,
+                node,
+                scope,
+                property = false
+            ) => {
+
+                if (!name) {
+                    return;
+                }
+
+                references.push({
+
+                    id:
+                        "REF-" +
+                        references.length,
+
+                    name,
+
+                    position:
+                        node.start,
+
+                    end:
+                        node.end,
+
+                    line:
+                        node.loc.start.line,
+
+                    column:
+                        node.loc.start.column + 1,
+
+                    scope:
+                        scope.id,
+
+                    property
 
                 });
 
-            }
-        );
+            };
 
-        ast.parameters.forEach(
-            parameter => {
+        const declarePattern =
+            (
+                pattern,
+                kind,
+                scope
+            ) => {
 
-                symbols.push({
+                if (!pattern) {
+                    return;
+                }
 
-                    name:
-                        parameter.name,
+                if (
+                    pattern.type ===
+                    "Identifier"
+                ) {
 
-                    kind:
-                        "parameter",
+                    addSymbol(
+                        pattern.name,
+                        kind,
+                        pattern,
+                        scope
+                    );
 
-                    type:
-                        "parameter",
+                    return;
+                }
 
-                    line:
-                        parameter.line,
+                if (
+                    pattern.type ===
+                    "RestElement"
+                ) {
 
-                    column:
-                        parameter.column,
+                    declarePattern(
+                        pattern.argument,
+                        kind,
+                        scope
+                    );
 
-                    position:
-                        parameter.position
+                    return;
+                }
 
-                });
+                if (
+                    pattern.type ===
+                    "AssignmentPattern"
+                ) {
 
-            }
+                    declarePattern(
+                        pattern.left,
+                        kind,
+                        scope
+                    );
+
+                    return;
+                }
+
+                if (
+                    pattern.type ===
+                    "ArrayPattern"
+                ) {
+
+                    pattern.elements.forEach(
+                        element => {
+
+                            declarePattern(
+                                element,
+                                kind,
+                                scope
+                            );
+
+                        }
+                    );
+
+                    return;
+                }
+
+                if (
+                    pattern.type ===
+                    "ObjectPattern"
+                ) {
+
+                    pattern.properties.forEach(
+                        property => {
+
+                            if (
+                                property.type ===
+                                "RestElement"
+                            ) {
+
+                                declarePattern(
+                                    property.argument,
+                                    kind,
+                                    scope
+                                );
+
+                                return;
+                            }
+
+                            declarePattern(
+                                property.value,
+                                kind,
+                                scope
+                            );
+
+                        }
+                    );
+
+                }
+
+            };
+
+        const visit =
+            (
+                node,
+                scope
+            ) => {
+
+                if (!node) {
+                    return;
+                }
+
+                switch (node.type) {
+
+                    case "Program":
+
+                        node.body.forEach(
+                            child =>
+                                visit(
+                                    child,
+                                    scope
+                                )
+                        );
+
+                        break;
+
+
+                    case "VariableDeclaration":
+
+                        node.declarations.forEach(
+                            declaration => {
+
+                                const targetScope =
+                                    declaration.kind ===
+                                    "var"
+                                        ? findFunctionScope(
+                                            scope
+                                        )
+                                        : scope;
+
+                                declarePattern(
+                                    declaration.id,
+                                    declaration.kind,
+                                    targetScope
+                                );
+
+                                if (
+                                    declaration.init
+                                ) {
+
+                                    visit(
+                                        declaration.init,
+                                        scope
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                        break;
+
+
+                    case "FunctionDeclaration":
+
+                        if (node.id) {
+
+                            addSymbol(
+                                node.id.name,
+                                "function",
+                                node.id,
+                                scope,
+                                {
+                                    type:
+                                        "function"
+                                }
+                            );
+
+                        }
+
+                        visitFunction(
+                            node,
+                            scope
+                        );
+
+                        break;
+
+
+                    case "FunctionExpression":
+
+                    case "ArrowFunctionExpression":
+
+                        visitFunction(
+                            node,
+                            scope
+                        );
+
+                        break;
+
+
+                    case "BlockStatement": {
+
+                        const blockScope =
+                            this.createScope(
+                                "block",
+                                scope,
+                                node
+                            );
+
+                        scopes.push(
+                            blockScope
+                        );
+
+                        scopeStack.push(
+                            blockScope
+                        );
+
+                        node.body.forEach(
+                            child =>
+                                visit(
+                                    child,
+                                    blockScope
+                                )
+                        );
+
+                        scopeStack.pop();
+
+                        break;
+                    }
+
+
+                    case "Identifier":
+
+                        addReference(
+                            node.name,
+                            node,
+                            scope,
+                            false
+                        );
+
+                        break;
+
+
+                    case "MemberExpression":
+
+                        visit(
+                            node.object,
+                            scope
+                        );
+
+                        if (
+                            node.computed
+                        ) {
+
+                            visit(
+                                node.property,
+                                scope
+                            );
+
+                        }
+
+                        break;
+
+
+                    case "OptionalMemberExpression":
+
+                        visit(
+                            node.object,
+                            scope
+                        );
+
+                        if (
+                            node.computed
+                        ) {
+
+                            visit(
+                                node.property,
+                                scope
+                            );
+
+                        }
+
+                        break;
+
+
+                    case "Property":
+
+                        if (
+                            node.computed
+                        ) {
+
+                            visit(
+                                node.key,
+                                scope
+                            );
+
+                        }
+
+                        visit(
+                            node.value,
+                            scope
+                        );
+
+                        break;
+
+
+                    case "ObjectPattern":
+
+                        node.properties.forEach(
+                            property =>
+                                declarePattern(
+                                    property.value,
+                                    "pattern",
+                                    scope
+                                )
+                        );
+
+                        break;
+
+
+                    case "ClassDeclaration":
+
+                        if (node.id) {
+
+                            addSymbol(
+                                node.id.name,
+                                "class",
+                                node.id,
+                                scope,
+                                {
+                                    type:
+                                        "class"
+                                }
+                            );
+
+                        }
+
+                        visit(
+                            node.superClass,
+                            scope
+                        );
+
+                        visit(
+                            node.body,
+                            scope
+                        );
+
+                        break;
+
+
+                    case "ClassBody":
+
+                        node.body.forEach(
+                            element =>
+                                visit(
+                                    element,
+                                    scope
+                                )
+                        );
+
+                        break;
+
+
+                    case "MethodDefinition":
+
+                        if (
+                            node.computed
+                        ) {
+
+                            visit(
+                                node.key,
+                                scope
+                            );
+
+                        }
+
+                        visit(
+                            node.value,
+                            scope
+                        );
+
+                        break;
+
+
+                    case "ExpressionStatement":
+
+                        visit(
+                            node.expression,
+                            scope
+                        );
+
+                        break;
+
+
+                    case "CallExpression":
+
+                        visit(
+                            node.callee,
+                            scope
+                        );
+
+                        node.arguments.forEach(
+                            argument =>
+                                visit(
+                                    argument,
+                                    scope
+                                )
+                        );
+
+                        break;
+
+
+                    case "NewExpression":
+
+                        visit(
+                            node.callee,
+                            scope
+                        );
+
+                        node.arguments.forEach(
+                            argument =>
+                                visit(
+                                    argument,
+                                    scope
+                                )
+                        );
+
+                        break;
+
+
+                    case "BinaryExpression":
+
+                    case "LogicalExpression":
+
+                    case "AssignmentExpression":
+
+                    case "SequenceExpression":
+
+                        if (
+                            node.left
+                        ) {
+
+                            visit(
+                                node.left,
+                                scope
+                            );
+
+                        }
+
+                        if (
+                            node.right
+                        ) {
+
+                            visit(
+                                node.right,
+                                scope
+                            );
+
+                        }
+
+                        if (
+                            node.expressions
+                        ) {
+
+                            node.expressions.forEach(
+                                expression =>
+                                    visit(
+                                        expression,
+                                        scope
+                                    )
+                            );
+
+                        }
+
+                        break;
+
+
+                    case "UnaryExpression":
+
+                    case "UpdateExpression":
+
+                        visit(
+                            node.argument,
+                            scope
+                        );
+
+                        break;
+
+
+                    case "ConditionalExpression":
+
+                        visit(
+                            node.test,
+                            scope
+                        );
+
+                        visit(
+                            node.consequent,
+                            scope
+                        );
+
+                        visit(
+                            node.alternate,
+                            scope
+                        );
+
+                        break;
+
+
+                    case "IfStatement":
+
+                        visit(
+                            node.test,
+                            scope
+                        );
+
+                        visit(
+                            node.consequent,
+                            scope
+                        );
+
+                        visit(
+                            node.alternate,
+                            scope
+                        );
+
+                        break;
+
+
+                    case "ForStatement":
+
+                        visit(
+                            node.init,
+                            scope
+                        );
+
+                        visit(
+                            node.test,
+                            scope
+                        );
+
+                        visit(
+                            node.update,
+                            scope
+                        );
+
+                        visit(
+                            node.body,
+                            scope
+                        );
+
+                        break;
+
+
+                    case "ForInStatement":
+
+                    case "ForOfStatement":
+
+                        visit(
+                            node.left,
+                            scope
+                        );
+
+                        visit(
+                            node.right,
+                            scope
+                        );
+
+                        visit(
+                            node.body,
+                            scope
+                        );
+
+                        break;
+
+
+                    case "WhileStatement":
+
+                    case "DoWhileStatement":
+
+                        visit(
+                            node.test,
+                            scope
+                        );
+
+                        visit(
+                            node.body,
+                            scope
+                        );
+
+                        break;
+
+
+                    case "ReturnStatement":
+
+                    case "ThrowStatement":
+
+                        visit(
+                            node.argument,
+                            scope
+                        );
+
+                        break;
+
+
+                    case "TryStatement":
+
+                        visit(
+                            node.block,
+                            scope
+                        );
+
+                        visit(
+                            node.handler,
+                            scope
+                        );
+
+                        visit(
+                            node.finalizer,
+                            scope
+                        );
+
+                        break;
+
+
+                    case "CatchClause": {
+
+                        const catchScope =
+                            this.createScope(
+                                "catch",
+                                scope,
+                                node
+                            );
+
+                        scopes.push(
+                            catchScope
+                        );
+
+                        scopeStack.push(
+                            catchScope
+                        );
+
+                        declarePattern(
+                            node.param,
+                            "catch",
+                            catchScope
+                        );
+
+                        visit(
+                            node.body,
+                            catchScope
+                        );
+
+                        scopeStack.pop();
+
+                        break;
+                    }
+
+
+                    case "SwitchStatement":
+
+                        visit(
+                            node.discriminant,
+                            scope
+                        );
+
+                        node.cases.forEach(
+                            switchCase => {
+
+                                visit(
+                                    switchCase.test,
+                                    scope
+                                );
+
+                                switchCase.consequent.forEach(
+                                    statement =>
+                                        visit(
+                                            statement,
+                                            scope
+                                        )
+                                );
+
+                            }
+                        );
+
+                        break;
+
+
+                    case "ArrayExpression":
+
+                        node.elements.forEach(
+                            element =>
+                                visit(
+                                    element,
+                                    scope
+                                )
+                        );
+
+                        break;
+
+
+                    case "ObjectExpression":
+
+                        node.properties.forEach(
+                            property =>
+                                visit(
+                                    property,
+                                    scope
+                                )
+                        );
+
+                        break;
+
+
+                    case "TemplateLiteral":
+
+                        node.expressions.forEach(
+                            expression =>
+                                visit(
+                                    expression,
+                                    scope
+                                )
+                        );
+
+                        break;
+
+
+                    case "TaggedTemplateExpression":
+
+                        visit(
+                            node.tag,
+                            scope
+                        );
+
+                        visit(
+                            node.quasi,
+                            scope
+                        );
+
+                        break;
+
+
+                    case "AwaitExpression":
+
+                    case "YieldExpression":
+
+                        visit(
+                            node.argument,
+                            scope
+                        );
+
+                        break;
+
+
+                    case "ImportDeclaration":
+
+                        node.specifiers.forEach(
+                            specifier => {
+
+                                addSymbol(
+                                    specifier.local.name,
+                                    "import",
+                                    specifier.local,
+                                    scope,
+                                    {
+                                        type:
+                                            "import"
+                                    }
+                                );
+
+                            }
+                        );
+
+                        break;
+
+
+                    case "ExportNamedDeclaration":
+
+                        visit(
+                            node.declaration,
+                            scope
+                        );
+
+                        break;
+
+
+                    case "ExportDefaultDeclaration":
+
+                        visit(
+                            node.declaration,
+                            scope
+                        );
+
+                        break;
+
+
+                    default:
+
+                        visitChildren(
+                            node,
+                            scope
+                        );
+
+                        break;
+
+                }
+
+            };
+
+        const visitFunction =
+            (
+                node,
+                parentScope
+            ) => {
+
+                const functionScope =
+                    this.createScope(
+                        "function",
+                        parentScope,
+                        node
+                    );
+
+                scopes.push(
+                    functionScope
+                );
+
+                scopeStack.push(
+                    functionScope
+                );
+
+                if (node.id) {
+
+                    addSymbol(
+                        node.id.name,
+                        "function",
+                        node.id,
+                        functionScope,
+                        {
+                            type:
+                                "function-name"
+                        }
+                    );
+
+                }
+
+                node.params.forEach(
+                    parameter => {
+
+                        declarePattern(
+                            parameter,
+                            "parameter",
+                            functionScope
+                        );
+
+                        visit(
+                            parameter,
+                            functionScope
+                        );
+
+                    }
+                );
+
+                visit(
+                    node.body,
+                    functionScope
+                );
+
+                scopeStack.pop();
+
+            };
+
+        const visitChildren =
+            (
+                node,
+                scope
+            ) => {
+
+                Object.keys(node).forEach(
+                    key => {
+
+                        if (
+                            key === "loc" ||
+                            key === "start" ||
+                            key === "end"
+                        ) {
+                            return;
+                        }
+
+                        const value =
+                            node[key];
+
+                        if (
+                            !value ||
+                            typeof value !==
+                                "object"
+                        ) {
+                            return;
+                        }
+
+                        if (
+                            Array.isArray(value)
+                        ) {
+
+                            value.forEach(
+                                child => {
+
+                                    if (
+                                        child &&
+                                        typeof child.type ===
+                                            "string"
+                                    ) {
+
+                                        visit(
+                                            child,
+                                            scope
+                                        );
+
+                                    }
+
+                                }
+                            );
+
+                        } else if (
+                            value.type
+                        ) {
+
+                            visit(
+                                value,
+                                scope
+                            );
+
+                        }
+
+                    }
+                );
+
+            };
+
+        const findFunctionScope =
+            scope => {
+
+                let current =
+                    scope;
+
+                while (current) {
+
+                    if (
+                        current.type ===
+                        "function" ||
+                        current.type ===
+                        "global"
+                    ) {
+
+                        return current;
+
+                    }
+
+                    current =
+                        scopes.find(
+                            candidate =>
+                                candidate.id ===
+                                current.parent
+                        );
+
+                }
+
+                return globalScope;
+
+            };
+
+        visit(
+            ast,
+            globalScope
         );
 
         return {
 
-            type:
-                "SymbolTable",
+            scopes,
 
-            symbols
+            declarations,
+
+            references
 
         };
 
@@ -1286,8 +1598,94 @@ const SymbolTable = {
 
 
 CakrawalaNexus.registerTool(
-    "SymbolTable",
-    SymbolTable
+    "ScopeResolver",
+    ScopeResolver
+);
+
+
+const SymbolResolver = {
+
+    name:
+        "SymbolResolver",
+
+    version:
+        "0.5.0",
+
+    resolve(
+        references,
+        scopes
+    ) {
+
+        return references.map(
+            reference => {
+
+                const symbol =
+                    this.resolveReference(
+                        reference,
+                        scopes
+                    );
+
+                return {
+
+                    ...reference,
+
+                    resolved:
+                        !!symbol,
+
+                    symbol:
+                        symbol || null
+
+                };
+
+            }
+        );
+
+    },
+
+    resolveReference(
+        reference,
+        scopes
+    ) {
+
+        let scope =
+            scopes.find(
+                item =>
+                    item.id ===
+                    reference.scope
+            );
+
+        while (scope) {
+
+            const symbol =
+                scope.symbols.find(
+                    candidate =>
+                        candidate.name ===
+                        reference.name
+                );
+
+            if (symbol) {
+                return symbol;
+            }
+
+            scope =
+                scopes.find(
+                    candidate =>
+                        candidate.id ===
+                        scope.parent
+                );
+
+        }
+
+        return null;
+
+    }
+
+};
+
+
+CakrawalaNexus.registerTool(
+    "SymbolResolver",
+    SymbolResolver
 );
 
 
@@ -1297,56 +1695,88 @@ const TypoDetector = {
         "TypoDetector",
 
     version:
-        "0.1.0",
+        "0.5.0",
+
+    keywords: [
+
+        "const",
+        "let",
+        "var",
+        "function",
+        "return",
+        "if",
+        "else",
+        "for",
+        "while",
+        "do",
+        "switch",
+        "case",
+        "break",
+        "continue",
+        "new",
+        "class",
+        "try",
+        "catch",
+        "finally",
+        "throw",
+        "true",
+        "false",
+        "null",
+        "undefined",
+        "this",
+        "typeof",
+        "instanceof",
+        "in",
+        "of",
+        "async",
+        "await"
+
+    ],
 
     analyze(
-        ast,
-        symbolTable
+        references,
+        scopes
     ) {
 
         const issues = [];
 
-        const symbols =
-            symbolTable.symbols;
-
-        const symbolNames =
-            [
-                ...new Set(
-                    symbols.map(
-                        symbol =>
-                            symbol.name
-                    )
-                )
-            ];
-
-        ast.references.forEach(
+        references.forEach(
             reference => {
 
-                const exists =
-                    symbolNames.includes(
-                        reference.name
-                    );
-
                 if (
-                    exists
+                    reference.resolved ||
+                    reference.property
                 ) {
-
                     return;
-
                 }
 
+                const candidates =
+                    this.collectCandidates(
+                        reference,
+                        scopes
+                    );
+
                 const suggestion =
-                    this.findSuggestion(
+                    this.bestCandidate(
                         reference.name,
-                        symbolNames
+                        candidates
+                    );
+
+                if (!suggestion) {
+                    return;
+                }
+
+                const confidence =
+                    this.calculateConfidence(
+                        reference.name,
+                        suggestion.name,
+                        suggestion.scopeDistance
                     );
 
                 if (
-                    !suggestion
+                    confidence < 0.72
                 ) {
-
                     return;
-
                 }
 
                 issues.push({
@@ -1355,16 +1785,11 @@ const TypoDetector = {
                         "possible-typo",
 
                     severity:
-                        "warning",
+                        confidence >= 0.9
+                            ? "warning"
+                            : "info",
 
-                    name:
-                        reference.name,
-
-                    suggestion:
-                        suggestion.name,
-
-                    distance:
-                        suggestion.distance,
+                    confidence,
 
                     line:
                         reference.line,
@@ -1372,8 +1797,21 @@ const TypoDetector = {
                     column:
                         reference.column,
 
+                    name:
+                        reference.name,
+
+                    suggestion:
+                        suggestion.name,
+
+                    evidence:
+                        [
+                            "Identifier tidak ditemukan",
+                            "Symbol dengan nama mirip ditemukan",
+                            `Symbol berada ${suggestion.scopeDistance} tingkat scope dari reference`
+                        ],
+
                     message:
-                        `Possible typo "${reference.name}". Did you mean "${suggestion.name}"?`
+                        `Kemungkinan kesalahan ketik "${reference.name}". Apakah maksud Anda "${suggestion.name}"?`
 
                 });
 
@@ -1381,48 +1819,89 @@ const TypoDetector = {
         );
 
         return {
-
             issues
-
         };
 
     },
 
-    findSuggestion(
+    collectCandidates(
+        reference,
+        scopes
+    ) {
+
+        const candidates = [];
+
+        let scope =
+            scopes.find(
+                item =>
+                    item.id ===
+                    reference.scope
+            );
+
+        let distance = 0;
+
+        while (scope) {
+
+            scope.symbols.forEach(
+                symbol => {
+
+                    if (
+                        !candidates.some(
+                            candidate =>
+                                candidate.name ===
+                                symbol.name
+                        )
+                    ) {
+
+                        candidates.push({
+
+                            ...symbol,
+
+                            scopeDistance:
+                                distance
+
+                        });
+
+                    }
+
+                }
+            );
+
+            scope =
+                scopes.find(
+                    item =>
+                        item.id ===
+                        scope.parent
+                );
+
+            distance++;
+
+        }
+
+        return candidates;
+
+    },
+
+    bestCandidate(
         target,
         candidates
     ) {
 
-        let best =
-            null;
+        let best = null;
 
         candidates.forEach(
             candidate => {
 
-                if (
-                    candidate === target
-                ) {
-
-                    return;
-
-                }
-
-                const lowerTarget =
-                    target.toLowerCase();
-
-                const lowerCandidate =
-                    candidate.toLowerCase();
-
                 const distance =
                     this.levenshtein(
-                        lowerTarget,
-                        lowerCandidate
+                        target.toLowerCase(),
+                        candidate.name.toLowerCase()
                     );
 
                 const maxLength =
                     Math.max(
                         target.length,
-                        candidate.length
+                        candidate.name.length
                     );
 
                 const threshold =
@@ -1436,9 +1915,102 @@ const TypoDetector = {
                     distance >
                     threshold
                 ) {
-
                     return;
+                }
 
+                const score =
+                    this.calculateConfidence(
+                        target,
+                        candidate.name,
+                        candidate.scopeDistance
+                    );
+
+                if (
+                    !best ||
+                    score >
+                    best.score
+                ) {
+
+                    best = {
+
+                        ...candidate,
+
+                        distance,
+
+                        score
+
+                    };
+
+                }
+
+            }
+        );
+
+        return best;
+
+    },
+
+    calculateConfidence(
+        target,
+        candidate,
+        scopeDistance
+    ) {
+
+        const distance =
+            this.levenshtein(
+                target.toLowerCase(),
+                candidate.toLowerCase()
+            );
+
+        const length =
+            Math.max(
+                target.length,
+                candidate.length
+            );
+
+        if (!length) {
+            return 0;
+        }
+
+        const similarity =
+            1 -
+            distance /
+            length;
+
+        const scopeBonus =
+            scopeDistance === 0
+                ? 0.12
+                : scopeDistance === 1
+                    ? 0.06
+                    : 0;
+
+        return Math.min(
+            1,
+            similarity +
+            scopeBonus
+        );
+
+    },
+
+    findKeywordTypo(
+        word
+    ) {
+
+        let best = null;
+
+        this.keywords.forEach(
+            keyword => {
+
+                const distance =
+                    this.levenshtein(
+                        word.toLowerCase(),
+                        keyword
+                    );
+
+                if (
+                    distance > 1
+                ) {
+                    return;
                 }
 
                 if (
@@ -1449,8 +2021,7 @@ const TypoDetector = {
 
                     best = {
 
-                        name:
-                            candidate,
+                        keyword,
 
                         distance
 
@@ -1478,9 +2049,7 @@ const TypoDetector = {
             i++
         ) {
 
-            matrix[i] = [
-                i
-            ];
+            matrix[i] = [i];
 
         }
 
@@ -1490,8 +2059,7 @@ const TypoDetector = {
             j++
         ) {
 
-            matrix[0][j] =
-                j;
+            matrix[0][j] = j;
 
         }
 
@@ -1553,11 +2121,12 @@ const Analyzer = {
         "Analyzer",
 
     version:
-        "0.2.0",
+        "0.5.0",
 
     analyze(
-        ast,
-        symbolTable
+        resolvedReferences,
+        scopes,
+        ast
     ) {
 
         const issues = [];
@@ -1569,49 +2138,35 @@ const Analyzer = {
 
         const typoResult =
             typoDetector.analyze(
-                ast,
-                symbolTable
+                resolvedReferences,
+                scopes
             );
 
         issues.push(
             ...typoResult.issues
         );
 
-        ast.references.forEach(
+        resolvedReferences.forEach(
             reference => {
 
-                const exists =
-                    symbolTable.symbols.some(
-                        symbol =>
-                            symbol.name ===
-                            reference.name
-                    );
-
                 if (
-                    exists
+                    reference.resolved ||
+                    reference.property
                 ) {
-
                     return;
-
                 }
 
                 const hasTypo =
                     typoResult.issues.some(
                         issue =>
-                            issue.name ===
-                            reference.name &&
                             issue.line ===
-                            reference.line &&
+                                reference.line &&
                             issue.column ===
-                            reference.column
+                                reference.column
                     );
 
-                if (
-                    hasTypo
-                ) {
-
+                if (hasTypo) {
                     return;
-
                 }
 
                 issues.push({
@@ -1622,8 +2177,8 @@ const Analyzer = {
                     severity:
                         "warning",
 
-                    name:
-                        reference.name,
+                    confidence:
+                        1,
 
                     line:
                         reference.line,
@@ -1631,60 +2186,235 @@ const Analyzer = {
                     column:
                         reference.column,
 
+                    name:
+                        reference.name,
+
+                    evidence:
+                        [
+                            "Identifier tidak ditemukan",
+                            "Tidak ada symbol yang cocok pada scope chain"
+                        ],
+
                     message:
-                        `Identifier "${reference.name}" is not declared.`
+                        `Identifier "${reference.name}" belum dideklarasikan.`
 
                 });
 
             }
         );
 
-        ast.declarations.forEach(
-            declaration => {
+        scopes.forEach(
+            scope => {
 
-                const used =
-                    ast.references.some(
-                        reference =>
-                            reference.name ===
-                            declaration.name
-                    );
+                scope.symbols.forEach(
+                    symbol => {
 
-                if (
-                    !used
-                ) {
+                        if (
+                            symbol.kind ===
+                            "function" ||
+                            symbol.kind ===
+                            "class" ||
+                            symbol.kind ===
+                            "import"
+                        ) {
+                            return;
+                        }
 
-                    issues.push({
+                        const used =
+                            resolvedReferences.some(
+                                reference =>
+                                    reference.resolved &&
+                                    reference.symbol &&
+                                    reference.symbol.id ===
+                                        symbol.id
+                            );
 
-                        type:
-                            "unused-variable",
+                        if (used) {
+                            return;
+                        }
 
-                        severity:
-                            "info",
+                        issues.push({
 
-                        name:
-                            declaration.name,
+                            type:
+                                "unused-variable",
 
-                        line:
-                            declaration.line,
+                            severity:
+                                "info",
 
-                        column:
-                            declaration.column,
+                            confidence:
+                                1,
 
-                        message:
-                            `Variable "${declaration.name}" is declared but never used.`
+                            line:
+                                symbol.line,
 
-                    });
+                            column:
+                                symbol.column,
 
-                }
+                            name:
+                                symbol.name,
+
+                            evidence:
+                                [
+                                    "Symbol berhasil dibuat",
+                                    "Tidak ditemukan reference yang mengarah ke symbol"
+                                ],
+
+                            message:
+                                `Variabel "${symbol.name}" dideklarasikan tetapi belum digunakan.`
+
+                        });
+
+                    }
+                );
 
             }
         );
 
+        const keywordIssues =
+            this.detectKeywordTypos(
+                ast
+            );
+
+        issues.push(
+            ...keywordIssues
+        );
+
         return {
-
             issues
-
         };
+
+    },
+
+    detectKeywordTypos(ast) {
+
+        const issues = [];
+
+        const source =
+            ast.raw;
+
+        const keywords =
+            TypoDetector.keywords;
+
+        const tokens =
+            [];
+
+        try {
+
+            acorn.parse(
+                source,
+                {
+                    ecmaVersion: "latest",
+                    sourceType: "script",
+                    locations: true,
+                    onToken:
+                        tokens
+                }
+            );
+
+        } catch (error) {
+
+            return issues;
+
+        }
+
+        const identifierTokens =
+            tokens.filter(
+                token =>
+                    token.type &&
+                    token.type.label ===
+                        "name"
+            );
+
+        identifierTokens.forEach(
+            token => {
+
+                const value =
+                    token.value;
+
+                if (
+                    typeof value !==
+                    "string"
+                ) {
+                    return;
+                }
+
+                if (
+                    keywords.includes(
+                        value
+                    )
+                ) {
+                    return;
+                }
+
+                const result =
+                    TypoDetector.findKeywordTypo(
+                        value
+                    );
+
+                if (!result) {
+                    return;
+                }
+
+                const context =
+                    source.substring(
+                        Math.max(
+                            0,
+                            token.start - 20
+                        ),
+                        token.start
+                    );
+
+                if (
+                    !/[;{}()=]/.test(
+                        context.slice(-1)
+                    )
+                ) {
+                    return;
+                }
+
+                const confidence =
+                    result.distance === 1
+                        ? 0.86
+                        : 0.7;
+
+                issues.push({
+
+                    type:
+                        "keyword-typo",
+
+                    severity:
+                        "warning",
+
+                    confidence,
+
+                    line:
+                        token.loc.start.line,
+
+                    column:
+                        token.loc.start.column + 1,
+
+                    name:
+                        value,
+
+                    suggestion:
+                        result.keyword,
+
+                    evidence:
+                        [
+                            "Token tidak cocok dengan keyword valid",
+                            "Edit distance sangat kecil",
+                            "Posisi token menyerupai penggunaan keyword"
+                        ],
+
+                    message:
+                        `Kemungkinan keyword salah ketik "${value}". Apakah maksud Anda "${result.keyword}"?`
+
+                });
+
+            }
+        );
+
+        return issues;
 
     }
 
@@ -1697,6 +2427,93 @@ CakrawalaNexus.registerTool(
 );
 
 
+const CodeChecker = {
+
+    name:
+        "CodeChecker",
+
+    version:
+        "0.5.0",
+
+    check(code) {
+
+        if (
+            typeof code !==
+            "string"
+        ) {
+
+            return {
+
+                success:
+                    false,
+
+                error:
+                    "Input kode tidak valid."
+
+            };
+
+        }
+
+        if (
+            !code.trim()
+        ) {
+
+            return {
+
+                success:
+                    false,
+
+                error:
+                    "Kode masih kosong."
+
+            };
+
+        }
+
+        const parser =
+            CakrawalaNexus.getTool(
+                "JavaScriptParser"
+            );
+
+        try {
+
+            const ast =
+                parser.parse(code);
+
+            return {
+
+                success:
+                    true,
+
+                ast
+
+            };
+
+        } catch (error) {
+
+            return {
+
+                success:
+                    false,
+
+                error:
+                    error
+
+            };
+
+        }
+
+    }
+
+};
+
+
+CakrawalaNexus.registerTool(
+    "CodeChecker",
+    CodeChecker
+);
+
+
 CakrawalaNexus.on(
     "code.checked",
     function(checkResult) {
@@ -1704,24 +2521,38 @@ CakrawalaNexus.on(
         if (
             !checkResult.success
         ) {
-
             return;
-
         }
 
-        const code =
-            NJOS.getContext(
-                "lastCode"
+        const normalizer =
+            CakrawalaNexus.getTool(
+                "Normalizer"
             );
 
-        const parser =
+        const resolver =
             CakrawalaNexus.getTool(
-                "Parser"
+                "ScopeResolver"
             );
 
-        const symbolTableTool =
+        const symbolResolver =
             CakrawalaNexus.getTool(
-                "SymbolTable"
+                "SymbolResolver"
+            );
+
+        const ast =
+            normalizer.create(
+                checkResult.ast
+            );
+
+        const scopeData =
+            resolver.resolve(
+                ast.raw
+            );
+
+        const resolvedReferences =
+            symbolResolver.resolve(
+                scopeData.references,
+                scopeData.scopes
             );
 
         const analyzer =
@@ -1729,29 +2560,27 @@ CakrawalaNexus.on(
                 "Analyzer"
             );
 
-        const ast =
-            parser.parse(code);
+        const analysis =
+            analyzer.analyze(
+                resolvedReferences,
+                scopeData.scopes,
+                ast
+            );
 
         NJOS.setContext(
             "ast",
             ast
         );
 
-        const symbolTable =
-            symbolTableTool.build(
-                ast
-            );
-
         NJOS.setContext(
-            "symbolTable",
-            symbolTable
+            "scopeData",
+            scopeData
         );
 
-        const analysis =
-            analyzer.analyze(
-                ast,
-                symbolTable
-            );
+        NJOS.setContext(
+            "resolvedReferences",
+            resolvedReferences
+        );
 
         NJOS.setContext(
             "analysis",
@@ -1819,10 +2648,6 @@ checkButton.addEventListener(
             !checkResult.success
         ) {
 
-            NJOS.reportError(
-                checkResult.error
-            );
-
             NJOS.setState(
                 "status",
                 "error"
@@ -1831,14 +2656,21 @@ checkButton.addEventListener(
             result.className =
                 "result error";
 
+            const line =
+                checkResult.error.loc
+                    ? checkResult.error.loc.line
+                    : "?";
+
+            const column =
+                checkResult.error.loc
+                    ? checkResult.error.loc.column + 1
+                    : "?";
+
             result.textContent =
                 "ERROR\n\n" +
-                checkResult.error.message;
-
-            CakrawalaNexus.emit(
-                "code.checked",
-                checkResult
-            );
+                checkResult.error.message +
+                "\n\n" +
+                `Baris ${line}, Kolom ${column}`;
 
             return;
 
@@ -1849,60 +2681,98 @@ checkButton.addEventListener(
             checkResult
         );
 
-        const analysis =
-            NJOS.getContext(
-                "analysis"
-            );
-
         const ast =
             NJOS.getContext(
                 "ast"
             );
 
-        const symbols =
+        const scopeData =
             NJOS.getContext(
-                "symbolTable"
+                "scopeData"
             );
 
+        const resolvedReferences =
+            NJOS.getContext(
+                "resolvedReferences"
+            );
+
+        const analysis =
+            NJOS.getContext(
+                "analysis"
+            );
+
+        const declarations =
+            scopeData.declarations;
+
+        const functions =
+            scopeData.declarations.filter(
+                declaration =>
+                    declaration.kind ===
+                    "function"
+            );
+
+        const parameters =
+            scopeData.declarations.filter(
+                declaration =>
+                    declaration.kind ===
+                    "parameter"
+            );
+
+        const symbols =
+            scopeData.declarations;
+
+        const resolvedCount =
+            resolvedReferences.filter(
+                reference =>
+                    reference.resolved
+            ).length;
+
         let output =
-            "CAKRAWALA ANALYSIS\n";
+            "ANALISIS CAKRAWALA\n";
 
         output +=
             "==============================\n\n";
 
         output +=
-            "Syntax: OK\n";
+            "Sintaks: OK\n";
 
         output +=
-            `Declarations: ${ast.declarations.length}\n`;
+            "Bahasa: JavaScript\n";
 
         output +=
-            `Functions: ${ast.functions.length}\n`;
+            `Deklarasi: ${declarations.length}\n`;
 
         output +=
-            `Parameters: ${ast.parameters.length}\n`;
+            `Fungsi: ${functions.length}\n`;
 
         output +=
-            `Scopes: ${ast.scopes.length}\n`;
+            `Parameter: ${parameters.length}\n`;
 
         output +=
-            `Symbols: ${symbols.symbols.length}\n`;
+            `Cakupan: ${scopeData.scopes.length}\n`;
 
         output +=
-            `References: ${ast.references.length}\n\n`;
+            `Simbol: ${symbols.length}\n`;
 
         output +=
-            "ISSUES\n";
+            `Referensi: ${resolvedReferences.length}\n`;
+
+        output +=
+            `Ter-resolve: ${resolvedCount}\n\n`;
+
+        output +=
+            "MASALAH\n";
 
         output +=
             "==============================\n\n";
 
         if (
-            analysis.issues.length === 0
+            analysis.issues.length ===
+            0
         ) {
 
             output +=
-                "No issues detected.";
+                "Tidak ada masalah yang terdeteksi.";
 
             result.className =
                 "result success";
@@ -1912,13 +2782,45 @@ checkButton.addEventListener(
             analysis.issues.forEach(
                 (issue, index) => {
 
+                    const confidence =
+                        Math.round(
+                            issue.confidence *
+                            100
+                        );
+
                     output +=
                         `${index + 1}. ` +
                         `[${issue.severity}] ` +
                         issue.message +
-                        "\n" +
-                        `   Line ${issue.line}, ` +
-                        `Column ${issue.column}\n\n`;
+                        "\n";
+
+                    output +=
+                        `   Kepercayaan: ${confidence}%\n`;
+
+                    output +=
+                        `   Baris ${issue.line}, ` +
+                        `Kolom ${issue.column}\n`;
+
+                    if (
+                        issue.evidence
+                    ) {
+
+                        output +=
+                            "   Bukti:\n";
+
+                        issue.evidence.forEach(
+                            evidence => {
+
+                                output +=
+                                    `   - ${evidence}\n`;
+
+                            }
+                        );
+
+                    }
+
+                    output +=
+                        "\n";
 
                 }
             );
@@ -1981,3 +2883,7 @@ console.log(
 
 </body>
 </html>
+               
+
+        
+                 
