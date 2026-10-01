@@ -165,7 +165,68 @@ const ErrorAnalyzer = {
   }
 
 };
+};
 
+const BugDetector = {
+
+  detect(code) {
+
+    const warnings = [];
+
+    const declaredVariables = [];
+
+    const declarations =
+      code.matchAll(
+        /\b(?:const|let|var)\s+([a-zA-Z_$][\w$]*)/g
+      );
+
+    for (const match of declarations) {
+      declaredVariables.push(match[1]);
+    }
+
+    const usages =
+      code.match(
+        /\b[a-zA-Z_$][\w$]*\b/g
+      ) || [];
+
+    const ignoredWords = [
+      "const",
+      "let",
+      "var",
+      "function",
+      "return",
+      "if",
+      "else",
+      "for",
+      "while",
+      "true",
+      "false",
+      "null",
+      "undefined",
+      "console",
+      "log"
+    ];
+
+    usages.forEach(name => {
+
+      if (
+        !declaredVariables.includes(name) &&
+        !ignoredWords.includes(name)
+      ) {
+
+        if (!warnings.includes(name)) {
+          warnings.push(name);
+        }
+
+      }
+
+    });
+
+    return warnings;
+
+  }
+
+};
 
 const codeInput =
   document.getElementById("codeInput");
