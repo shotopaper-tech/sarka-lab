@@ -248,16 +248,30 @@ CakrawalaNexus.on(
     const analysis =
       ErrorAnalyzer.analyzer(data);
     const warnings =
-      BugDentector.detect(
+      BugDetector.detect(
         CakrawalaNexus.getContext("lastCode")
         );
     if (!analysis.hasError) {
+      let warningHTML = "";
+      if (warnings. length > 0) {
+        warningHTML =`
+        <p>
+        potensi masalah:
+        ${warnings.join(", ")}
+        </p> `;
+      } else {
+        warningHTML = `
+        <P>
+        ✓ Tidak ditemukan variable mencurigakan.
+        </p> `;
+      }
 
       result.innerHTML = `
         <strong>✓ Tidak ada kesalahan sintaksis</strong>
         <p>
           Kode JavaScript Anda terlihat benar secara sintaksis.
         </p>
+        ${warningHTML}
       `;
 
     } else {
