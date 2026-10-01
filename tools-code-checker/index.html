@@ -185,7 +185,18 @@ const BugDetector = {
       (match = declarationRegex.exec(code)) !== null
     ) {
 
-      declaredVariables.push(match[1]);
+      const name = match[1];
+
+      const line =
+        code
+          .substring(0, match.index)
+          .split("\n")
+          .length;
+
+      declaredVariables.push({
+        name: name,
+        line: line
+      });
 
     }
 
@@ -208,7 +219,16 @@ const BugDetector = {
           /^[a-zA-Z_$][\w$]*$/.test(parameter)
         ) {
 
-          declaredVariables.push(parameter);
+          const line =
+            code
+              .substring(0, match.index)
+              .split("\n")
+              .length;
+
+          declaredVariables.push({
+            name: parameter,
+            line: line
+          });
 
         }
 
@@ -283,29 +303,57 @@ const BugDetector = {
 
       }
 
-      if (
-        !declaredVariables.includes(name) &&
-        !undeclared.includes(name)
-      ) {
+      const declaration =
+        declaredVariables.find(
+          variable =>
+            variable.name === name
+        );
 
-        undeclared.push(name);
+      if (!declaration) {
+
+        const line =
+          cleanedCode
+            .substring(0, position)
+            .split("\n")
+            .length;
+
+        const alreadyReported =
+          undeclared.some(
+            variable =>
+              variable.name === name
+          );
+
+        if (!alreadyReported) {
+
+          undeclared.push({
+            name: name,
+            line: line
+          });
+
+        }
 
       }
 
     }
 
-    declaredVariables.forEach(name => {
+    declaredVariables.forEach(variable => {
 
       const occurrences =
         cleanedCode.match(
-          new RegExp("\\b" + name + "\\b", "g")
+          new RegExp(
+            "\\b" + variable.name + "\\b",
+            "g"
+          )
         ) || [];
 
       if (
         occurrences.length <= 1
       ) {
 
-        unused.push(name);
+        unused.push({
+          name: variable.name,
+          line: variable.line
+        });
 
       }
 
@@ -364,7 +412,10 @@ CakrawalaNexus.on(
         warningHTML = `
           <p>
             <strong>Potensi variable tidak dikenal:</strong>
-            ${warnings.join(", ")}
+            ${warnings.map(
+              warning =>
+                `${warning.name} (baris ${warning.line})`
+            ).join(", ")}
           </p>
         `;
 
@@ -383,7 +434,10 @@ CakrawalaNexus.on(
         unusedHTML = `
           <p>
             <strong>Variable tidak digunakan:</strong>
-            ${unusedVariables.join(", ")}
+            ${unusedVariables.map(
+              variable =>
+                `${variable.name} (baris ${variable.line})`
+            ).join(", ")}
           </p>
         `;
 
@@ -432,9 +486,13 @@ CakrawalaNexus.on(
       result.innerHTML = `
         <strong>✕ Kesalahan Sintaksis</strong>
 
-        <p>${analysis.message}</p>
+        <p>
+          ${analysis.message}
+        </p>
 
-        <p>${analysis.explanation}</p>
+        <p>
+          ${analysis.explanation}
+        </p>
 
         ${location}
       `;
