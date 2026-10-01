@@ -81,12 +81,13 @@
          new Function(code);
          CakrawalaNexus.emit("code.checked", {
            success: true });
-         catch (error) 
+       } catch (error) {
          CakrawalaNexus.emit("code.checked", {
            success: false,
            error: error.message
          });
-        clearButton.addEventListener("click", function () {
+       }
+         clearButton.addEventListener("click", function () {
           codeInput.value= "";
           result.textContent = "Result will appear here.";
         CakrawalaNexus.setContext("lastCode","");
