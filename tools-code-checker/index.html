@@ -165,8 +165,8 @@ const ErrorAnalyzer = {
   }
 
 };
-
-const BugDetector = {
+ 
+  const BugDetector = {
 
   detect(code) {
 
@@ -174,19 +174,54 @@ const BugDetector = {
 
     const declaredVariables = [];
 
-    const declarations =
-      code.matchAll(
-        /\b(?:const|let|var)\s+([a-zA-Z_$][\w$]*)/g
-      );
+    const declarationRegex =
+      /\b(?:const|let|var)\s+([a-zA-Z_$][\w$]*)/g;
 
-    for (const match of declarations) {
+    let match;
+
+    while (
+      (match = declarationRegex.exec(code)) !== null
+    ) {
+
       declaredVariables.push(match[1]);
+
     }
 
-    const usages =
-      code.match(
-        /\b[a-zA-Z_$][\w$]*\b/g
-      ) || [];
+    const parameterRegex =
+      /function\s*[a-zA-Z_$][\w$]*\s*\(([^)]*)\)/g;
+
+    while (
+      (match = parameterRegex.exec(code)) !== null
+    ) {
+
+      const parameters =
+        match[1]
+          .split(",")
+          .map(parameter => parameter.trim())
+          .filter(parameter => parameter !== "");
+
+      parameters.forEach(parameter => {
+
+        if (
+          /^[a-zA-Z_$][\w$]*$/.test(parameter)
+        ) {
+
+          declaredVariables.push(parameter);
+
+        }
+
+      });
+
+    }
+
+    const cleanedCode =
+      code
+        .replace(/(["'`])(?:\\.|(?!\1).)*\1/g, "")
+        .replace(/\/\/.*$/gm, "")
+        .replace(/\/\*[\s\S]*?\*\//g, "");
+
+    const identifierRegex =
+      /\b[a-zA-Z_$][\w$]*\b/g;
 
     const ignoredWords = [
       "const",
@@ -198,6 +233,14 @@ const BugDetector = {
       "else",
       "for",
       "while",
+      "do",
+      "switch",
+      "case",
+      "break",
+      "continue",
+      "new",
+      "class",
+      "this",
       "true",
       "false",
       "null",
@@ -206,27 +249,62 @@ const BugDetector = {
       "log"
     ];
 
-    usages.forEach(name => {
+    while (
+      (match = identifierRegex.exec(cleanedCode)) !== null
+    ) {
+
+      const name = match[0];
+
+      const position =
+        match.index;
+
+      const before =
+        cleanedCode[position - 1];
+
+      const after =
+        cleanedCode[position + name.length];
 
       if (
-        !declaredVariables.includes(name) &&
-        !ignoredWords.includes(name)
+        before === "." ||
+        after === ":"
       ) {
 
-        if (!warnings.includes(name)) {
-          warnings.push(name);
-        }
+        continue;
 
       }
 
-    });
+      if (
+        ignoredWords.includes(name)
+      ) {
+
+        continue;
+
+      }
+
+      if (
+        declaredVariables.includes(name)
+      ) {
+
+        continue;
+
+      }
+
+      if (
+        !warnings.includes(name)
+      ) {
+
+        warnings.push(name);
+
+      }
+
+    }
 
     return warnings;
 
   }
 
 };
-
+    
 const codeInput =
   document.getElementById("codeInput");
 
@@ -352,7 +430,6 @@ checkButton.addEventListener(
 
   }
 );
-
 
 clearButton.addEventListener(
   "click",
