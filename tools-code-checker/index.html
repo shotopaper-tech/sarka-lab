@@ -7,10 +7,10 @@
     content="width=device-width,
     initial-scale=1.0">
     
-    <title>Sarka Dev Tools</title>
+    <title>Cakrawala Workstation</title>
   </head>
   <body>
-    <h1>Sarka Dev Tools</h1>
+    <h1>Cakrawala Workstation</h1>
     <section id="code-editor">
     <h2>Code Editor</h2>
     <textarea 
@@ -22,28 +22,63 @@
       Result will appear here.
     </div>
     <script>
+      const CakrawalaNexus = {
+        context: {},
+        events: {},
+        setContext(key, value) {
+          this.context[key] = value;
+        },
+        setContext(key, value) {
+         return this.context[key];
+        },
+          emit(event, data) {
+            if (!this.events[event]) return;
+            if (!this.events[event]). forEach(callback =>
+            {
+              callback(data);
+            });
+          },
+        on(event, callback) {
+          if (!this.events[event]) {
+            this.events[event] = [];
+          }
+          this.events[event].push(callback);
+        }
+      };
       const codeInput =
         document.getElementById("codeInput");
       const checkButton =
         document.getElementById("checkButton");
         const result =
           document.getElementById("result");
+      CakrawalaNexus.on("code.checked",function(data) {
+      if(data.success){
+         result.innerHTML = `<strong>√ No syntax error detected</strong>
+         <p>Your JavaScript code looks syntatically correct.</p>`;
+       }
+        else {
+        result.innerHTML = ` <strong>☓ Syntax Error</strong>
+        <p>${error.message}</p>`;}     
+      });
       checkButton.addEventListener("click", function () {
         const code = codeInput.value;
+        CakrawalaNexus.setContext("lastCode",code);
+        
         if (code.trim() === "") {
           result.textContent = "please enter some code.";
           return;
         }
        try {
          new Function(code);
-         result.innerHTML = `<strong>√ No syntax error detected</strong>
-         <p>Your JavaScript code looks syntatically correct.</p>`;
-       }
-        catch(error) {
-        result.innerHTML = ` <strong>☓ Syntax Error</strong>
-        <p>${error.message}</p>`;}     
-      });
-      
+         CakrawalaNexus.emit("code.checked", {
+           successs; false,
+           error: error.message
+         });
+        checkButton.addEventListener("click", function () {
+          codeInput.value= "";
+          result.textContent = "Result will appear here.";
+        CakrawalaNexus.setContext("lastCode","");
+        });
     </script>
     <!--TES JAVASCRIPT-->
     <script>
