@@ -304,6 +304,26 @@ const ErrorAnalyzer = {
   }
 
 };
+
+        continue;
+
+      }
+
+      if (
+        !warnings.includes(name)
+      ) {
+
+        warnings.push(name);
+
+      }
+
+    }
+
+    return warnings;
+
+  }
+
+};
     
 const codeInput =
   document.getElementById("codeInput");
@@ -324,10 +344,13 @@ CakrawalaNexus.on(
 
     const analysis =
       ErrorAnalyzer.analyzer(data);
-    const warnings =
+    const bugReport =
+      
       BugDetector.detect(
         CakrawalaNexus.getContext("lastCode")
         );
+    const warnings = bugReport.undeclared;
+    const unusedVariables = bugReport.unused;
     if (!analysis.hasError) {
       let warningHTML = "";
       if (warnings.length > 0) {
