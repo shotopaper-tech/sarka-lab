@@ -1,140 +1,373 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cakrawala Workstation</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cakrawala Workstation</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<style>
+*{
+    box-sizing:border-box;
+}
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #0b0f14;
-            color: #e8edf2;
-        }
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#081017;
+    color:#e7edf2;
+    font-family:Arial,sans-serif;
+}
 
-        .app {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+#app{
+    position:relative;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
 
-        header {
-            padding: 18px 24px;
-            border-bottom: 1px solid #202832;
-            background: #0e141b;
-        }
+#world{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    image-rendering:pixelated;
+    background:#18291f;
+}
 
-        header h1 {
-            margin: 0;
-            font-size: 20px;
-        }
+.hud{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+}
 
-        header p {
-            margin: 6px 0 0;
-            color: #7f8b98;
-            font-size: 13px;
-        }
+.card{
+    background:rgba(5,10,15,.91);
+    border:1px solid #293947;
+    border-radius:10px;
+    box-shadow:0 12px 35px rgba(0,0,0,.35);
+    backdrop-filter:blur(8px);
+}
 
-        main {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1px;
-            background: #202832;
-        }
+.top{
+    position:absolute;
+    top:14px;
+    left:16px;
+    right:16px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+}
 
-        .panel {
-            background: #0b0f14;
-            min-height: 600px;
-            display: flex;
-            flex-direction: column;
-        }
+.brand{
+    padding:11px 14px;
+}
 
-        .panel-header {
-            padding: 12px 16px;
-            border-bottom: 1px solid #202832;
-            font-size: 13px;
-            color: #9ca8b5;
-        }
+.brand b{
+    display:block;
+    letter-spacing:3px;
+}
 
-        textarea {
-            flex: 1;
-            width: 100%;
-            resize: none;
-            border: 0;
-            outline: 0;
-            background: #080c10;
-            color: #dce5ed;
-            padding: 18px;
-            font-family: Consolas, Monaco, monospace;
-            font-size: 14px;
-            line-height: 1.65;
-        }
+.brand small{
+    color:#71808b;
+    letter-spacing:1px;
+}
 
-        .output {
-            flex: 1;
-            padding: 18px;
-            overflow: auto;
-            font-family: Consolas, Monaco, monospace;
-            font-size: 13px;
-            line-height: 1.65;
-            white-space: pre-wrap;
-        }
+.status{
+    display:flex;
+    gap:7px;
+}
 
-        .toolbar {
-            padding: 12px 16px;
-            border-top: 1px solid #202832;
-            display: flex;
-            gap: 10px;
-        }
+.pill{
+    padding:9px 12px;
+    font-size:10px;
+    letter-spacing:.8px;
+}
 
-        button {
-            border: 1px solid #34404c;
-            background: #151c24;
-            color: #dce5ed;
-            padding: 9px 14px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
+.online{
+    color:#75e39a;
+}
 
-        button:hover {
-            background: #1c2630;
-        }
+.location{
+    position:absolute;
+    top:78px;
+    left:16px;
+    padding:10px 13px;
+}
 
-        .status {
-            font-size: 12px;
-            color: #7f8b98;
-            padding: 8px 16px;
-            border-bottom: 1px solid #202832;
-        }
+.location small{
+    display:block;
+    color:#6f7d88;
+    font-size:9px;
+    letter-spacing:1.4px;
+}
 
-        @media (max-width: 900px) {
-            main {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+.location b{
+    display:block;
+    margin-top:4px;
+    font-size:12px;
+}
 
-    <script src="https://cdn.jsdelivr.net/npm/acorn@8/dist/acorn.min.js"></script>
+.bottom{
+    position:absolute;
+    left:16px;
+    right:16px;
+    bottom:16px;
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+    gap:12px;
+}
+
+.nexus{
+    width:min(480px,calc(100vw - 32px));
+    padding:13px;
+    pointer-events:auto;
+}
+
+.label{
+    font-size:9px;
+    color:#71808d;
+    letter-spacing:1.4px;
+}
+
+.message{
+    margin-top:7px;
+    min-height:35px;
+    font:12px/1.5 Consolas,monospace;
+}
+
+.buttons{
+    display:flex;
+    gap:7px;
+    margin-top:9px;
+}
+
+button{
+    border:1px solid #344555;
+    background:#111a23;
+    color:#e8edf2;
+    border-radius:7px;
+    padding:9px 14px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1b2935;
+}
+
+button.primary{
+    background:#822c36;
+    border-color:#ad3d49;
+}
+
+.controls{
+    width:205px;
+    padding:12px;
+}
+
+.controls p{
+    margin:7px 0 0;
+    color:#aab5bf;
+    font-size:11px;
+    line-height:1.65;
+}
+
+.window{
+    position:absolute;
+    z-index:20;
+    inset:7%;
+    display:none;
+    flex-direction:column;
+    overflow:hidden;
+    background:#080d12;
+    border:1px solid #2b3a48;
+    border-radius:13px;
+    box-shadow:0 30px 100px #000b;
+    pointer-events:auto;
+}
+
+.window.open{
+    display:flex;
+}
+
+.head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:11px 14px;
+    background:#0d151d;
+    border-bottom:1px solid #202d38;
+}
+
+.head b{
+    font-size:13px;
+}
+
+.editor{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    flex:1;
+    min-height:0;
+}
+
+.pane{
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+}
+
+.pane+.pane{
+    border-left:1px solid #202d38;
+}
+
+.pane-title{
+    padding:9px 12px;
+    border-bottom:1px solid #202d38;
+    color:#84929e;
+    font-size:11px;
+}
+
+textarea,
+.output{
+    flex:1;
+    min-height:0;
+    width:100%;
+    border:0;
+    outline:0;
+    background:#070b0f;
+    color:#dce6ef;
+    padding:15px;
+    font:12px/1.65 Consolas,monospace;
+}
+
+.output{
+    overflow:auto;
+    white-space:pre-wrap;
+}
+
+.foot{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:9px 12px;
+    background:#0d151d;
+    border-top:1px solid #202d38;
+}
+
+.foot small{
+    color:#74818c;
+}
+
+@media(max-width:800px){
+    .controls{
+        display:none;
+    }
+
+    .editor{
+        grid-template-columns:1fr;
+    }
+
+    .pane+.pane{
+        display:none;
+    }
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/acorn@8/dist/acorn.min.js"></script>
 </head>
 
 <body>
-<div class="app">
-    <header>
-        <h1>Cakrawala Workstation</h1>
-        <p>NJOS semantic analysis environment</p>
-    </header>
 
-    <main>
-        <section class="panel">
-            <div class="panel-header">Code Editor</div>
+<div id="app">
 
-            <textarea id="codeEditor">const username = "Miu";
+<canvas id="world"></canvas>
+
+<div class="hud">
+
+    <div class="top">
+
+        <div class="card brand">
+            <b>CAKRAWALA</b>
+            <small>WORKSTATION</small>
+        </div>
+
+        <div class="status">
+            <div class="card pill online">● NJOS ONLINE</div>
+            <div class="card pill" id="state">IDLE</div>
+        </div>
+
+    </div>
+
+    <div class="card location">
+        <small>LOCATION</small>
+        <b id="location">Cakrawala Field</b>
+    </div>
+
+    <div class="bottom">
+
+        <div class="card nexus">
+
+            <div class="label">
+                NEXUS COMMUNICATION
+            </div>
+
+            <div class="message" id="message">
+                Cakrawala sedang menunggu aktivitas.
+            </div>
+
+            <div class="buttons">
+                <button class="primary" id="analyze">
+                    Analyze
+                </button>
+
+                <button id="clear">
+                    Clear
+                </button>
+            </div>
+
+        </div>
+
+        <div class="card controls">
+
+            <div class="label">
+                CAKRAWALA CONTROL
+            </div>
+
+            <p>
+                WASD / Arrow: bergerak<br>
+                E: naik / turun kuda<br>
+                Enter: buka Workshop
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="window" id="window">
+
+    <div class="head">
+
+        <b>Code Workshop</b>
+
+        <button id="close">
+            Close
+        </button>
+
+    </div>
+
+    <div class="editor">
+
+        <div class="pane">
+
+            <div class="pane-title">
+                Code Editor
+            </div>
+
+            <textarea id="code">const username = "Miu";
 
 function greet(name) {
     return ussername + name;
@@ -142,23 +375,43 @@ function greet(name) {
 
 greet(username);</textarea>
 
-            <div class="toolbar">
-                <button id="analyzeButton">Analyze</button>
-            </div>
-        </section>
+        </div>
 
-        <section class="panel">
-            <div class="panel-header">Analysis</div>
-            <div class="status" id="status">Ready</div>
+        <div class="pane">
+
+            <div class="pane-title">
+                Analysis
+            </div>
+
             <div class="output" id="output"></div>
-        </section>
-    </main>
+
+        </div>
+
+    </div>
+
+    <div class="foot">
+
+        <small id="analysisStatus">
+            Ready
+        </small>
+
+        <button class="primary" id="run">
+            Analyze
+        </button>
+
+    </div>
+
+</div>
+
 </div>
 
 <script>
+
 const NJOS = {
-    version: "0.6.0",
-    globals: new Set([
+
+    version:"0.6.0",
+
+    globals:new Set([
         "console",
         "window",
         "document",
@@ -175,12 +428,6 @@ const NJOS = {
         "Date",
         "RegExp",
         "Error",
-        "EvalError",
-        "RangeError",
-        "ReferenceError",
-        "SyntaxError",
-        "TypeError",
-        "URIError",
         "Map",
         "Set",
         "WeakMap",
@@ -189,116 +436,93 @@ const NJOS = {
         "Proxy",
         "Reflect",
         "Intl",
-        "ArrayBuffer",
-        "DataView",
-        "Uint8Array",
-        "Int8Array",
-        "Uint16Array",
-        "Int16Array",
-        "Uint32Array",
-        "Int32Array",
-        "Float32Array",
-        "Float64Array",
         "parseInt",
         "parseFloat",
         "isNaN",
         "isFinite",
-        "decodeURI",
-        "decodeURIComponent",
-        "encodeURI",
-        "encodeURIComponent",
         "setTimeout",
         "setInterval",
         "clearTimeout",
         "clearInterval"
     ])
+
 };
 
-class CakrawalaNexus {
-    constructor() {
-        this.listeners = new Map();
+class Nexus {
+
+    constructor(){
+        this.events = {};
     }
 
-    on(event, callback) {
-        if (!this.listeners.has(event)) {
-            this.listeners.set(event, []);
+    on(event,callback){
+
+        if(!this.events[event]){
+            this.events[event] = [];
         }
 
-        this.listeners.get(event).push(callback);
+        this.events[event].push(callback);
     }
 
-    emit(event, data) {
-        const callbacks = this.listeners.get(event) || [];
+    emit(event,data){
 
-        for (const callback of callbacks) {
+        for(const callback of this.events[event] || []){
             callback(data);
         }
     }
+
 }
 
-class CodeParser {
-    parse(code) {
-        const tokens = [];
-
-        const tree = acorn.parse(code, {
-            ecmaVersion: "latest",
-            sourceType: "script",
-            locations: true,
-            onToken: tokens
-        });
-
-        return {
-            tree,
-            tokens
-        };
-    }
-}
-
-class SymbolRecord {
-    constructor(name, kind, scope, node) {
-        this.id = SymbolRecord.nextId++;
-        this.name = name;
-        this.kind = kind;
-        this.scope = scope;
-        this.node = node;
-        this.references = [];
-        this.declared = true;
-        this.builtin = false;
-    }
-}
-
-SymbolRecord.nextId = 1;
+const nexus = new Nexus();
 
 class Scope {
-    constructor(type, parent = null, node = null) {
-        this.id = Scope.nextId++;
+
+    constructor(type,parent=null){
+
         this.type = type;
         this.parent = parent;
-        this.node = node;
         this.symbols = new Map();
         this.children = [];
+
     }
 
-    addChild(scope) {
+    add(type){
+
+        const scope = new Scope(type,this);
+
         this.children.push(scope);
+
+        return scope;
     }
 
-    declare(name, kind, node) {
-        if (this.symbols.has(name)) {
+    declare(name,kind,node){
+
+        if(this.symbols.has(name)){
             return this.symbols.get(name);
         }
 
-        const symbol = new SymbolRecord(name, kind, this, node);
-        this.symbols.set(name, symbol);
+        const symbol = {
+
+            name,
+            kind,
+            node,
+            references:[],
+            builtin:false,
+            scope:this
+
+        };
+
+        this.symbols.set(name,symbol);
 
         return symbol;
     }
 
-    resolve(name) {
+    resolve(name){
+
         let scope = this;
 
-        while (scope) {
-            if (scope.symbols.has(name)) {
+        while(scope){
+
+            if(scope.symbols.has(name)){
                 return scope.symbols.get(name);
             }
 
@@ -308,1081 +532,1844 @@ class Scope {
         return null;
     }
 
-    functionScope() {
+    functionScope(){
+
         let scope = this;
 
-        while (scope && scope.type !== "function" && scope.type !== "global") {
+        while(
+            scope &&
+            scope.type !== "function" &&
+            scope.type !== "global"
+        ){
+
             scope = scope.parent;
+
         }
 
         return scope;
     }
+
 }
 
-Scope.nextId = 1;
+class Resolver {
 
-class ScopeResolver {
-    constructor() {
-        this.globalScope = new Scope("global");
-        this.currentScope = this.globalScope;
-        this.references = [];
+    constructor(){
+
+        this.global = new Scope("global");
+
+        this.scope = this.global;
+
         this.declarations = [];
+        this.references = [];
         this.functions = [];
         this.parameters = [];
-        this.builtins = [];
+
     }
 
-    addBuiltins() {
-        for (const name of NJOS.globals) {
-            const symbol = this.globalScope.declare(
-                name,
-                "builtin",
-                null
-            );
+    declarePattern(node,kind){
 
-            symbol.builtin = true;
-            this.builtins.push(symbol);
-        }
-    }
-
-    createScope(type, node) {
-        const scope = new Scope(type, this.currentScope, node);
-        this.currentScope.addChild(scope);
-        return scope;
-    }
-
-    withScope(scope, callback) {
-        const previous = this.currentScope;
-        this.currentScope = scope;
-
-        try {
-            callback();
-        } finally {
-            this.currentScope = previous;
-        }
-    }
-
-    declarePattern(pattern, kind) {
-        if (!pattern) {
+        if(!node){
             return;
         }
 
-        if (pattern.type === "Identifier") {
-            const targetScope =
-                kind === "var"
-                    ? this.currentScope.functionScope()
-                    : this.currentScope;
+        if(node.type === "Identifier"){
 
-            const symbol = targetScope.declare(
-                pattern.name,
-                kind,
-                pattern
-            );
+            const target =
+                kind === "var"
+                ? this.scope.functionScope()
+                : this.scope;
+
+            const symbol =
+                target.declare(
+                    node.name,
+                    kind,
+                    node
+                );
 
             this.declarations.push({
                 symbol,
-                node: pattern
+                node
             });
 
             return;
         }
 
-        if (pattern.type === "RestElement") {
-            this.declarePattern(pattern.argument, kind);
+        if(node.type === "RestElement"){
+
+            this.declarePattern(
+                node.argument,
+                kind
+            );
+
             return;
         }
 
-        if (pattern.type === "AssignmentPattern") {
-            this.declarePattern(pattern.left, kind);
-            this.visitExpression(pattern.right);
+        if(node.type === "AssignmentPattern"){
+
+            this.declarePattern(
+                node.left,
+                kind
+            );
+
+            this.expr(node.right);
+
             return;
         }
 
-        if (
-            pattern.type === "ObjectPattern" ||
-            pattern.type === "ArrayPattern"
-        ) {
-            for (const item of pattern.properties || []) {
-                if (!item) {
-                    continue;
+        if(
+            node.type === "ObjectPattern" ||
+            node.type === "ArrayPattern"
+        ){
+
+            for(const item of node.properties || []){
+
+                if(item.type === "RestElement"){
+
+                    this.declarePattern(
+                        item.argument,
+                        kind
+                    );
+
+                }else{
+
+                    this.declarePattern(
+                        item.value,
+                        kind
+                    );
+
                 }
 
-                if (item.type === "RestElement") {
-                    this.declarePattern(item.argument, kind);
-                    continue;
-                }
-
-                if (item.type === "Property") {
-                    this.declarePattern(item.value, kind);
-                }
             }
+
         }
+
     }
 
-    addReference(node) {
-        const symbol = this.currentScope.resolve(node.name);
+    reference(node){
+
+        const symbol =
+            this.scope.resolve(node.name);
 
         const reference = {
-            name: node.name,
+
+            name:node.name,
             node,
-            scope: this.currentScope,
+            scope:this.scope,
             symbol,
-            resolved: Boolean(symbol)
+            resolved:!!symbol
+
         };
 
         this.references.push(reference);
 
-        if (symbol) {
+        if(symbol){
+
             symbol.references.push(reference);
+
         }
 
-        return reference;
     }
 
-    visitPatternReferences(pattern) {
-        if (!pattern) {
-            return;
-        }
+    function(node){
 
-        if (pattern.type === "Identifier") {
-            this.addReference(pattern);
-            return;
-        }
+        if(node.id){
 
-        if (pattern.type === "RestElement") {
-            this.visitPatternReferences(pattern.argument);
-            return;
-        }
+            this.declarePattern(
+                node.id,
+                "function"
+            );
 
-        if (pattern.type === "AssignmentPattern") {
-            this.visitPatternReferences(pattern.left);
-            this.visitExpression(pattern.right);
-            return;
-        }
-
-        if (
-            pattern.type === "ObjectPattern" ||
-            pattern.type === "ArrayPattern"
-        ) {
-            for (const item of pattern.properties || []) {
-                if (!item) {
-                    continue;
-                }
-
-                if (item.type === "RestElement") {
-                    this.visitPatternReferences(item.argument);
-                } else if (item.type === "Property") {
-                    this.visitPatternReferences(item.value);
-                }
-            }
-        }
-    }
-
-    visitFunction(node) {
-        if (node.id) {
-            this.declarePattern(node.id, "function");
         }
 
         this.functions.push(node);
 
-        const functionScope = this.createScope(
-            "function",
-            node
-        );
+        const oldScope = this.scope;
 
-        this.withScope(functionScope, () => {
-            for (const parameter of node.params) {
-                this.declarePattern(parameter, "parameter");
-                this.parameters.push(parameter);
-            }
+        const functionScope =
+            this.scope.add("function");
 
-            const bodyScope = this.createScope(
-                "block",
-                node.body
+        this.scope = functionScope;
+
+        for(const parameter of node.params){
+
+            this.declarePattern(
+                parameter,
+                "parameter"
             );
 
-            this.withScope(bodyScope, () => {
-                this.visit(node.body);
-            });
-        });
+            this.parameters.push(parameter);
+
+        }
+
+        if(node.body.type === "BlockStatement"){
+
+            const bodyScope =
+                this.scope.add("block");
+
+            this.scope = bodyScope;
+
+            this.visit(node.body);
+
+        }else{
+
+            this.expr(node.body);
+
+        }
+
+        this.scope = oldScope;
+
     }
 
-    visit(node) {
-        if (!node) {
+    visit(node){
+
+        if(!node){
             return;
         }
 
-        switch (node.type) {
+        switch(node.type){
+
             case "Program":
-                for (const statement of node.body) {
-                    this.visit(statement);
+
+                for(const item of node.body){
+                    this.visit(item);
                 }
+
                 break;
 
             case "VariableDeclaration":
-                for (const declaration of node.declarations) {
+
+                for(const declaration of node.declarations){
+
                     this.declarePattern(
                         declaration.id,
                         node.kind
                     );
 
-                    if (declaration.init) {
-                        this.visitExpression(
-                            declaration.init
-                        );
+                    if(declaration.init){
+                        this.expr(declaration.init);
                     }
+
                 }
+
                 break;
 
             case "FunctionDeclaration":
-                this.visitFunction(node);
+
+                this.function(node);
+
                 break;
 
             case "FunctionExpression":
             case "ArrowFunctionExpression":
-                this.visitFunction(node);
+
+                this.function(node);
+
                 break;
 
-            case "BlockStatement": {
-                for (const statement of node.body) {
-                    this.visit(statement);
+            case "BlockStatement":
+
+                for(const item of node.body){
+                    this.visit(item);
                 }
+
                 break;
-            }
 
             case "ExpressionStatement":
-                this.visitExpression(node.expression);
+
+                this.expr(node.expression);
+
                 break;
 
             case "ReturnStatement":
-                if (node.argument) {
-                    this.visitExpression(node.argument);
+
+                if(node.argument){
+                    this.expr(node.argument);
                 }
+
                 break;
 
             case "IfStatement":
-                this.visitExpression(node.test);
+
+                this.expr(node.test);
                 this.visit(node.consequent);
 
-                if (node.alternate) {
+                if(node.alternate){
                     this.visit(node.alternate);
                 }
-                break;
-
-            case "ForStatement": {
-                const loopScope = this.createScope(
-                    "block",
-                    node
-                );
-
-                this.withScope(loopScope, () => {
-                    if (node.init) {
-                        if (
-                            node.init.type ===
-                            "VariableDeclaration"
-                        ) {
-                            this.visit(node.init);
-                        } else {
-                            this.visitExpression(
-                                node.init
-                            );
-                        }
-                    }
-
-                    if (node.test) {
-                        this.visitExpression(node.test);
-                    }
-
-                    if (node.update) {
-                        this.visitExpression(node.update);
-                    }
-
-                    this.visit(node.body);
-                });
 
                 break;
-            }
-
-            case "ForInStatement":
-            case "ForOfStatement": {
-                const loopScope = this.createScope(
-                    "block",
-                    node
-                );
-
-                this.withScope(loopScope, () => {
-                    if (
-                        node.left.type ===
-                        "VariableDeclaration"
-                    ) {
-                        this.visit(node.left);
-                    } else {
-                        this.visitExpression(node.left);
-                    }
-
-                    this.visitExpression(node.right);
-                    this.visit(node.body);
-                });
-
-                break;
-            }
 
             case "WhileStatement":
             case "DoWhileStatement":
-                this.visitExpression(node.test);
+
+                this.expr(node.test);
                 this.visit(node.body);
+
                 break;
 
-            case "SwitchStatement": {
-                this.visitExpression(node.discriminant);
+            case "ForStatement":
 
-                const switchScope = this.createScope(
-                    "block",
-                    node
-                );
+                if(node.init){
 
-                this.withScope(switchScope, () => {
-                    for (const switchCase of node.cases) {
-                        if (switchCase.test) {
-                            this.visitExpression(
-                                switchCase.test
-                            );
-                        }
-
-                        for (const statement of switchCase.consequent) {
-                            this.visit(statement);
-                        }
+                    if(node.init.type === "VariableDeclaration"){
+                        this.visit(node.init);
+                    }else{
+                        this.expr(node.init);
                     }
-                });
+
+                }
+
+                if(node.test){
+                    this.expr(node.test);
+                }
+
+                if(node.update){
+                    this.expr(node.update);
+                }
+
+                this.visit(node.body);
 
                 break;
-            }
+
+            case "ForInStatement":
+            case "ForOfStatement":
+
+                this.visit(node.left);
+                this.expr(node.right);
+                this.visit(node.body);
+
+                break;
 
             case "TryStatement":
+
                 this.visit(node.block);
 
-                if (node.handler) {
-                    const catchScope = this.createScope(
-                        "catch",
-                        node.handler
+                if(node.handler){
+
+                    const old = this.scope;
+
+                    this.scope =
+                        this.scope.add("catch");
+
+                    this.declarePattern(
+                        node.handler.param,
+                        "catch"
                     );
 
-                    this.withScope(catchScope, () => {
-                        if (node.handler.param) {
-                            this.declarePattern(
-                                node.handler.param,
-                                "catch"
-                            );
-                        }
+                    this.visit(node.handler.body);
 
-                        this.visit(node.handler.body);
-                    });
+                    this.scope = old;
+
                 }
 
-                if (node.finalizer) {
+                if(node.finalizer){
                     this.visit(node.finalizer);
                 }
-                break;
 
-            case "ThrowStatement":
-                this.visitExpression(node.argument);
-                break;
-
-            case "ClassDeclaration":
-                this.declarePattern(node.id, "class");
-
-                if (node.superClass) {
-                    this.visitExpression(node.superClass);
-                }
-
-                this.visitClassBody(node.body);
-                break;
-
-            case "ClassExpression":
-                if (node.id) {
-                    this.declarePattern(node.id, "class");
-                }
-
-                if (node.superClass) {
-                    this.visitExpression(node.superClass);
-                }
-
-                this.visitClassBody(node.body);
-                break;
-
-            case "BreakStatement":
-            case "ContinueStatement":
-            case "EmptyStatement":
-            case "DebuggerStatement":
                 break;
 
             default:
-                this.visitGeneric(node);
+
+                this.generic(node);
+
         }
+
     }
 
-    visitClassBody(body) {
-        for (const method of body.body || []) {
-            if (method.computed) {
-                this.visitExpression(method.key);
-            }
+    expr(node){
 
-            if (method.value) {
-                this.visitFunction(method.value);
-            }
-        }
-    }
-
-    visitExpression(node) {
-        if (!node) {
+        if(!node){
             return;
         }
 
-        switch (node.type) {
+        switch(node.type){
+
             case "Identifier":
-                this.addReference(node);
+
+                this.reference(node);
+
                 break;
 
             case "Literal":
-                break;
 
-            case "TemplateLiteral":
-                for (const expression of node.expressions) {
-                    this.visitExpression(expression);
-                }
                 break;
 
             case "BinaryExpression":
             case "LogicalExpression":
             case "AssignmentExpression":
-                this.visitExpression(node.left);
-                this.visitExpression(node.right);
+
+                this.expr(node.left);
+                this.expr(node.right);
+
                 break;
 
             case "UnaryExpression":
             case "UpdateExpression":
-                this.visitExpression(node.argument);
+
+                this.expr(node.argument);
+
                 break;
 
             case "ConditionalExpression":
-                this.visitExpression(node.test);
-                this.visitExpression(node.consequent);
-                this.visitExpression(node.alternate);
+
+                this.expr(node.test);
+                this.expr(node.consequent);
+                this.expr(node.alternate);
+
                 break;
 
             case "CallExpression":
             case "NewExpression":
-                this.visitExpression(node.callee);
 
-                for (const argument of node.arguments) {
-                    this.visitExpression(argument);
+                this.expr(node.callee);
+
+                for(const argument of node.arguments){
+                    this.expr(argument);
                 }
+
                 break;
 
             case "MemberExpression":
-                this.visitExpression(node.object);
 
-                if (node.computed) {
-                    this.visitExpression(node.property);
+                this.expr(node.object);
+
+                if(node.computed){
+                    this.expr(node.property);
                 }
 
-                break;
-
-            case "ChainExpression":
-                this.visitExpression(node.expression);
                 break;
 
             case "ArrayExpression":
-                for (const element of node.elements) {
-                    this.visitExpression(element);
+
+                for(const element of node.elements){
+                    this.expr(element);
                 }
+
                 break;
 
             case "ObjectExpression":
-                for (const property of node.properties) {
-                    if (property.type === "SpreadElement") {
-                        this.visitExpression(
-                            property.argument
-                        );
-                        continue;
+
+                for(const property of node.properties){
+
+                    if(property.type === "SpreadElement"){
+
+                        this.expr(property.argument);
+
+                    }else{
+
+                        if(property.computed){
+                            this.expr(property.key);
+                        }
+
+                        this.expr(property.value);
+
                     }
 
-                    if (property.computed) {
-                        this.visitExpression(property.key);
-                    }
-
-                    this.visitExpression(property.value);
                 }
+
                 break;
 
-            case "ArrowFunctionExpression":
+            case "TemplateLiteral":
+
+                for(const expression of node.expressions){
+                    this.expr(expression);
+                }
+
+                break;
+
             case "FunctionExpression":
-                this.visitFunction(node);
-                break;
+            case "ArrowFunctionExpression":
 
-            case "SequenceExpression":
-                for (const expression of node.expressions) {
-                    this.visitExpression(expression);
-                }
-                break;
+                this.function(node);
 
-            case "AwaitExpression":
-            case "YieldExpression":
-                this.visitExpression(node.argument);
-                break;
-
-            case "AssignmentPattern":
-                this.visitExpression(node.right);
                 break;
 
             default:
-                this.visitGeneric(node);
+
+                this.generic(node);
+
         }
+
     }
 
-    visitGeneric(node) {
-        if (!node || typeof node !== "object") {
-            return;
-        }
+    generic(node){
 
-        for (const key of Object.keys(node)) {
-            if (
+        for(const key of Object.keys(node)){
+
+            if(
                 key === "loc" ||
                 key === "start" ||
                 key === "end"
-            ) {
+            ){
                 continue;
             }
 
             const value = node[key];
 
-            if (Array.isArray(value)) {
-                for (const item of value) {
-                    if (
-                        item &&
-                        typeof item.type === "string"
-                    ) {
-                        if (
-                            item.type === "Identifier"
-                        ) {
-                            this.addReference(item);
-                        } else {
-                            this.visit(item);
-                        }
+            if(Array.isArray(value)){
+
+                for(const item of value){
+
+                    if(item && item.type){
+                        this.visit(item);
                     }
+
                 }
-            } else if (
-                value &&
-                typeof value.type === "string"
-            ) {
-                if (value.type === "Identifier") {
-                    this.addReference(value);
-                } else {
-                    this.visit(value);
-                }
+
+            }else if(value && value.type){
+
+                this.visit(value);
+
             }
+
         }
+
     }
 
-    resolve(tree) {
-        this.addBuiltins();
+    resolve(tree){
+
+        for(const name of NJOS.globals){
+
+            const symbol =
+                this.global.declare(
+                    name,
+                    "builtin",
+                    null
+                );
+
+            symbol.builtin = true;
+
+        }
+
         this.visit(tree);
 
-        return {
-            globalScope: this.globalScope,
-            references: this.references,
-            declarations: this.declarations,
-            functions: this.functions,
-            parameters: this.parameters,
-            builtins: this.builtins
-        };
-    }
-}
+        return this;
 
-class TypoDetector {
-    constructor(scopeData) {
-        this.scopeData = scopeData;
     }
 
-    distance(a, b) {
-        const matrix = [];
-
-        for (let i = 0; i <= b.length; i++) {
-            matrix[i] = [i];
-        }
-
-        for (let j = 0; j <= a.length; j++) {
-            matrix[0][j] = j;
-        }
-
-        for (let i = 1; i <= b.length; i++) {
-            for (let j = 1; j <= a.length; j++) {
-                if (b[i - 1] === a[j - 1]) {
-                    matrix[i][j] =
-                        matrix[i - 1][j - 1];
-                } else {
-                    matrix[i][j] =
-                        Math.min(
-                            matrix[i - 1][j] + 1,
-                            matrix[i][j - 1] + 1,
-                            matrix[i - 1][j - 1] + 1
-                        );
-                }
-            }
-        }
-
-        return matrix[b.length][a.length];
-    }
-
-    similarity(a, b) {
-        if (!a.length && !b.length) {
-            return 1;
-        }
-
-        const distance = this.distance(
-            a.toLowerCase(),
-            b.toLowerCase()
-        );
-
-        return 1 -
-            distance /
-            Math.max(a.length, b.length);
-    }
-
-    scopeDistance(from, target) {
-        let distance = 0;
-        let scope = from;
-
-        while (scope) {
-            if (scope === target) {
-                return distance;
-            }
-
-            scope = scope.parent;
-            distance++;
-        }
-
-        return Infinity;
-    }
-
-    candidates(reference) {
-        const result = [];
-        const seen = new Set();
-
-        let scope = reference.scope;
-
-        while (scope) {
-            for (const symbol of scope.symbols.values()) {
-                if (
-                    symbol.builtin ||
-                    seen.has(symbol.id)
-                ) {
-                    continue;
-                }
-
-                seen.add(symbol.id);
-
-                if (symbol.name === reference.name) {
-                    continue;
-                }
-
-                const similarity = this.similarity(
-                    reference.name,
-                    symbol.name
-                );
-
-                if (similarity >= 0.65) {
-                    result.push({
-                        symbol,
-                        similarity,
-                        scopeDistance:
-                            this.scopeDistance(
-                                reference.scope,
-                                symbol.scope
-                            )
-                    });
-                }
-            }
-
-            scope = scope.parent;
-        }
-
-        return result.sort((a, b) => {
-            if (
-                b.similarity !==
-                a.similarity
-            ) {
-                return (
-                    b.similarity -
-                    a.similarity
-                );
-            }
-
-            return (
-                a.scopeDistance -
-                b.scopeDistance
-            );
-        });
-    }
-
-    detect() {
-        const issues = [];
-
-        for (const reference of this.scopeData.references) {
-            if (reference.resolved) {
-                continue;
-            }
-
-            const candidates =
-                this.candidates(reference);
-
-            if (!candidates.length) {
-                continue;
-            }
-
-            const best = candidates[0];
-
-            let confidence =
-                best.similarity * 100;
-
-            if (best.scopeDistance <= 1) {
-                confidence += 5;
-            } else if (best.scopeDistance === 2) {
-                confidence -= 2;
-            }
-
-            confidence = Math.max(
-                0,
-                Math.min(99, Math.round(confidence))
-            );
-
-            if (confidence < 70) {
-                continue;
-            }
-
-            issues.push({
-                type: "typo",
-                severity: "info",
-                name: reference.name,
-                suggestion: best.symbol.name,
-                confidence,
-                node: reference.node,
-                evidence: [
-                    "Identifier tidak ditemukan",
-                    "Symbol dengan nama mirip ditemukan",
-                    `Symbol berada ${best.scopeDistance} tingkat scope dari reference`
-                ]
-            });
-        }
-
-        return issues;
-    }
 }
 
 class Analyzer {
-    constructor(scopeData) {
-        this.scopeData = scopeData;
+
+    constructor(data){
+        this.data = data;
     }
 
-    analyzeUnused() {
+    typo(){
+
         const issues = [];
 
-        for (const declaration of this.scopeData.declarations) {
-            const symbol = declaration.symbol;
+        const distance = (a,b) => {
 
-            if (symbol.builtin) {
+            const matrix =
+                Array.from(
+                    {length:b.length + 1},
+                    () => Array(a.length + 1).fill(0)
+                );
+
+            for(let i=0;i<=b.length;i++){
+                matrix[i][0] = i;
+            }
+
+            for(let j=0;j<=a.length;j++){
+                matrix[0][j] = j;
+            }
+
+            for(let i=1;i<=b.length;i++){
+
+                for(let j=1;j<=a.length;j++){
+
+                    matrix[i][j] =
+                        b[i-1] === a[j-1]
+                        ? matrix[i-1][j-1]
+                        : Math.min(
+                            matrix[i-1][j] + 1,
+                            matrix[i][j-1] + 1,
+                            matrix[i-1][j-1] + 1
+                        );
+
+                }
+
+            }
+
+            return matrix[b.length][a.length];
+
+        };
+
+        for(const reference of this.data.references){
+
+            if(reference.resolved){
                 continue;
             }
 
-            if (
-                symbol.kind === "function" &&
-                symbol.scope.type === "global"
-            ) {
-                continue;
+            let best = null;
+
+            let scope = reference.scope;
+
+            while(scope){
+
+                for(const symbol of scope.symbols.values()){
+
+                    if(
+                        symbol.builtin ||
+                        symbol.name === reference.name
+                    ){
+                        continue;
+                    }
+
+                    const similarity =
+                        1 -
+                        distance(
+                            reference.name.toLowerCase(),
+                            symbol.name.toLowerCase()
+                        ) /
+                        Math.max(
+                            reference.name.length,
+                            symbol.name.length
+                        );
+
+                    if(
+                        similarity >= .65 &&
+                        (!best || similarity > best.similarity)
+                    ){
+
+                        best = {
+                            symbol,
+                            similarity
+                        };
+
+                    }
+
+                }
+
+                scope = scope.parent;
+
             }
 
-            if (symbol.references.length === 0) {
+            if(best){
+
                 issues.push({
-                    type: "unused",
-                    severity: "info",
-                    name: symbol.name,
-                    confidence: 100,
-                    node: symbol.node,
-                    evidence: [
-                        "Symbol berhasil dibuat",
-                        "Tidak ditemukan reference yang mengarah ke symbol"
+
+                    type:"typo",
+                    severity:"info",
+                    name:reference.name,
+                    suggestion:best.symbol.name,
+                    confidence:Math.round(best.similarity * 100),
+                    node:reference.node,
+
+                    evidence:[
+                        "Identifier tidak ditemukan",
+                        "Symbol dengan nama mirip ditemukan"
                     ]
+
                 });
+
             }
+
         }
 
         return issues;
+
     }
 
-    analyzeUndeclared() {
-        const issues = [];
+    unused(){
 
-        for (const reference of this.scopeData.references) {
-            if (reference.resolved) {
-                continue;
-            }
+        return this.data.declarations
 
-            const candidates = this.scopeData.globalScope.symbols;
+            .filter(item =>
+                !item.symbol.builtin &&
+                item.symbol.references.length === 0 &&
+                item.symbol.kind !== "function"
+            )
 
-            if (candidates.has(reference.name)) {
-                continue;
-            }
+            .map(item => ({
 
-            issues.push({
-                type: "undeclared",
-                severity: "warning",
-                name: reference.name,
-                confidence: 100,
-                node: reference.node,
-                evidence: [
+                type:"unused",
+                severity:"info",
+                name:item.symbol.name,
+                confidence:100,
+                node:item.node,
+
+                evidence:[
+                    "Symbol berhasil dibuat",
+                    "Tidak ditemukan reference yang mengarah ke symbol"
+                ]
+
+            }));
+
+    }
+
+    undeclared(excluded){
+
+        return this.data.references
+
+            .filter(reference =>
+                !reference.resolved &&
+                !excluded.has(reference.name)
+            )
+
+            .map(reference => ({
+
+                type:"undeclared",
+                severity:"warning",
+                name:reference.name,
+                confidence:100,
+                node:reference.node,
+
+                evidence:[
                     "Identifier tidak ditemukan",
                     "Tidak ada symbol yang cocok pada scope chain"
                 ]
-            });
-        }
 
-        return issues;
+            }));
+
     }
+
 }
 
-class CodeChecker {
-    constructor() {
-        this.parser = new CodeParser();
-    }
+function analyzeCode(code){
 
-    check(code) {
-        try {
-            const parsed = this.parser.parse(code);
+    try{
 
-            const scopeResolver =
-                new ScopeResolver();
+        const tree =
+            acorn.parse(
+                code,
+                {
+                    ecmaVersion:"latest",
+                    sourceType:"script",
+                    locations:true
+                }
+            );
 
-            const scopeData =
-                scopeResolver.resolve(
-                    parsed.tree
-                );
+        const data =
+            new Resolver().resolve(tree);
 
-            const typoDetector =
-                new TypoDetector(
-                    scopeData
-                );
+        const analyzer =
+            new Analyzer(data);
 
-            const analyzer =
-                new Analyzer(
-                    scopeData
-                );
+        const typoIssues =
+            analyzer.typo();
 
-            const typoIssues =
-                typoDetector.detect();
+        const typoNames =
+            new Set(
+                typoIssues.map(issue => issue.name)
+            );
 
-            const unusedIssues =
-                analyzer.analyzeUnused();
+        return {
 
-            const undeclaredIssues =
-                analyzer.analyzeUndeclared();
+            ok:true,
+            data,
 
-            const issues = [
+            issues:[
                 ...typoIssues,
-                ...unusedIssues,
-                ...undeclaredIssues
-            ].sort((a, b) => {
-                return (
-                    a.node.start -
-                    b.node.start
-                );
-            });
+                ...analyzer.unused(),
+                ...analyzer.undeclared(typoNames)
+            ]
 
-            return {
-                success: true,
-                tree: parsed.tree,
-                scopeData,
-                issues
-            };
-        } catch (error) {
-            return {
-                success: false,
-                error
-            };
-        }
+        };
+
+    }catch(error){
+
+        return {
+            ok:false,
+            error
+        };
+
     }
+
 }
 
-const nexus = new CakrawalaNexus();
-const checker = new CodeChecker();
+const canvas =
+    document.getElementById("world");
 
-const editor =
-    document.getElementById("codeEditor");
+const ctx =
+    canvas.getContext("2d");
 
-const output =
-    document.getElementById("output");
+const player = {
 
-const status =
-    document.getElementById("status");
+    x:700,
+    y:500,
 
-const button =
-    document.getElementById("analyzeButton");
+    speed:2.5,
 
-function formatIssue(issue, index) {
-    const line =
-        issue.node?.loc?.start?.line || 0;
+    mounted:false,
 
-    const column =
-        issue.node?.loc?.start?.column || 0;
+    target:null,
 
-    let title = "";
+    frame:0,
 
-    if (issue.type === "typo") {
-        title =
-            `Kemungkinan kesalahan ketik "${issue.name}". ` +
-            `Apakah maksud Anda "${issue.suggestion}"?`;
+    moving:false
+
+};
+
+const horse = {
+
+    x:600,
+    y:515
+
+};
+
+const keys = {};
+
+const buildings = [
+
+    {
+        name:"Code Workshop",
+        x:250,
+        y:190,
+        w:250,
+        h:140,
+        id:"workshop"
+    },
+
+    {
+        name:"Nexus Core",
+        x:650,
+        y:130,
+        w:280,
+        h:190,
+        id:"nexus"
+    },
+
+    {
+        name:"Analyzer Tower",
+        x:1080,
+        y:340,
+        w:240,
+        h:180,
+        id:"analyzer"
     }
 
-    if (issue.type === "unused") {
-        title =
-            `Variabel "${issue.name}" dideklarasikan tetapi belum digunakan.`;
-    }
+];
 
-    if (issue.type === "undeclared") {
-        title =
-            `Identifier "${issue.name}" belum dideklarasikan.`;
-    }
+function resize(){
 
-    return [
-        `${index}. [${issue.severity}] ${title}`,
-        `   Kepercayaan: ${issue.confidence}%`,
-        `   Baris ${line}, Kolom ${column + 1}`,
-        `   Bukti:`,
-        ...issue.evidence.map(
-            evidence => `   - ${evidence}`
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+
+}
+
+addEventListener("resize",resize);
+
+resize();
+
+function screen(x,y){
+
+    return {
+
+        x:
+            x -
+            player.x +
+            canvas.width / 2,
+
+        y:
+            y -
+            player.y +
+            canvas.height / 2
+
+    };
+
+}
+
+function drawPixelCharacter(){
+
+    const p =
+        screen(
+            player.x,
+            player.y
+        );
+
+    const moving =
+        player.moving;
+
+    const bob =
+        moving
+        ? Math.floor(
+            Math.sin(player.frame * 3)
+            * 2
         )
-    ].join("\n");
+        : Math.floor(
+            Math.sin(player.frame)
+            * .5
+        );
+
+    ctx.save();
+
+    ctx.translate(
+        Math.round(p.x),
+        Math.round(p.y + bob)
+    );
+
+    ctx.imageSmoothingEnabled = false;
+
+    if(player.mounted){
+
+        drawMountedCharacter();
+
+    }else{
+
+        drawStandingCharacter();
+
+    }
+
+    ctx.restore();
+
 }
 
-function render(result) {
-    if (!result.success) {
-        status.textContent = "Syntax error";
-        output.textContent =
-            `ERROR\n\n${result.error.message}\n\n` +
-            `Baris ${result.error.loc?.line || 0}, ` +
-            `Kolom ${(result.error.loc?.column || 0) + 1}`;
+function rect(x,y,w,h,color){
 
+    ctx.fillStyle = color;
+
+    ctx.fillRect(
+        Math.round(x),
+        Math.round(y),
+        Math.round(w),
+        Math.round(h)
+    );
+
+}
+
+function drawStandingCharacter(){
+
+    const walk =
+        player.moving
+        ? Math.sin(player.frame * 4) * 2
+        : 0;
+
+    rect(
+        -10,
+        -39,
+        20,
+        17,
+        "#f1c5a2"
+    );
+
+    rect(
+        -11,
+        -43,
+        22,
+        7,
+        "#101214"
+    );
+
+    rect(
+        -14,
+        -40,
+        5,
+        7,
+        "#101214"
+    );
+
+    rect(
+        7,
+        -40,
+        5,
+        7,
+        "#101214"
+    );
+
+    rect(
+        -13,
+        -20,
+        26,
+        31,
+        "#922d3b"
+    );
+
+    rect(
+        -18,
+        -17,
+        6,
+        27,
+        "#742530"
+    );
+
+    rect(
+        12,
+        -17,
+        6,
+        27,
+        "#742530"
+    );
+
+    rect(
+        -5,
+        -20,
+        10,
+        5,
+        "#bd3b48"
+    );
+
+    rect(
+        -11,
+        10 + walk,
+        8,
+        18,
+        "#16191c"
+    );
+
+    rect(
+        3,
+        10 - walk,
+        8,
+        18,
+        "#16191c"
+    );
+
+    rect(
+        -13,
+        27 + walk,
+        11,
+        4,
+        "#0c0e10"
+    );
+
+    rect(
+        2,
+        27 - walk,
+        11,
+        4,
+        "#0c0e10"
+    );
+
+    rect(
+        -18,
+        -4,
+        5,
+        17,
+        "#f1c5a2"
+    );
+
+    rect(
+        13,
+        -4,
+        5,
+        17,
+        "#f1c5a2"
+    );
+
+    rect(
+        -20,
+        12,
+        7,
+        4,
+        "#d9ad8d"
+    );
+
+    rect(
+        13,
+        12,
+        7,
+        4,
+        "#d9ad8d"
+    );
+
+}
+
+function drawMountedCharacter(){
+
+    const walk =
+        player.moving
+        ? Math.sin(player.frame * 4) * 2
+        : 0;
+
+    drawHorseAt(0,12);
+
+    rect(
+        -9,
+        -53,
+        18,
+        15,
+        "#f1c5a2"
+    );
+
+    rect(
+        -11,
+        -57,
+        22,
+        7,
+        "#101214"
+    );
+
+    rect(
+        -14,
+        -54,
+        5,
+        7,
+        "#101214"
+    );
+
+    rect(
+        8,
+        -54,
+        5,
+        7,
+        "#101214"
+    );
+
+    rect(
+        -14,
+        -37,
+        28,
+        27,
+        "#922d3b"
+    );
+
+    rect(
+        -20,
+        -33,
+        7,
+        25,
+        "#742530"
+    );
+
+    rect(
+        13,
+        -33,
+        7,
+        25,
+        "#742530"
+    );
+
+    rect(
+        -11,
+        -10 + walk,
+        8,
+        9,
+        "#16191c"
+    );
+
+    rect(
+        3,
+        -10 - walk,
+        8,
+        9,
+        "#16191c"
+    );
+
+}
+
+function drawHorseAt(x,y){
+
+    ctx.fillStyle = "#684936";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        x,
+        y,
+        43,
+        18,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        x + 37,
+        y - 11,
+        17,
+        14,
+        -.2,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    rect(
+        x + 27,
+        y - 20,
+        5,
+        10,
+        "#3b2b24"
+    );
+
+    rect(
+        x - 27,
+        y + 13,
+        7,
+        25,
+        "#3a2923"
+    );
+
+    rect(
+        x + 15,
+        y + 13,
+        7,
+        25,
+        "#3a2923"
+    );
+
+    rect(
+        x + 48,
+        y - 13,
+        5,
+        4,
+        "#171313"
+    );
+
+}
+
+function drawHorse(){
+
+    if(player.mounted){
         return;
     }
 
-    const {
-        scopeData,
-        issues
-    } = result;
-
-    const userDeclarations =
-        scopeData.declarations.filter(
-            item => !item.symbol.builtin
+    const p =
+        screen(
+            horse.x,
+            horse.y
         );
 
-    const userSymbols =
-        userDeclarations.length;
+    ctx.save();
+
+    ctx.translate(
+        Math.round(p.x),
+        Math.round(p.y)
+    );
+
+    drawHorseAt(0,0);
+
+    ctx.restore();
+
+}
+
+function drawWorld(){
+
+    ctx.fillStyle = "#18291f";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.strokeStyle =
+        "rgba(255,255,255,.035)";
+
+    for(
+        let x =
+            (-player.x +
+            canvas.width / 2) % 80;
+
+        x < canvas.width;
+
+        x += 80
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(x,0);
+        ctx.lineTo(x,canvas.height);
+
+        ctx.stroke();
+
+    }
+
+    for(
+        let y =
+            (-player.y +
+            canvas.height / 2) % 80;
+
+        y < canvas.height;
+
+        y += 80
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(0,y);
+        ctx.lineTo(canvas.width,y);
+
+        ctx.stroke();
+
+    }
+
+    ctx.fillStyle = "#5b5044";
+
+    ctx.fillRect(
+        0,
+        canvas.height / 2 + 55,
+        canvas.width,
+        80
+    );
+
+    for(const building of buildings){
+
+        const p =
+            screen(
+                building.x,
+                building.y
+            );
+
+        ctx.fillStyle =
+            building.id === "nexus"
+            ? "#61242d"
+            : "#202a31";
+
+        ctx.fillRect(
+            p.x,
+            p.y,
+            building.w,
+            building.h
+        );
+
+        ctx.strokeStyle =
+            building.id === "nexus"
+            ? "#b94753"
+            : "#45515c";
+
+        ctx.lineWidth = 3;
+
+        ctx.strokeRect(
+            p.x,
+            p.y,
+            building.w,
+            building.h
+        );
+
+        ctx.fillStyle = "#dce3e8";
+
+        ctx.font =
+            "bold 13px Arial";
+
+        ctx.textAlign = "center";
+
+        ctx.fillText(
+            building.name,
+            p.x + building.w / 2,
+            p.y + building.h + 22
+        );
+
+    }
+
+    drawHorse();
+
+    drawPixelCharacter();
+
+}
+
+function movement(){
+
+    let dx = 0;
+    let dy = 0;
+
+    if(keys.w || keys.ArrowUp){
+        dy--;
+    }
+
+    if(keys.s || keys.ArrowDown){
+        dy++;
+    }
+
+    if(keys.a || keys.ArrowLeft){
+        dx--;
+    }
+
+    if(keys.d || keys.ArrowRight){
+        dx++;
+    }
+
+    if(dx || dy){
+
+        player.target = null;
+
+        player.moving = true;
+
+        const length =
+            Math.hypot(dx,dy);
+
+        const speed =
+            player.mounted
+            ? 4.2
+            : player.speed;
+
+        player.x +=
+            dx / length * speed;
+
+        player.y +=
+            dy / length * speed;
+
+        player.frame += .16;
+
+        return;
+
+    }
+
+    if(player.target){
+
+        const dx =
+            player.target.x -
+            player.x;
+
+        const dy =
+            player.target.y -
+            player.y;
+
+        const distance =
+            Math.hypot(dx,dy);
+
+        if(distance < 8){
+
+            player.target = null;
+            player.moving = false;
+
+        }else{
+
+            const speed =
+                player.mounted
+                ? 3.8
+                : 1.8;
+
+            player.x +=
+                dx / distance *
+                speed;
+
+            player.y +=
+                dy / distance *
+                speed;
+
+            player.frame += .12;
+
+            player.moving = true;
+
+        }
+
+        return;
+
+    }
+
+    player.moving = false;
+
+    player.frame += .02;
+
+}
+
+function loop(){
+
+    movement();
+
+    drawWorld();
+
+    requestAnimationFrame(loop);
+
+}
+
+loop();
+
+function setMessage(text){
+
+    document.getElementById(
+        "message"
+    ).textContent = text;
+
+}
+
+function setState(text){
+
+    document.getElementById(
+        "state"
+    ).textContent = text;
+
+}
+
+function moveTo(x,y,text){
+
+    player.target = {
+        x,
+        y
+    };
+
+    setMessage(text);
+
+    setState("MOVING");
+
+}
+
+function openWorkshop(){
+
+    const building =
+        buildings[0];
+
+    const targetX =
+        building.x +
+        building.w / 2;
+
+    const targetY =
+        building.y +
+        building.h +
+        55;
+
+    if(
+        Math.hypot(
+            player.x - targetX,
+            player.y - targetY
+        ) > 170
+    ){
+
+        moveTo(
+            targetX,
+            targetY,
+            "Cakrawala menuju Code Workshop."
+        );
+
+        const wait =
+            setInterval(() => {
+
+                if(!player.target){
+
+                    clearInterval(wait);
+
+                    document
+                        .getElementById("window")
+                        .classList.add("open");
+
+                    setState("WORKSHOP");
+
+                }
+
+            },100);
+
+    }else{
+
+        document
+            .getElementById("window")
+            .classList.add("open");
+
+        setState("WORKSHOP");
+
+    }
+
+}
+
+function performAnalysis(){
+
+    const code =
+        document.getElementById(
+            "code"
+        ).value;
+
+    const result =
+        analyzeCode(code);
+
+    const output =
+        document.getElementById(
+            "output"
+        );
+
+    const status =
+        document.getElementById(
+            "analysisStatus"
+        );
+
+    if(!result.ok){
+
+        output.textContent =
+            "ERROR\n\n" +
+            result.error.message;
+
+        status.textContent =
+            "Syntax error";
+
+        nexus.emit(
+            "analysis:error",
+            result.error
+        );
+
+        return;
+
+    }
+
+    const data =
+        result.data;
+
+    const declarations =
+        data.declarations.filter(
+            item =>
+                !item.symbol.builtin
+        );
 
     const resolved =
-        scopeData.references.filter(
-            reference => reference.resolved
+        data.references.filter(
+            reference =>
+                reference.resolved
         ).length;
 
-    const scopes =
-        countScopes(
-            scopeData.globalScope
-        );
-
     const lines = [
+
         "ANALISIS CAKRAWALA",
+
         "==============================",
+
         "",
+
         "Sintaks: OK",
+
         "Bahasa: JavaScript",
-        `Deklarasi: ${userDeclarations.length}`,
-        `Fungsi: ${scopeData.functions.length}`,
-        `Parameter: ${scopeData.parameters.length}`,
-        `Cakupan: ${scopes}`,
-        `Simbol: ${userSymbols}`,
-        `Referensi: ${scopeData.references.length}`,
+
+        `Deklarasi: ${declarations.length}`,
+
+        `Fungsi: ${data.functions.length}`,
+
+        `Parameter: ${data.parameters.length}`,
+
+        `Cakupan: ${data.global.children.length + 1}`,
+
+        `Simbol: ${declarations.length}`,
+
+        `Referensi: ${data.references.length}`,
+
         `Ter-resolve: ${resolved}`,
+
         "",
+
         "MASALAH",
+
         "==============================",
+
         ""
+
     ];
 
-    if (!issues.length) {
+    if(result.issues.length === 0){
+
         lines.push(
             "Tidak ada masalah yang terdeteksi."
         );
-    } else {
-        issues.forEach((issue, index) => {
-            lines.push(
-                formatIssue(
-                    issue,
-                    index + 1
-                )
-            );
-            lines.push("");
-        });
+
+    }else{
+
+        result.issues.forEach(
+            (issue,index) => {
+
+                const line =
+                    issue.node?.loc?.start?.line || 0;
+
+                const column =
+                    (issue.node?.loc?.start?.column || 0) + 1;
+
+                let title;
+
+                if(issue.type === "typo"){
+
+                    title =
+                        `Kemungkinan kesalahan ketik "${issue.name}". Apakah maksud Anda "${issue.suggestion}"?`;
+
+                }else if(issue.type === "unused"){
+
+                    title =
+                        `Variabel "${issue.name}" dideklarasikan tetapi belum digunakan.`;
+
+                }else{
+
+                    title =
+                        `Identifier "${issue.name}" belum dideklarasikan.`;
+
+                }
+
+                lines.push(
+                    `${index + 1}. [${issue.severity}] ${title}`,
+                    `   Kepercayaan: ${issue.confidence}%`,
+                    `   Baris ${line}, Kolom ${column}`,
+                    "   Bukti:"
+                );
+
+                for(const evidence of issue.evidence){
+
+                    lines.push(
+                        `   - ${evidence}`
+                    );
+
+                }
+
+                lines.push("");
+
+            }
+        );
+
     }
 
     output.textContent =
         lines.join("\n");
 
     status.textContent =
-        `${issues.length} masalah ditemukan`;
-}
-
-function countScopes(scope) {
-    let count = 1;
-
-    for (const child of scope.children) {
-        count += countScopes(child);
-    }
-
-    return count;
-}
-
-function analyze() {
-    const code = editor.value;
-
-    status.textContent =
-        "Analyzing...";
-
-    const result =
-        checker.check(code);
-
-    render(result);
+        result.issues.length
+        ? `${result.issues.length} masalah ditemukan`
+        : "Tidak ada masalah";
 
     nexus.emit(
         "analysis:complete",
         result
     );
+
+    const tower =
+        buildings[2];
+
+    moveTo(
+        tower.x + tower.w / 2,
+        tower.y + tower.h + 55,
+        "Nexus mengirim Cakrawala menuju Analyzer Tower."
+    );
+
+    setTimeout(() => {
+
+        if(!player.target){
+
+            setState("NJOS ONLINE");
+
+        }
+
+    },1000);
+
 }
 
-button.addEventListener(
-    "click",
-    analyze
-);
+document.addEventListener(
+    "keydown",
+    event => {
 
-nexus.on(
-    "analysis:complete",
-    result => {
-        window.__CAKRAWALA_LAST_RESULT__ =
-            result;
+        keys[event.key] = true;
+
+        if(
+            event.key.toLowerCase() === "e"
+        ){
+
+            if(player.mounted){
+
+                player.mounted = false;
+
+                horse.x =
+                    player.x + 45;
+
+                horse.y =
+                    player.y + 10;
+
+                setMessage(
+                    "Cakrawala turun dari kuda."
+                );
+
+                setState("IDLE");
+
+                return;
+
+            }
+
+            if(
+                Math.hypot(
+                    player.x - horse.x,
+                    player.y - horse.y
+                ) < 90
+            ){
+
+                player.mounted = true;
+
+                setMessage(
+                    "Cakrawala menaiki kuda."
+                );
+
+                setState("RIDING");
+
+            }else{
+
+                moveTo(
+                    horse.x,
+                    horse.y,
+                    "Cakrawala menuju kudanya."
+                );
+
+            }
+
+        }
+
+        if(event.key === "Enter"){
+
+            openWorkshop();
+
+        }
+
     }
 );
 
-analyze();
+document.addEventListener(
+    "keyup",
+    event => {
+
+        keys[event.key] = false;
+
+    }
+);
+
+document.getElementById(
+    "analyze"
+).onclick = () => {
+
+    document
+        .getElementById("window")
+        .classList.add("open");
+
+    performAnalysis();
+
+};
+
+document.getElementById(
+    "run"
+).onclick =
+    performAnalysis;
+
+document.getElementById(
+    "clear"
+).onclick = () => {
+
+    document.getElementById(
+        "code"
+    ).value = "";
+
+    document.getElementById(
+        "output"
+    ).textContent = "";
+
+    document.getElementById(
+        "analysisStatus"
+    ).textContent = "Ready";
+
+    setMessage(
+        "Workspace dibersihkan."
+    );
+
+    setState("IDLE");
+
+};
+
+document.getElementById(
+    "close"
+).onclick = () => {
+
+    document
+        .getElementById("window")
+        .classList.remove("open");
+
+    setState("IDLE");
+
+};
+
+nexus.on(
+    "analysis:complete",
+    () => {
+
+        setMessage(
+            "Analysis selesai. NJOS mengirim hasil ke Nexus."
+        );
+
+    }
+);
+
 </script>
+
 </body>
 </html>
-           
-
-                
