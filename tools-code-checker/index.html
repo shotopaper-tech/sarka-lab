@@ -6,574 +6,6 @@
 <title>Cakrawala Workstation</title>
 
 <link rel="stylesheet" href="style.css">
-
-<style>
-* {
-    box-sizing: border-box;
-}
-
-html,
-body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: #070a10;
-    color: #dfe7ef;
-    font-family: Arial, sans-serif;
-}
-
-body {
-    user-select: none;
-}
-
-.app {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background:
-        radial-gradient(
-            circle at 50% 42%,
-            #162438 0%,
-            #0b111b 48%,
-            #06090e 100%
-        );
-}
-
-.app::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-        linear-gradient(
-            rgba(71, 112, 160, .025) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(71, 112, 160, .025) 1px,
-            transparent 1px
-        );
-    background-size: 32px 32px;
-}
-
-.topbar {
-    position: absolute;
-    z-index: 10;
-    top: 15px;
-    left: 17px;
-    right: 17px;
-    height: 58px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 10px;
-    border: 1px solid #243c58;
-    border-radius: 12px;
-    background:
-        linear-gradient(
-            180deg,
-            rgba(15, 25, 39, .96),
-            rgba(8, 13, 21, .96)
-        );
-    box-shadow:
-        0 0 25px rgba(29, 85, 145, .10),
-        inset 0 1px rgba(111, 161, 211, .06);
-}
-
-.brand {
-    padding: 5px 10px;
-}
-
-.brand strong {
-    display: block;
-    color: #e9f2fb;
-    font-size: 14px;
-    letter-spacing: 3px;
-}
-
-.brand span {
-    display: block;
-    margin-top: 4px;
-    color: #63809d;
-    font-size: 9px;
-    letter-spacing: 2px;
-}
-
-.system {
-    display: flex;
-    gap: 7px;
-}
-
-.pill {
-    padding: 8px 11px;
-    border: 1px solid #29415c;
-    border-radius: 7px;
-    background: #0b131e;
-    color: #70859a;
-    font-size: 9px;
-    letter-spacing: .7px;
-}
-
-.pill.online {
-    border-color: #315c4b;
-    color: #78c89b;
-    box-shadow:
-        inset 0 0 12px rgba(64, 170, 113, .06);
-}
-
-.workspace {
-    position: absolute;
-    top: 87px;
-    right: 17px;
-    bottom: 118px;
-    left: 17px;
-    display: grid;
-    grid-template-columns: 205px minmax(0, 1fr) 225px;
-    gap: 10px;
-}
-
-.panel {
-    position: relative;
-    min-width: 0;
-    overflow: hidden;
-    border: 1px solid #233b56;
-    border-radius: 12px;
-    background:
-        linear-gradient(
-            180deg,
-            rgba(11, 19, 30, .96),
-            rgba(7, 12, 19, .96)
-        );
-    box-shadow:
-        0 0 22px rgba(18, 70, 120, .08),
-        inset 0 1px rgba(107, 158, 210, .05);
-}
-
-.panel::before {
-    content: "";
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    left: 18px;
-    right: 18px;
-    height: 1px;
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            #416d98,
-            transparent
-        );
-    opacity: .7;
-}
-
-.panel-title {
-    position: relative;
-    z-index: 2;
-    height: 39px;
-    display: flex;
-    align-items: center;
-    padding: 0 12px;
-    border-bottom: 1px solid #1e334b;
-    background:
-        linear-gradient(
-            90deg,
-            rgba(28, 58, 88, .25),
-            transparent
-        );
-    color: #7893ad;
-    font-size: 9px;
-    letter-spacing: 1.7px;
-    text-transform: uppercase;
-}
-
-.tool-list {
-    padding: 8px;
-}
-
-.tool {
-    position: relative;
-    margin-bottom: 5px;
-    padding: 10px 11px;
-    border: 1px solid transparent;
-    border-radius: 7px;
-    color: #899baa;
-    font-size: 11px;
-    cursor: pointer;
-    transition: .15s ease;
-}
-
-.tool:hover {
-    border-color: #294966;
-    background: rgba(28, 59, 88, .25);
-    color: #cbd9e5;
-}
-
-.tool.active {
-    border-color: #315b80;
-    background:
-        linear-gradient(
-            90deg,
-            rgba(39, 82, 120, .48),
-            rgba(24, 45, 67, .22)
-        );
-    color: #e5eef6;
-    box-shadow:
-        inset 3px 0 #5894c7,
-        0 0 15px rgba(46, 111, 167, .07);
-}
-
-.tool span {
-    display: block;
-    margin-top: 4px;
-    color: #526579;
-    font-size: 8px;
-}
-
-.tool.active span {
-    color: #6685a0;
-}
-
-.workspace-content {
-    position: relative;
-    height: calc(100% - 39px);
-    overflow: hidden;
-}
-
-.view {
-    position: absolute;
-    inset: 0;
-    display: none;
-    overflow: auto;
-}
-
-.view.active {
-    display: block;
-}
-
-#view-editor {
-    overflow: hidden;
-}
-
-#view-analyzer,
-#view-variables,
-#view-runtime,
-#view-nexus {
-    background:
-        linear-gradient(
-            180deg,
-            rgba(10, 19, 30, .96),
-            rgba(7, 13, 21, .96)
-        );
-}
-
-.code-area {
-    width: 100%;
-    height: 100%;
-    min-height: 100%;
-    padding: 16px;
-    border: 0;
-    outline: 0;
-    resize: none;
-    background: #070c12;
-    color: #d8e4ef;
-    font-family: Consolas, Monaco, monospace;
-    font-size: 12px;
-    line-height: 1.7;
-}
-
-.analysis-output {
-    min-height: 100%;
-    padding: 17px;
-    white-space: pre-wrap;
-    color: #c7d2dd;
-    font-family: Consolas, Monaco, monospace;
-    font-size: 11px;
-    line-height: 1.7;
-}
-
-.content-inner {
-    padding: 15px;
-}
-
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(
-        2,
-        minmax(0, 1fr)
-    );
-    gap: 8px;
-}
-
-.info-card {
-    padding: 12px;
-    border: 1px solid #21384f;
-    border-radius: 8px;
-    background: #0a121c;
-}
-
-.info-card strong {
-    display: block;
-    margin-bottom: 5px;
-    color: #d3dee8;
-    font-size: 11px;
-}
-
-.info-card span {
-    color: #62778b;
-    font-family: Consolas, monospace;
-    font-size: 10px;
-}
-
-.event-list {
-    padding: 12px;
-}
-
-.event {
-    margin-bottom: 7px;
-    padding: 9px;
-    border-left: 2px solid #3b668a;
-    background: #0a121b;
-    color: #8ea0b0;
-    font-family: Consolas, monospace;
-    font-size: 10px;
-}
-
-.system-card {
-    padding: 10px;
-}
-
-.status-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 9px 3px;
-    border-bottom: 1px solid #1a2b3e;
-    font-size: 10px;
-}
-
-.status-row span:first-child {
-    color: #5e7183;
-}
-
-.status-row span:last-child {
-    color: #b4c3d0;
-}
-
-.system-box {
-    margin: 10px;
-    padding: 10px;
-    border: 1px solid #213a52;
-    border-radius: 7px;
-    background: #080f17;
-    color: #6d8499;
-    font-family: Consolas, monospace;
-    font-size: 9px;
-    line-height: 1.7;
-}
-
-.bottom {
-    position: absolute;
-    z-index: 10;
-    right: 17px;
-    bottom: 16px;
-    left: 17px;
-}
-
-.nexus-bar {
-    min-height: 82px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 12px;
-    align-items: center;
-    padding: 11px 13px;
-    border: 1px solid #294561;
-    border-radius: 11px;
-    background:
-        linear-gradient(
-            90deg,
-            rgba(13, 28, 44, .97),
-            rgba(8, 14, 22, .97)
-        );
-    box-shadow:
-        0 0 25px rgba(25, 78, 124, .08),
-        inset 0 1px rgba(109, 157, 202, .05);
-}
-
-.label {
-    color: #55718b;
-    font-size: 8px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-}
-
-#nexusMessage {
-    margin-top: 5px;
-    color: #bdcbd7;
-    font-family: Consolas, monospace;
-    font-size: 10px;
-}
-
-.actions {
-    display: flex;
-    gap: 6px;
-}
-
-button {
-    border: 1px solid #29445e;
-    border-radius: 6px;
-    padding: 8px 13px;
-    background: #0d1925;
-    color: #b9c9d6;
-    cursor: pointer;
-    font-size: 9px;
-}
-
-button:hover {
-    border-color: #4d769b;
-    background: #132438;
-}
-
-#analyzeButton {
-    border-color: #5e3440;
-    background: #3d1e27;
-    color: #e1bec4;
-}
-
-#analyzeButton:hover {
-    background: #562630;
-}
-
-#clearButton:hover {
-    border-color: #7b4d52;
-}
-
-.issue {
-    margin-bottom: 10px;
-    padding: 11px;
-    border: 1px solid #26394c;
-    border-radius: 7px;
-    background: #0a121b;
-}
-
-.issue strong {
-    display: block;
-    margin-bottom: 4px;
-    font-size: 10px;
-}
-
-.issue span {
-    color: #657b90;
-    font-size: 9px;
-}
-
-.issue p {
-    margin: 7px 0 0;
-    color: #b9c7d3;
-    font-size: 10px;
-}
-
-.issue.warning {
-    border-color: #66542a;
-}
-
-.issue.warning strong {
-    color: #d8c071;
-}
-
-.issue.error {
-    border-color: #63333d;
-}
-
-.issue.error strong {
-    color: #e28d99;
-}
-
-.issue.info {
-    border-color: #294967;
-}
-
-.issue.info strong {
-    color: #80acd0;
-}
-
-.analysis-success {
-    margin: 15px;
-    padding: 14px;
-    border: 1px solid #28533e;
-    border-radius: 8px;
-    background: #0a1712;
-}
-
-.analysis-success strong {
-    display: block;
-    color: #78c89b;
-    font-size: 11px;
-}
-
-.analysis-success span {
-    display: block;
-    margin-top: 5px;
-    color: #668978;
-    font-size: 10px;
-}
-
-.empty-state {
-    padding: 15px;
-    color: #617487;
-    font-family: Consolas, monospace;
-    font-size: 10px;
-}
-
-.variable-row {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 4px 10px;
-    margin-bottom: 7px;
-    padding: 10px;
-    border: 1px solid #21384f;
-    border-radius: 7px;
-    background: #0a121c;
-}
-
-.variable-row strong {
-    color: #cbd8e4;
-    font-family: Consolas, monospace;
-    font-size: 10px;
-}
-
-.variable-row span {
-    color: #5f89ae;
-    font-size: 9px;
-}
-
-.variable-row small {
-    grid-column: 1 / -1;
-    color: #53687b;
-    font-family: Consolas, monospace;
-    font-size: 8px;
-}
-
-@media (max-width: 800px) {
-    .workspace {
-        grid-template-columns: 165px minmax(0, 1fr);
-    }
-
-    .workspace > .panel:last-child {
-        display: none;
-    }
-
-    .nexus-bar {
-        grid-template-columns: 1fr;
-    }
-
-    .actions {
-        justify-content: flex-end;
-    }
-}
-</style>
 </head>
 
 <body>
@@ -582,225 +14,438 @@ button:hover {
 
     <header class="topbar">
         <div class="brand">
-            <strong>CAKRAWALA</strong>
-            <span>WORKSTATION</span>
+            <div class="brand-mark">C</div>
+
+            <div class="brand-text">
+                <strong>CAKRAWALA</strong>
+                <span>WORKSTATION</span>
+            </div>
         </div>
 
-        <div class="system">
-            <div class="pill online">
-                ● NJOS ONLINE
+        <div class="status-group">
+            <div class="status online" id="njosStatus">
+                NJOS ONLINE
             </div>
 
-            <div class="pill" id="systemState">
-                IDLE
+            <div class="status" id="systemState">
+                SYSTEM READY
             </div>
         </div>
     </header>
 
-    <main class="workspace">
+    <div class="layout">
 
-        <section class="panel">
+        <aside class="sidebar">
 
             <div class="panel-title">
-                Tools
+                TOOLS
             </div>
 
-            <div class="tool-list">
+            <nav class="tools">
 
-                <div class="tool active" data-view="editor">
-                    Code Editor
-                    <span>Source workspace</span>
+                <button class="tool active" data-view="world">
+                    <span>World</span>
+                    <small>workspace</small>
+                </button>
+
+                <button class="tool" data-view="editor">
+                    <span>Code Editor</span>
+                    <small>write code</small>
+                </button>
+
+                <button class="tool" data-view="analyzer">
+                    <span>Analyzer</span>
+                    <small>inspect code</small>
+                </button>
+
+                <button class="tool" data-view="variables">
+                    <span>Variable Manager</span>
+                    <small>symbols & scope</small>
+                </button>
+
+                <button class="tool" data-view="runtime">
+                    <span>Runtime Monitor</span>
+                    <small>system state</small>
+                </button>
+
+                <button class="tool" data-view="nexus">
+                    <span>Nexus</span>
+                    <small>event network</small>
+                </button>
+
+            </nav>
+
+        </aside>
+
+        <main class="workspace">
+
+            <div class="workspace-header">
+
+                <div class="workspace-title" id="workspaceTitle">
+                    WORLD
                 </div>
 
-                <div class="tool" data-view="analyzer">
-                    Analyzer
-                    <span>Code intelligence</span>
+                <div class="workspace-state" id="nexusMessage">
+                    Cakrawala ready
                 </div>
 
-                <div class="tool" data-view="variables">
-                    Variable Manager
-                    <span>Symbol state</span>
-                </div>
-
-                <div class="tool" data-view="runtime">
-                    Runtime Monitor
-                    <span>Execution state</span>
-                </div>
-
-                <div class="tool" data-view="nexus">
-                    Nexus
-                    <span>System bridge</span>
-                </div>
-
-            </div>
-
-        </section>
-
-        <section class="panel">
-
-            <div class="panel-title" id="workspaceTitle">
-                Code Editor
             </div>
 
             <div class="workspace-content">
 
-                <div class="view active" id="view-editor">
+                <section class="view world-view active" id="view-world">
 
-                    <textarea
-                        class="code-area"
-                        id="codeEditor">const username = "Miu";
+                    <div class="world-stage" id="worldStage">
 
-function greet(name) {
-    return ussername + name;
+                        <canvas
+                            id="worldCanvas"
+                            class="world-canvas"
+                        ></canvas>
+
+                        <canvas
+                            id="companionCanvas"
+                            class="companion-canvas"
+                        ></canvas>
+
+                        <div
+                            id="companionShadow"
+                            class="companion-shadow"
+                        ></div>
+
+                        <div class="world-grid"></div>
+
+                        <div class="world-header">
+                            <strong>CAKRAWALA FIELD</strong>
+                            <span>interactive workstation space</span>
+                        </div>
+
+                        <div class="world-info">
+
+                            <div class="world-info-row">
+                                <span>Location</span>
+                                <strong id="worldLocation">
+                                    Cakrawala
+                                </strong>
+                            </div>
+
+                            <div class="world-info-row">
+                                <span>Companion</span>
+                                <strong id="companionStatus">
+                                    Idle
+                                </strong>
+                            </div>
+
+                            <div class="world-info-row">
+                                <span>Nexus</span>
+                                <strong id="worldNexusStatus">
+                                    Connected
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="view" id="view-editor">
+
+                    <div class="editor-layout">
+
+                        <div class="panel">
+
+                            <div class="panel-header">
+                                <strong>CODE EDITOR</strong>
+                                <span id="editorLanguage">
+                                    JavaScript
+                                </span>
+                            </div>
+
+                            <textarea
+                                id="codeEditor"
+                                class="code-area"
+                                spellcheck="false"
+                            >const username = "Miu";
+
+function greet(user) {
+    const message = "Hello " + user;
+    return message;
 }
 
-greet(username);</textarea>
+console.log(greet(ussername));</textarea>
 
-                </div>
+                        </div>
 
-                <div class="view" id="view-analyzer">
+                        <div class="panel">
 
-                    <div
-                        class="analysis-output"
-                        id="analysisOutput">
-Belum ada analisis.
-
-Tekan Analyze untuk menjalankan NJOS.
-                    </div>
-
-                </div>
-
-                <div class="view" id="view-variables">
-
-                    <div
-                        class="content-inner"
-                        id="variableContent">
-                        Belum ada data symbol.
-                    </div>
-
-                </div>
-
-                <div class="view" id="view-runtime">
-
-                    <div class="content-inner">
-
-                        <div class="info-grid">
-
-                            <div class="info-card">
-                                <strong>NJOS</strong>
-                                <span>ONLINE</span>
-                            </div>
-
-                            <div class="info-card">
-                                <strong>Companion</strong>
-                                <span id="runtimeCompanion">
-                                    IDLE
+                            <div class="panel-header">
+                                <strong>ANALYSIS</strong>
+                                <span id="analysisState">
+                                    waiting
                                 </span>
                             </div>
 
-                            <div class="info-card">
-                                <strong>Nexus</strong>
-                                <span id="runtimeNexus">
-                                    READY
-                                </span>
-                            </div>
+                            <div
+                                id="analysisOutput"
+                                class="analysis-output"
+                            >
+                                <div class="issue">
+                                    <div class="issue-title">
+                                        Ready
+                                    </div>
 
-                            <div class="info-card">
-                                <strong>Engine</strong>
-                                <span>
-                                    Cakrawala
-                                </span>
+                                    <div class="issue-detail">
+                                        Run Analyze to inspect the code.
+                                    </div>
+                                </div>
                             </div>
 
                         </div>
 
                     </div>
 
-                </div>
+                </section>
 
-                <div class="view" id="view-nexus">
+                <section class="view" id="view-analyzer">
 
-                    <div
-                        class="event-list"
-                        id="eventList">
-                        <div class="event">
-                            [system] Nexus initialized.
+                    <div class="panel full-panel">
+
+                        <div class="panel-header">
+                            <strong>ANALYZER</strong>
+                            <span>semantic inspection</span>
                         </div>
+
+                        <div
+                            id="analyzerContent"
+                            class="analysis-output"
+                        >
+                            <div class="issue">
+                                <div class="issue-title">
+                                    No analysis yet
+                                </div>
+
+                                <div class="issue-detail">
+                                    Analyze the current source from the Nexus bar.
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
-                </div>
+                </section>
+
+                <section class="view" id="view-variables">
+
+                    <div class="panel full-panel">
+
+                        <div class="panel-header">
+                            <strong>VARIABLE MANAGER</strong>
+                            <span>symbols & scope</span>
+                        </div>
+
+                        <div
+                            id="variableContent"
+                            class="analysis-output"
+                        >
+                            <div class="issue">
+                                <div class="issue-title">
+                                    Symbol table empty
+                                </div>
+
+                                <div class="issue-detail">
+                                    Analyze code to populate variables.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="view" id="view-runtime">
+
+                    <div class="info-grid">
+
+                        <div class="info-card">
+                            <strong>Runtime</strong>
+                            <span id="runtimeState">
+                                Ready
+                            </span>
+                        </div>
+
+                        <div class="info-card">
+                            <strong>Companion</strong>
+                            <span id="runtimeCompanion">
+                                Idle
+                            </span>
+                        </div>
+
+                        <div class="info-card">
+                            <strong>Nexus</strong>
+                            <span id="runtimeNexus">
+                                Connected
+                            </span>
+                        </div>
+
+                        <div class="info-card">
+                            <strong>Parser</strong>
+                            <span id="runtimeParser">
+                                Acorn
+                            </span>
+                        </div>
+
+                        <div class="info-card">
+                            <strong>Last Analysis</strong>
+                            <span id="runtimeAnalysis">
+                                None
+                            </span>
+                        </div>
+
+                        <div class="info-card">
+                            <strong>Issues</strong>
+                            <span id="runtimeIssues">
+                                0
+                            </span>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="view" id="view-nexus">
+
+                    <div class="panel full-panel">
+
+                        <div class="panel-header">
+                            <strong>NEXUS EVENT STREAM</strong>
+                            <span id="nexusStreamStatus">
+                                live
+                            </span>
+                        </div>
+
+                        <div
+                            id="eventList"
+                            class="analysis-output"
+                        >
+                            <div class="event">
+                                Nexus initialized.
+                            </div>
+                        </div>
+
+                    </div>
+
+                </section>
 
             </div>
 
-        </section>
+        </main>
 
-        <section class="panel">
+        <aside class="system-panel">
 
             <div class="panel-title">
-                System
+                SYSTEM
             </div>
 
             <div class="system-card">
 
-                <div class="status-row">
-                    <span>Core</span>
-                    <span>NJOS 0.6</span>
+                <div class="system-label">
+                    NJOS
                 </div>
 
-                <div class="status-row">
-                    <span>Parser</span>
-                    <span>ACORN</span>
-                </div>
-
-                <div class="status-row">
-                    <span>Nexus</span>
-                    <span id="nexusStatus">READY</span>
-                </div>
-
-                <div class="status-row">
-                    <span>Companion</span>
-                    <span id="companionStatus">
-                        IDLE
-                    </span>
+                <div
+                    class="system-value"
+                    id="systemNjos"
+                >
+                    Online
                 </div>
 
             </div>
 
-            <div
-                class="system-box"
-                id="systemBox">
-                waiting for system events...
-            </div>
+            <div class="system-card">
 
-        </section>
-
-    </main>
-
-    <footer class="bottom">
-
-        <div class="nexus-bar">
-
-            <div>
-                <div class="label">
-                    Nexus communication
+                <div class="system-label">
+                    Nexus
                 </div>
 
-                <div id="nexusMessage">
-                    Cakrawala sedang menunggu aktivitas.
+                <div
+                    class="system-value"
+                    id="systemNexus"
+                >
+                    Connected
                 </div>
-            </div>
-
-            <div class="actions">
-
-                <button id="analyzeButton">
-                    Analyze
-                </button>
-
-                <button id="clearButton">
-                    Clear
-                </button>
 
             </div>
+
+            <div class="system-card">
+
+                <div class="system-label">
+                    Parser
+                </div>
+
+                <div
+                    class="system-value"
+                    id="systemParser"
+                >
+                    Acorn
+                </div>
+
+            </div>
+
+            <div class="system-card">
+
+                <div class="system-label">
+                    Companion
+                </div>
+
+                <div
+                    class="system-value"
+                    id="systemCompanion"
+                >
+                    Idle
+                </div>
+
+            </div>
+
+            <div class="system-card">
+
+                <div class="system-label">
+                    State
+                </div>
+
+                <div
+                    class="system-value"
+                    id="systemBox"
+                >
+                    Ready
+                </div>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+    <footer class="nexus-bar">
+
+        <div class="nexus-left">
+
+            <div class="nexus-dot"></div>
+
+            <div class="nexus-text">
+                NEXUS
+            </div>
+
+        </div>
+
+        <div class="nexus-actions">
+
+            <button id="analyzeButton">
+                ANALYZE
+            </button>
+
+            <button id="clearButton">
+                CLEAR
+            </button>
 
         </div>
 
