@@ -1,460 +1,774 @@
-   <!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cakrawala Workstation</title>
-
-<link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-<div class="app">
-
-    <header class="topbar">
-        <div class="brand">
-            <div class="brand-mark">C</div>
-
-            <div class="brand-text">
-                <strong>CAKRAWALA</strong>
-                <span>WORKSTATION</span>
-            </div>
-        </div>
-
-        <div class="status-group">
-            <div class="status online" id="njosStatus">
-                NJOS ONLINE
-            </div>
-
-            <div class="status" id="systemState">
-                SYSTEM READY
-            </div>
-        </div>
-    </header>
-
-    <div class="layout">
-
-        <aside class="sidebar">
-
-            <div class="panel-title">
-                TOOLS
-            </div>
-
-            <nav class="tools">
-
-                <button class="tool active" data-view="world">
-                    <span>World</span>
-                    <small>workspace</small>
-                </button>
-
-                <button class="tool" data-view="editor">
-                    <span>Code Editor</span>
-                    <small>write code</small>
-                </button>
-
-                <button class="tool" data-view="analyzer">
-                    <span>Analyzer</span>
-                    <small>inspect code</small>
-                </button>
-
-                <button class="tool" data-view="variables">
-                    <span>Variable Manager</span>
-                    <small>symbols & scope</small>
-                </button>
-
-                <button class="tool" data-view="runtime">
-                    <span>Runtime Monitor</span>
-                    <small>system state</small>
-                </button>
-
-                <button class="tool" data-view="nexus">
-                    <span>Nexus</span>
-                    <small>event network</small>
-                </button>
-
-            </nav>
-
-        </aside>
-
-        <main class="workspace">
-
-            <div class="workspace-header">
-
-                <div class="workspace-title" id="workspaceTitle">
-                    WORLD
-                </div>
-
-                <div class="workspace-state" id="nexusMessage">
-                    Cakrawala ready
-                </div>
-
-            </div>
-
-            <div class="workspace-content">
-
-                <section class="view world-view active" id="view-world">
-
-                    <div class="world-stage" id="worldStage">
-
-                        <canvas
-                            id="worldCanvas"
-                            class="world-canvas"
-                        ></canvas>
-
-                        <canvas
-                            id="companionCanvas"
-                            class="companion-canvas"
-                        ></canvas>
-
-                        <div
-                            id="companionShadow"
-                            class="companion-shadow"
-                        ></div>
-
-                        <div class="world-grid"></div>
-
-                        <div class="world-header">
-                            <strong>CAKRAWALA FIELD</strong>
-                            <span>interactive workstation space</span>
-                        </div>
-
-                        <div class="world-info">
-
-                            <div class="world-info-row">
-                                <span>Location</span>
-                                <strong id="worldLocation">
-                                    Cakrawala
-                                </strong>
-                            </div>
-
-                            <div class="world-info-row">
-                                <span>Companion</span>
-                                <strong id="companionStatus">
-                                    Idle
-                                </strong>
-                            </div>
-
-                            <div class="world-info-row">
-                                <span>Nexus</span>
-                                <strong id="worldNexusStatus">
-                                    Connected
-                                </strong>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-                <section class="view" id="view-editor">
-
-                    <div class="editor-layout">
-
-                        <div class="panel">
-
-                            <div class="panel-header">
-                                <strong>CODE EDITOR</strong>
-                                <span id="editorLanguage">
-                                    JavaScript
-                                </span>
-                            </div>
-
-                            <textarea
-                                id="codeEditor"
-                                class="code-area"
-                                spellcheck="false"
-                            >const username = "Miu";
-
-function greet(user) {
-    const message = "Hello " + user;
-    return message;
+ * {
+    box-sizing: border-box;
 }
 
-console.log(greet(ussername));</textarea>
-
-                        </div>
-
-                        <div class="panel">
-
-                            <div class="panel-header">
-                                <strong>ANALYSIS</strong>
-                                <span id="analysisState">
-                                    waiting
-                                </span>
-                            </div>
-
-                            <div
-                                id="analysisOutput"
-                                class="analysis-output"
-                            >
-                                <div class="issue">
-                                    <div class="issue-title">
-                                        Ready
-                                    </div>
-
-                                    <div class="issue-detail">
-                                        Run Analyze to inspect the code.
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-                <section class="view" id="view-analyzer">
-
-                    <div class="panel full-panel">
-
-                        <div class="panel-header">
-                            <strong>ANALYZER</strong>
-                            <span>semantic inspection</span>
-                        </div>
-
-                        <div
-                            id="analyzerContent"
-                            class="analysis-output"
-                        >
-                            <div class="issue">
-                                <div class="issue-title">
-                                    No analysis yet
-                                </div>
-
-                                <div class="issue-detail">
-                                    Analyze the current source from the Nexus bar.
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </section>
-
-                <section class="view" id="view-variables">
-
-                    <div class="panel full-panel">
-
-                        <div class="panel-header">
-                            <strong>VARIABLE MANAGER</strong>
-                            <span>symbols & scope</span>
-                        </div>
-
-                        <div
-                            id="variableContent"
-                            class="analysis-output"
-                        >
-                            <div class="issue">
-                                <div class="issue-title">
-                                    Symbol table empty
-                                </div>
-
-                                <div class="issue-detail">
-                                    Analyze code to populate variables.
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </section>
-
-                <section class="view" id="view-runtime">
-
-                    <div class="info-grid">
-
-                        <div class="info-card">
-                            <strong>Runtime</strong>
-                            <span id="runtimeState">
-                                Ready
-                            </span>
-                        </div>
-
-                        <div class="info-card">
-                            <strong>Companion</strong>
-                            <span id="runtimeCompanion">
-                                Idle
-                            </span>
-                        </div>
-
-                        <div class="info-card">
-                            <strong>Nexus</strong>
-                            <span id="runtimeNexus">
-                                Connected
-                            </span>
-                        </div>
-
-                        <div class="info-card">
-                            <strong>Parser</strong>
-                            <span id="runtimeParser">
-                                Acorn
-                            </span>
-                        </div>
-
-                        <div class="info-card">
-                            <strong>Last Analysis</strong>
-                            <span id="runtimeAnalysis">
-                                None
-                            </span>
-                        </div>
-
-                        <div class="info-card">
-                            <strong>Issues</strong>
-                            <span id="runtimeIssues">
-                                0
-                            </span>
-                        </div>
-
-                    </div>
-
-                </section>
-
-                <section class="view" id="view-nexus">
-
-                    <div class="panel full-panel">
-
-                        <div class="panel-header">
-                            <strong>NEXUS EVENT STREAM</strong>
-                            <span id="nexusStreamStatus">
-                                live
-                            </span>
-                        </div>
-
-                        <div
-                            id="eventList"
-                            class="analysis-output"
-                        >
-                            <div class="event">
-                                Nexus initialized.
-                            </div>
-                        </div>
-
-                    </div>
-
-                </section>
-
-            </div>
-
-        </main>
-
-        <aside class="system-panel">
-
-            <div class="panel-title">
-                SYSTEM
-            </div>
-
-            <div class="system-card">
-
-                <div class="system-label">
-                    NJOS
-                </div>
-
-                <div
-                    class="system-value"
-                    id="systemNjos"
-                >
-                    Online
-                </div>
-
-            </div>
-
-            <div class="system-card">
-
-                <div class="system-label">
-                    Nexus
-                </div>
-
-                <div
-                    class="system-value"
-                    id="systemNexus"
-                >
-                    Connected
-                </div>
-
-            </div>
-
-            <div class="system-card">
-
-                <div class="system-label">
-                    Parser
-                </div>
-
-                <div
-                    class="system-value"
-                    id="systemParser"
-                >
-                    Acorn
-                </div>
-
-            </div>
-
-            <div class="system-card">
-
-                <div class="system-label">
-                    Companion
-                </div>
-
-                <div
-                    class="system-value"
-                    id="systemCompanion"
-                >
-                    Idle
-                </div>
-
-            </div>
-
-            <div class="system-card">
-
-                <div class="system-label">
-                    State
-                </div>
-
-                <div
-                    class="system-value"
-                    id="systemBox"
-                >
-                    Ready
-                </div>
-
-            </div>
-
-        </aside>
-
-    </div>
-
-    <footer class="nexus-bar">
-
-        <div class="nexus-left">
-
-            <div class="nexus-dot"></div>
-
-            <div class="nexus-text">
-                NEXUS
-            </div>
-
-        </div>
-
-        <div class="nexus-actions">
-
-            <button id="analyzeButton">
-                ANALYZE
-            </button>
-
-            <button id="clearButton">
-                CLEAR
-            </button>
-
-        </div>
-
-    </footer>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/acorn@8/dist/acorn.min.js"></script>
-<script src="app.js"></script>
-
-</body>
-</html>
+:root {
+    --bg: #050810;
+    --bg-soft: #07101d;
+    --panel: #081322;
+    --panel-light: #0b1728;
+    --panel-deep: #050b14;
+
+    --line: #153967;
+    --line-soft: #102b4e;
+    --line-bright: #2876d8;
+
+    --blue: #69aaff;
+    --blue-soft: #91bce8;
+    --text: #dce7f5;
+    --muted: #7187a5;
+    --dim: #536b89;
+
+    --green: #5ee2a4;
+    --yellow: #d8b85b;
+    --red: #d96b73;
+
+    --glow-blue: rgba(40, 118, 216, 0.18);
+    --glow-green: rgba(69, 215, 155, 0.2);
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family:
+        Inter,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+}
+
+button,
+textarea {
+    font: inherit;
+}
+
+button {
+    border: 0;
+}
+
+button:focus-visible,
+textarea:focus-visible {
+    outline: 1px solid var(--blue);
+    outline-offset: 2px;
+}
+
+.app {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 58px minmax(0, 1fr) 48px;
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(25, 82, 150, 0.08),
+            transparent 48%
+        ),
+        var(--bg);
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    border-bottom: 1px solid var(--line);
+    background:
+        linear-gradient(
+            180deg,
+            #0b1426 0%,
+            #07101e 100%
+        );
+    box-shadow:
+        0 1px 0 rgba(105, 170, 255, 0.04),
+        0 8px 24px rgba(0, 0, 0, 0.16);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.brand-mark {
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line-bright);
+    background: #0a1d38;
+    color: var(--blue);
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 0 14px var(--glow-blue);
+}
+
+.brand-text {
+    min-width: 0;
+}
+
+.brand-text strong {
+    display: block;
+    color: #dbeaff;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.brand-text span {
+    display: block;
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 9px;
+    letter-spacing: 1.4px;
+}
+
+.status-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status {
+    padding: 7px 10px;
+    border: 1px solid #174679;
+    background: #09172a;
+    color: #6db1ff;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+.status.online {
+    border-color: #176348;
+    color: var(--green);
+    box-shadow: 0 0 10px rgba(69, 215, 155, 0.05);
+}
+
+.layout {
+    min-width: 0;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr) 230px;
+}
+
+.sidebar,
+.system-panel {
+    min-width: 0;
+    min-height: 0;
+    background: var(--bg-soft);
+}
+
+.sidebar {
+    padding: 14px 10px;
+    border-right: 1px solid var(--line);
+}
+
+.panel-title {
+    padding: 0 8px 10px;
+    color: #6882a5;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+}
+
+.tools {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tool {
+    position: relative;
+    width: 100%;
+    padding: 10px 12px;
+    display: block;
+    text-align: left;
+    border: 1px solid var(--line-soft);
+    background: #091625;
+    color: #8fa6c4;
+    cursor: pointer;
+    transition:
+        background 140ms ease,
+        border-color 140ms ease,
+        color 140ms ease,
+        box-shadow 140ms ease;
+}
+
+.tool:hover {
+    border-color: #276bb8;
+    background: #0b1c32;
+    color: #cce2ff;
+}
+
+.tool.active {
+    border-color: #3287e8;
+    background:
+        linear-gradient(
+            90deg,
+            #0d2849 0%,
+            #0a1a30 100%
+        );
+    color: #e3f0ff;
+    box-shadow:
+        inset 3px 0 0 #3e98ff,
+        0 0 14px rgba(35, 120, 220, 0.1);
+}
+
+.tool span {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.tool small {
+    display: block;
+    margin-top: 4px;
+    color: #536b89;
+    font-size: 9px;
+}
+
+.tool.active small {
+    color: #6f91b6;
+}
+
+.workspace {
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    background:
+        linear-gradient(
+            rgba(27, 72, 125, 0.035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(27, 72, 125, 0.035) 1px,
+            transparent 1px
+        ),
+        #060b14;
+    background-size: 28px 28px;
+}
+
+.workspace-header {
+    height: 50px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(7, 15, 28, 0.92);
+}
+
+.workspace-title {
+    min-width: 0;
+    color: #bcd8fb;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+}
+
+.workspace-state {
+    min-width: 0;
+    overflow: hidden;
+    color: #55799f;
+    font-size: 9px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.workspace-content {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+.view {
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+    display: none;
+    overflow: auto;
+}
+
+.view.active {
+    display: block;
+}
+
+.world-view {
+    padding: 0;
+    overflow: hidden;
+    background: #050a12;
+}
+
+.world-stage {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    isolation: isolate;
+    background:
+        radial-gradient(
+            circle at 50% 46%,
+            rgba(30, 91, 161, 0.12),
+            transparent 43%
+        ),
+        #050a12;
+}
+
+.world-grid {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(
+            rgba(56, 120, 194, 0.055) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(56, 120, 194, 0.055) 1px,
+            transparent 1px
+        );
+    background-size: 32px 32px;
+    mask-image:
+        radial-gradient(
+            ellipse at center,
+            black 25%,
+            transparent 88%
+        );
+}
+
+.world-canvas {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.companion-canvas {
+    position: absolute;
+    z-index: 6;
+    width: 128px;
+    height: 128px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    pointer-events: none;
+}
+
+.companion-shadow {
+    position: absolute;
+    z-index: 5;
+    width: 38px;
+    height: 10px;
+    left: 50%;
+    top: calc(50% + 29px);
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.55);
+    filter: blur(3px);
+    pointer-events: none;
+}
+
+.world-header {
+    position: absolute;
+    z-index: 10;
+    top: 14px;
+    left: 16px;
+    padding: 9px 12px;
+    border: 1px solid #194a80;
+    background: rgba(5, 13, 25, 0.9);
+    box-shadow:
+        0 0 18px rgba(25, 91, 160, 0.1),
+        inset 0 0 18px rgba(40, 118, 216, 0.025);
+    pointer-events: none;
+}
+
+.world-header strong {
+    display: block;
+    color: #c7e2ff;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.world-header span {
+    display: block;
+    margin-top: 4px;
+    color: #58799e;
+    font-size: 9px;
+}
+
+.world-info {
+    position: absolute;
+    z-index: 10;
+    left: 16px;
+    bottom: 16px;
+    min-width: 195px;
+    padding: 9px 12px;
+    border: 1px solid #194a80;
+    background: rgba(5, 13, 25, 0.9);
+    box-shadow:
+        0 0 18px rgba(25, 91, 160, 0.08),
+        inset 0 0 16px rgba(40, 118, 216, 0.02);
+    pointer-events: none;
+}
+
+.world-info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 22px;
+    margin: 5px 0;
+    font-size: 9px;
+}
+
+.world-info-row span {
+    color: #5e7898;
+}
+
+.world-info-row strong {
+    color: #9ec8f5;
+    font-size: 9px;
+    font-weight: 500;
+}
+
+.editor-layout {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 310px;
+    gap: 12px;
+}
+
+.panel {
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    border: 1px solid #153d6d;
+    background: rgba(7, 16, 29, 0.95);
+    box-shadow:
+        0 0 18px rgba(15, 68, 125, 0.07),
+        inset 0 0 20px rgba(50, 120, 200, 0.015);
+}
+
+.full-panel {
+    width: 100%;
+    height: 100%;
+}
+
+.panel-header {
+    height: 38px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 0 11px;
+    border-bottom: 1px solid #153d6d;
+    background: #0a1728;
+}
+
+.panel-header strong {
+    color: #91bce8;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.panel-header span {
+    color: #496582;
+    font-size: 9px;
+}
+
+.code-area {
+    width: 100%;
+    height: calc(100% - 38px);
+    padding: 14px;
+    resize: none;
+    border: 0;
+    outline: none;
+    background: var(--panel-deep);
+    color: #c8ddf4;
+    caret-color: var(--blue);
+    font-family: Consolas, "Cascadia Code", monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    tab-size: 4;
+}
+
+.code-area::selection {
+    background: rgba(55, 126, 210, 0.35);
+}
+
+.analysis-output {
+    width: 100%;
+    height: calc(100% - 38px);
+    padding: 12px;
+    overflow: auto;
+}
+
+.issue {
+    margin-bottom: 8px;
+    padding: 9px 10px;
+    border: 1px solid #283d58;
+    background: #091321;
+}
+
+.issue:last-child {
+    margin-bottom: 0;
+}
+
+.issue.warning {
+    border-color: #66501d;
+}
+
+.issue.error {
+    border-color: #6b2930;
+}
+
+.issue.ok {
+    border-color: #1d6046;
+}
+
+.issue-title {
+    color: #cbdcf0;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.issue-detail {
+    margin-top: 4px;
+    color: #7289a4;
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.info-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.info-card {
+    min-height: 84px;
+    padding: 14px;
+    border: 1px solid #153d6d;
+    background:
+        linear-gradient(
+            145deg,
+            #0a1728,
+            #07111e
+        );
+    box-shadow:
+        inset 0 0 16px rgba(40, 118, 216, 0.025);
+}
+
+.info-card strong {
+    display: block;
+    color: #79b5f1;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.info-card span {
+    display: block;
+    margin-top: 8px;
+    color: #7c91aa;
+    font-size: 10px;
+}
+
+.event-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.event {
+    padding: 9px 10px;
+    border-left: 2px solid #2468ae;
+    background: #081322;
+    color: #7f98b6;
+    font-family: Consolas, monospace;
+    font-size: 10px;
+}
+
+.system-panel {
+    padding: 14px 10px;
+    border-left: 1px solid var(--line);
+}
+
+.system-card {
+    margin-bottom: 10px;
+    padding: 11px;
+    border: 1px solid #153d6d;
+    background:
+        linear-gradient(
+            145deg,
+            #081322,
+            #07101c
+        );
+    box-shadow:
+        inset 0 0 14px rgba(40, 118, 216, 0.02);
+}
+
+.system-label {
+    color: #536d8c;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.system-value {
+    margin-top: 5px;
+    color: #b8d9f8;
+    font-size: 11px;
+}
+
+.nexus-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 14px;
+    border-top: 1px solid var(--line);
+    background: #07101d;
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.nexus-left {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.nexus-dot {
+    width: 7px;
+    height: 7px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 9px var(--glow-green);
+}
+
+.nexus-text {
+    color: #7da5cf;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.nexus-actions {
+    display: flex;
+    gap: 7px;
+}
+
+.nexus-actions button {
+    min-width: 72px;
+    padding: 6px 11px;
+    border: 1px solid #1b4f87;
+    background: #0a1a2e;
+    color: #8db9e8;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.7px;
+    cursor: pointer;
+    transition:
+        border-color 140ms ease,
+        background 140ms ease,
+        color 140ms ease;
+}
+
+.nexus-actions button:hover {
+    border-color: #3c8de0;
+    background: #0d223b;
+    color: #d4eaff;
+}
+
+.nexus-actions button:active {
+    background: #102b49;
+}
+
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background: #050b14;
+}
+
+::-webkit-scrollbar-thumb {
+    border: 1px solid #102b4e;
+    background: #163b67;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #225a96;
+}
+
+@media (max-width: 1000px) {
+    .layout {
+        grid-template-columns: 165px minmax(0, 1fr);
+    }
+
+    .system-panel {
+        display: none;
+    }
+
+    .editor-layout {
+        grid-template-columns: minmax(0, 1fr) 260px;
+    }
+}
+
+@media (max-width: 760px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .editor-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .editor-layout .panel:nth-child(2) {
+        display: none;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .status-group {
+        display: none;
+    }
+}
