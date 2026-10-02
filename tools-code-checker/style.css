@@ -1,915 +1,460 @@
-:root {
-    --bg: #070b12;
-    --panel: #0b111b;
-    --panel-2: #0e1724;
-    --panel-3: #111d2d;
-
-    --border: #1b3654;
-    --border-bright: #24598a;
-
-    --blue: #3187d8;
-    --blue-soft: #1d527f;
-    --blue-glow: rgba(49, 135, 216, 0.18);
-
-    --cyan: #55c7e8;
-    --green: #54d69a;
-    --yellow: #e5c95c;
-    --red: #e66b73;
-
-    --text: #d7e3ef;
-    --text-soft: #8fa3b8;
-    --text-dim: #60758b;
-
-    --shadow:
-        0 12px 30px rgba(0, 0, 0, 0.35);
-
-    --glow:
-        0 0 18px rgba(49, 135, 216, 0.12);
-}
-
-* {
-    box-sizing: border-box;
-}
-
-html,
-body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-}
-
-body {
-    background:
-        radial-gradient(
-            circle at 50% 20%,
-            rgba(29, 82, 127, 0.10),
-            transparent 45%
-        ),
-        linear-gradient(
-            180deg,
-            #080d15 0%,
-            #05080d 100%
-        );
-
-    color: var(--text);
-
-    font-family:
-        Inter,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
-    overflow: hidden;
-}
-
-button,
-textarea,
-input {
-    font: inherit;
-}
-
-button {
-    color: inherit;
-}
-
-button:focus-visible,
-textarea:focus-visible,
-input:focus-visible {
-    outline: 1px solid var(--cyan);
-    box-shadow: 0 0 0 3px rgba(85, 199, 232, 0.08);
-}
-
-::selection {
-    background: rgba(49, 135, 216, 0.35);
-    color: #fff;
-}
-
-::-webkit-scrollbar {
-    width: 7px;
-    height: 7px;
-}
-
-::-webkit-scrollbar-track {
-    background: #080d14;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #1a3550;
-    border-radius: 8px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #28577f;
-}
-
-.topbar {
-    height: 58px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 0 18px;
-
-    background:
-        linear-gradient(
-            180deg,
-            #0d1724,
-            #09111b
-        );
-
-    border-bottom: 1px solid var(--border);
-
-    box-shadow:
-        0 5px 20px rgba(0, 0, 0, 0.28),
-        inset 0 -1px 0 rgba(85, 199, 232, 0.03);
-
-    position: relative;
-    z-index: 10;
-}
-
-.topbar::after {
-    content: "";
-
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -1px;
-
-    height: 1px;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(49, 135, 216, 0.55),
-            transparent
-        );
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.brand h1 {
-    margin: 0;
-
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-
-    color: #e4edf7;
-}
-
-.brand span {
-    color: var(--text-dim);
-    font-size: 10px;
-    letter-spacing: 0.12em;
-}
-
-.status {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-
-    font-size: 11px;
-    color: var(--text-soft);
-}
-
-.status-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.status-dot {
-    width: 7px;
-    height: 7px;
-
-    border-radius: 50%;
-
-    background: var(--green);
-
-    box-shadow:
-        0 0 8px rgba(84, 214, 154, 0.7);
-}
-
-.workstation {
-    height: calc(100vh - 58px);
-
-    display: grid;
-
-    grid-template-columns:
-        190px
-        minmax(0, 1fr)
-        220px;
-
-    grid-template-rows:
-        minmax(0, 1fr)
-        130px;
-
-    grid-template-areas:
-        "tools workspace system"
-        "nexus nexus nexus";
-
-    gap: 1px;
-
-    background: #132338;
-}
-
-.tools-panel {
-    grid-area: tools;
-}
-
-.workspace-panel {
-    grid-area: workspace;
-}
-
-.system-panel {
-    grid-area: system;
-}
-
-.nexus-panel {
-    grid-area: nexus;
-}
-
-.panel {
-    position: relative;
-
-    min-width: 0;
-    min-height: 0;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(15, 25, 39, 0.98),
-            rgba(7, 13, 21, 0.98)
-        );
-
-    border: 1px solid #13263c;
-
-    box-shadow:
-        inset 0 1px 0 rgba(85, 199, 232, 0.025),
-        var(--shadow);
-
-    overflow: hidden;
-}
-
-.panel::before {
-    content: "";
-
-    position: absolute;
-    inset: 0;
-
-    pointer-events: none;
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(49, 135, 216, 0.025) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            0deg,
-            rgba(49, 135, 216, 0.02) 1px,
-            transparent 1px
-        );
-
-    background-size: 24px 24px;
-
-    opacity: 0.35;
-}
-
-.panel-header {
-    position: relative;
-
-    height: 42px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 0 13px;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(25, 48, 73, 0.75),
-            rgba(12, 24, 38, 0.75)
-        );
-
-    border-bottom: 1px solid var(--border);
-
-    color: #c9d9e8;
+   <!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cakrawala Workstation</title>
 
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-}
-
-.panel-header::after {
-    content: "";
-
-    position: absolute;
-
-    left: 0;
-    bottom: -1px;
-
-    width: 48px;
-    height: 1px;
-
-    background: var(--blue);
-
-    box-shadow:
-        0 0 8px rgba(49, 135, 216, 0.55);
-}
-
-.panel-content {
-    position: relative;
-
-    height: calc(100% - 42px);
-
-    overflow: auto;
-}
-
-.tools-panel {
-    border-right-color: #1a3654;
-}
-
-.system-panel {
-    border-left-color: #1a3654;
-}
-
-.tools-list {
-    padding: 9px;
-}
-
-.tool-button {
-    width: 100%;
-
-    display: flex;
-    align-items: center;
-    gap: 9px;
-
-    padding: 10px 11px;
-    margin-bottom: 5px;
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(14, 28, 44, 0.8),
-            rgba(10, 20, 32, 0.8)
-        );
-
-    border: 1px solid transparent;
-    border-radius: 4px;
-
-    color: var(--text-soft);
-
-    cursor: pointer;
-
-    text-align: left;
-
-    transition:
-        background 0.15s ease,
-        border-color 0.15s ease,
-        color 0.15s ease,
-        transform 0.15s ease;
-}
-
-.tool-button:hover {
-    color: #dcecff;
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(28, 60, 91, 0.65),
-            rgba(14, 31, 49, 0.85)
-        );
-
-    border-color: #214b70;
-
-    transform: translateX(2px);
-}
-
-.tool-button.active {
-    color: #e9f6ff;
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(37, 92, 139, 0.55),
-            rgba(15, 37, 59, 0.9)
-        );
-
-    border-color: var(--blue);
-
-    box-shadow:
-        inset 3px 0 0 var(--blue),
-        0 0 14px rgba(49, 135, 216, 0.08);
-}
-
-.tool-icon {
-    width: 18px;
-
-    color: var(--cyan);
-
-    font-size: 11px;
-    text-align: center;
-}
-
-.tool-name {
-    font-size: 11px;
-}
+<link rel="stylesheet" href="style.css">
+</head>
 
-.workspace-panel {
-    display: flex;
-    flex-direction: column;
-}
-
-.workspace-content {
-    position: relative;
-
-    flex: 1;
-
-    min-height: 0;
-
-    overflow: hidden;
-
-    background:
-        radial-gradient(
-            circle at 50% 45%,
-            rgba(49, 135, 216, 0.055),
-            transparent 48%
-        ),
-        #080e17;
-}
-
-.workspace-grid {
-    position: absolute;
-    inset: 0;
-
-    pointer-events: none;
-
-    background-image:
-        linear-gradient(
-            rgba(65, 125, 177, 0.045) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(65, 125, 177, 0.045) 1px,
-            transparent 1px
-        );
-
-    background-size: 32px 32px;
-
-    mask-image:
-        linear-gradient(
-            to bottom,
-            rgba(0, 0, 0, 0.7),
-            transparent
-        );
-}
-
-.workspace-view {
-    position: relative;
-
-    width: 100%;
-    height: 100%;
+<body>
 
-    padding: 14px;
+<div class="app">
 
-    overflow: auto;
-}
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-mark">C</div>
 
-.workspace-view.hidden {
-    display: none;
-}
+            <div class="brand-text">
+                <strong>CAKRAWALA</strong>
+                <span>WORKSTATION</span>
+            </div>
+        </div>
 
-.editor {
-    width: 100%;
-    height: 100%;
+        <div class="status-group">
+            <div class="status online" id="njosStatus">
+                NJOS ONLINE
+            </div>
 
-    display: flex;
-    flex-direction: column;
+            <div class="status" id="systemState">
+                SYSTEM READY
+            </div>
+        </div>
+    </header>
 
-    background: #070c13;
+    <div class="layout">
 
-    border: 1px solid #1b3855;
+        <aside class="sidebar">
 
-    box-shadow:
-        inset 0 0 30px rgba(0, 0, 0, 0.3),
-        var(--glow);
-}
+            <div class="panel-title">
+                TOOLS
+            </div>
 
-.editor-header {
-    min-height: 34px;
+            <nav class="tools">
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+                <button class="tool active" data-view="world">
+                    <span>World</span>
+                    <small>workspace</small>
+                </button>
 
-    padding: 0 10px;
+                <button class="tool" data-view="editor">
+                    <span>Code Editor</span>
+                    <small>write code</small>
+                </button>
 
-    background: #0d1927;
+                <button class="tool" data-view="analyzer">
+                    <span>Analyzer</span>
+                    <small>inspect code</small>
+                </button>
 
-    border-bottom: 1px solid #1b3855;
-}
+                <button class="tool" data-view="variables">
+                    <span>Variable Manager</span>
+                    <small>symbols & scope</small>
+                </button>
 
-.editor-title {
-    color: #a9c0d6;
+                <button class="tool" data-view="runtime">
+                    <span>Runtime Monitor</span>
+                    <small>system state</small>
+                </button>
 
-    font-size: 10px;
-    letter-spacing: 0.08em;
-}
+                <button class="tool" data-view="nexus">
+                    <span>Nexus</span>
+                    <small>event network</small>
+                </button>
 
-.editor textarea {
-    flex: 1;
+            </nav>
 
-    width: 100%;
+        </aside>
 
-    resize: none;
+        <main class="workspace">
 
-    border: 0;
-    outline: 0;
+            <div class="workspace-header">
 
-    padding: 14px;
+                <div class="workspace-title" id="workspaceTitle">
+                    WORLD
+                </div>
 
-    background:
-        linear-gradient(
-            90deg,
-            rgba(27, 56, 85, 0.08),
-            transparent 80%
-        ),
-        #070c13;
+                <div class="workspace-state" id="nexusMessage">
+                    Cakrawala ready
+                </div>
 
-    color: #c9d9e8;
+            </div>
 
-    font-family:
-        "JetBrains Mono",
-        "Cascadia Code",
-        Consolas,
-        monospace;
+            <div class="workspace-content">
 
-    font-size: 13px;
-    line-height: 1.65;
+                <section class="view world-view active" id="view-world">
 
-    tab-size: 4;
-}
+                    <div class="world-stage" id="worldStage">
 
-.editor textarea:focus {
-    box-shadow:
-        inset 0 0 0 1px rgba(49, 135, 216, 0.3);
-}
+                        <canvas
+                            id="worldCanvas"
+                            class="world-canvas"
+                        ></canvas>
+
+                        <canvas
+                            id="companionCanvas"
+                            class="companion-canvas"
+                        ></canvas>
 
-.analysis-list,
-.variable-list,
-.runtime-list,
-.event-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-
-    padding: 12px;
-}
+                        <div
+                            id="companionShadow"
+                            class="companion-shadow"
+                        ></div>
 
-.result-item {
-    padding: 9px 10px;
+                        <div class="world-grid"></div>
 
-    background: rgba(13, 27, 43, 0.75);
+                        <div class="world-header">
+                            <strong>CAKRAWALA FIELD</strong>
+                            <span>interactive workstation space</span>
+                        </div>
 
-    border: 1px solid #1a344f;
-    border-left: 2px solid var(--blue);
+                        <div class="world-info">
 
-    border-radius: 3px;
-}
+                            <div class="world-info-row">
+                                <span>Location</span>
+                                <strong id="worldLocation">
+                                    Cakrawala
+                                </strong>
+                            </div>
+
+                            <div class="world-info-row">
+                                <span>Companion</span>
+                                <strong id="companionStatus">
+                                    Idle
+                                </strong>
+                            </div>
 
-.result-item.warning {
-    border-left-color: var(--yellow);
-}
+                            <div class="world-info-row">
+                                <span>Nexus</span>
+                                <strong id="worldNexusStatus">
+                                    Connected
+                                </strong>
+                            </div>
 
-.result-item.error {
-    border-left-color: var(--red);
-}
+                        </div>
 
-.result-item.success {
-    border-left-color: var(--green);
-}
+                    </div>
 
-.result-title {
-    font-size: 11px;
-    color: #d9e8f5;
-}
+                </section>
 
-.result-detail {
-    margin-top: 3px;
+                <section class="view" id="view-editor">
 
-    font-size: 10px;
-    line-height: 1.5;
+                    <div class="editor-layout">
+
+                        <div class="panel">
 
-    color: var(--text-soft);
-}
+                            <div class="panel-header">
+                                <strong>CODE EDITOR</strong>
+                                <span id="editorLanguage">
+                                    JavaScript
+                                </span>
+                            </div>
 
-.system-content {
-    padding: 10px;
-}
+                            <textarea
+                                id="codeEditor"
+                                class="code-area"
+                                spellcheck="false"
+                            >const username = "Miu";
 
-.system-card {
-    padding: 10px;
-    margin-bottom: 8px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(18, 36, 55, 0.75),
-            rgba(9, 18, 29, 0.8)
-        );
-
-    border: 1px solid #1b3855;
-    border-radius: 4px;
+function greet(user) {
+    const message = "Hello " + user;
+    return message;
 }
-
-.system-card-title {
-    margin-bottom: 7px;
 
-    color: #8eabc4;
+console.log(greet(ussername));</textarea>
 
-    font-size: 9px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-}
+                        </div>
 
-.system-value {
-    color: #dbeaf6;
+                        <div class="panel">
 
-    font-family:
-        "JetBrains Mono",
-        Consolas,
-        monospace;
+                            <div class="panel-header">
+                                <strong>ANALYSIS</strong>
+                                <span id="analysisState">
+                                    waiting
+                                </span>
+                            </div>
+
+                            <div
+                                id="analysisOutput"
+                                class="analysis-output"
+                            >
+                                <div class="issue">
+                                    <div class="issue-title">
+                                        Ready
+                                    </div>
+
+                                    <div class="issue-detail">
+                                        Run Analyze to inspect the code.
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="view" id="view-analyzer">
+
+                    <div class="panel full-panel">
+
+                        <div class="panel-header">
+                            <strong>ANALYZER</strong>
+                            <span>semantic inspection</span>
+                        </div>
+
+                        <div
+                            id="analyzerContent"
+                            class="analysis-output"
+                        >
+                            <div class="issue">
+                                <div class="issue-title">
+                                    No analysis yet
+                                </div>
+
+                                <div class="issue-detail">
+                                    Analyze the current source from the Nexus bar.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="view" id="view-variables">
+
+                    <div class="panel full-panel">
+
+                        <div class="panel-header">
+                            <strong>VARIABLE MANAGER</strong>
+                            <span>symbols & scope</span>
+                        </div>
 
-    font-size: 12px;
-}
+                        <div
+                            id="variableContent"
+                            class="analysis-output"
+                        >
+                            <div class="issue">
+                                <div class="issue-title">
+                                    Symbol table empty
+                                </div>
+
+                                <div class="issue-detail">
+                                    Analyze code to populate variables.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </section>
 
-.system-value.online {
-    color: var(--green);
+                <section class="view" id="view-runtime">
 
-    text-shadow:
-        0 0 8px rgba(84, 214, 154, 0.35);
-}
+                    <div class="info-grid">
 
-.nexus-panel {
-    display: flex;
-    flex-direction: column;
-}
+                        <div class="info-card">
+                            <strong>Runtime</strong>
+                            <span id="runtimeState">
+                                Ready
+                            </span>
+                        </div>
+
+                        <div class="info-card">
+                            <strong>Companion</strong>
+                            <span id="runtimeCompanion">
+                                Idle
+                            </span>
+                        </div>
 
-.nexus-body {
-    flex: 1;
+                        <div class="info-card">
+                            <strong>Nexus</strong>
+                            <span id="runtimeNexus">
+                                Connected
+                            </span>
+                        </div>
 
-    min-height: 0;
+                        <div class="info-card">
+                            <strong>Parser</strong>
+                            <span id="runtimeParser">
+                                Acorn
+                            </span>
+                        </div>
 
-    display: grid;
+                        <div class="info-card">
+                            <strong>Last Analysis</strong>
+                            <span id="runtimeAnalysis">
+                                None
+                            </span>
+                        </div>
 
-    grid-template-columns: minmax(0, 1fr) auto;
+                        <div class="info-card">
+                            <strong>Issues</strong>
+                            <span id="runtimeIssues">
+                                0
+                            </span>
+                        </div>
 
-    gap: 10px;
+                    </div>
 
-    padding: 10px;
-}
+                </section>
 
-.nexus-log {
-    min-width: 0;
+                <section class="view" id="view-nexus">
 
-    overflow: auto;
+                    <div class="panel full-panel">
 
-    padding: 9px;
+                        <div class="panel-header">
+                            <strong>NEXUS EVENT STREAM</strong>
+                            <span id="nexusStreamStatus">
+                                live
+                            </span>
+                        </div>
 
-    background: #060b12;
+                        <div
+                            id="eventList"
+                            class="analysis-output"
+                        >
+                            <div class="event">
+                                Nexus initialized.
+                            </div>
+                        </div>
 
-    border: 1px solid #17314d;
+                    </div>
 
-    font-family:
-        "JetBrains Mono",
-        Consolas,
-        monospace;
+                </section>
 
-    font-size: 10px;
+            </div>
 
-    color: #8da5ba;
-}
+        </main>
 
-.nexus-controls {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-}
+        <aside class="system-panel">
 
-.action-button {
-    min-width: 78px;
+            <div class="panel-title">
+                SYSTEM
+            </div>
 
-    padding: 8px 13px;
+            <div class="system-card">
 
-    border: 1px solid #24527b;
-    border-radius: 3px;
+                <div class="system-label">
+                    NJOS
+                </div>
 
-    background:
-        linear-gradient(
-            180deg,
-            #163552,
-            #0d2237
-        );
+                <div
+                    class="system-value"
+                    id="systemNjos"
+                >
+                    Online
+                </div>
 
-    color: #cce5f7;
+            </div>
 
-    font-size: 10px;
-    font-weight: 700;
+            <div class="system-card">
 
-    letter-spacing: 0.06em;
+                <div class="system-label">
+                    Nexus
+                </div>
 
-    cursor: pointer;
+                <div
+                    class="system-value"
+                    id="systemNexus"
+                >
+                    Connected
+                </div>
 
-    transition:
-        background 0.15s ease,
-        border-color 0.15s ease,
-        box-shadow 0.15s ease;
-}
+            </div>
 
-.action-button:hover {
-    background:
-        linear-gradient(
-            180deg,
-            #1d476d,
-            #102d47
-        );
-
-    border-color: var(--cyan);
-
-    box-shadow:
-        0 0 12px rgba(49, 135, 216, 0.16);
-}
+            <div class="system-card">
 
-.action-button.primary {
-    border-color: #2e78b5;
-
-    background:
-        linear-gradient(
-            180deg,
-            #1b5687,
-            #123957
-        );
-}
+                <div class="system-label">
+                    Parser
+                </div>
 
-.action-button.danger {
-    border-color: #65333a;
+                <div
+                    class="system-value"
+                    id="systemParser"
+                >
+                    Acorn
+                </div>
 
-    background:
-        linear-gradient(
-            180deg,
-            #3b2027,
-            #24151a
-        );
+            </div>
 
-    color: #e6aeb3;
-}
+            <div class="system-card">
 
-.companion-dock {
-    position: absolute;
+                <div class="system-label">
+                    Companion
+                </div>
 
-    right: 14px;
-    bottom: 14px;
+                <div
+                    class="system-value"
+                    id="systemCompanion"
+                >
+                    Idle
+                </div>
 
-    width: 120px;
-    height: 92px;
+            </div>
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+            <div class="system-card">
 
-    background:
-        radial-gradient(
-            circle at center,
-            rgba(32, 75, 111, 0.18),
-            transparent 65%
-        ),
-        rgba(5, 10, 17, 0.88);
+                <div class="system-label">
+                    State
+                </div>
 
-    border: 1px solid #214663;
+                <div
+                    class="system-value"
+                    id="systemBox"
+                >
+                    Ready
+                </div>
 
-    box-shadow:
-        0 8px 22px rgba(0, 0, 0, 0.4),
-        inset 0 0 18px rgba(49, 135, 216, 0.05);
+            </div>
 
-    pointer-events: none;
+        </aside>
 
-    z-index: 5;
-}
+    </div>
 
-.companion-dock::before {
-    content: "";
+    <footer class="nexus-bar">
 
-    position: absolute;
+        <div class="nexus-left">
 
-    left: 8px;
-    right: 8px;
-    bottom: 7px;
+            <div class="nexus-dot"></div>
 
-    height: 1px;
+            <div class="nexus-text">
+                NEXUS
+            </div>
 
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(49, 135, 216, 0.55),
-            transparent
-        );
-}
+        </div>
 
-.companion-label {
-    position: absolute;
+        <div class="nexus-actions">
 
-    top: 6px;
-    left: 8px;
+            <button id="analyzeButton">
+                ANALYZE
+            </button>
 
-    color: #6f9abb;
+            <button id="clearButton">
+                CLEAR
+            </button>
 
-    font-size: 7px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
+        </div>
 
-.companion-canvas {
-    width: 64px;
-    height: 64px;
+    </footer>
 
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
-}
+</div>
 
-@media (max-width: 900px) {
-    .workstation {
-        grid-template-columns:
-            150px
-            minmax(0, 1fr)
-            170px;
-    }
-
-    .tool-button {
-        padding: 9px 8px;
-    }
-
-    .tool-name {
-        font-size: 10px;
-    }
-}
+<script src="https://cdn.jsdelivr.net/npm/acorn@8/dist/acorn.min.js"></script>
+<script src="app.js"></script>
 
-@media (max-width: 700px) {
-    body {
-        overflow: auto;
-    }
-
-    .workstation {
-        min-height: calc(100vh - 58px);
-
-        grid-template-columns: 1fr;
-        grid-template-rows:
-            auto
-            minmax(500px, 1fr)
-            auto
-            130px;
-
-        grid-template-areas:
-            "tools"
-            "workspace"
-            "system"
-            "nexus";
-    }
-
-    .tools-panel {
-        max-height: 150px;
-    }
-
-    .tools-list {
-        display: flex;
-        gap: 5px;
-        overflow-x: auto;
-    }
-
-    .tool-button {
-        min-width: 120px;
-        margin-bottom: 0;
-    }
-
-    .system-panel {
-        min-height: 180px;
-    }
-
-    .companion-dock {
-        width: 100px;
-        height: 80px;
-    }
-}
+</body>
+</html>
