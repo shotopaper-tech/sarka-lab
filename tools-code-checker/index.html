@@ -3,10 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Cakrawala Workstation</title>
-
-    <script src="https://cdn.jsdelivr.net/npm/acorn@8/dist/acorn.min.js"></script>
 
     <style>
         * {
@@ -15,2875 +12,1377 @@
 
         body {
             margin: 0;
-            padding: 40px 20px;
-            background: #0d1117;
-            color: #e6edf3;
             font-family: Arial, sans-serif;
+            background: #0b0f14;
+            color: #e8edf2;
         }
 
-        .container {
-            max-width: 900px;
-            margin: auto;
+        .app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        h1 {
-            margin-bottom: 8px;
+        header {
+            padding: 18px 24px;
+            border-bottom: 1px solid #202832;
+            background: #0e141b;
         }
 
-        .subtitle {
-            color: #8b949e;
-            margin-bottom: 30px;
+        header h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        header p {
+            margin: 6px 0 0;
+            color: #7f8b98;
+            font-size: 13px;
+        }
+
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: #202832;
+        }
+
+        .panel {
+            background: #0b0f14;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #202832;
+            font-size: 13px;
+            color: #9ca8b5;
         }
 
         textarea {
+            flex: 1;
             width: 100%;
-            min-height: 300px;
-            padding: 16px;
-            resize: vertical;
-            background: #161b22;
-            color: #e6edf3;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            font-family: monospace;
+            resize: none;
+            border: 0;
+            outline: 0;
+            background: #080c10;
+            color: #dce5ed;
+            padding: 18px;
+            font-family: Consolas, Monaco, monospace;
             font-size: 14px;
-            line-height: 1.6;
-            outline: none;
+            line-height: 1.65;
         }
 
-        textarea:focus {
-            border-color: #58a6ff;
+        .output {
+            flex: 1;
+            padding: 18px;
+            overflow: auto;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 13px;
+            line-height: 1.65;
+            white-space: pre-wrap;
         }
 
-        .buttons {
+        .toolbar {
+            padding: 12px 16px;
+            border-top: 1px solid #202832;
             display: flex;
             gap: 10px;
-            margin-top: 15px;
         }
 
         button {
-            padding: 10px 18px;
-            border: none;
+            border: 1px solid #34404c;
+            background: #151c24;
+            color: #dce5ed;
+            padding: 9px 14px;
             border-radius: 6px;
-            background: #238636;
-            color: white;
             cursor: pointer;
-            font-size: 14px;
         }
 
         button:hover {
-            opacity: 0.85;
+            background: #1c2630;
         }
 
-        #clearButton {
-            background: #30363d;
+        .status {
+            font-size: 12px;
+            color: #7f8b98;
+            padding: 8px 16px;
+            border-bottom: 1px solid #202832;
         }
 
-        .result {
-            margin-top: 25px;
-            padding: 20px;
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            white-space: pre-wrap;
-            font-family: monospace;
-            line-height: 1.6;
-        }
-
-        .success {
-            border-color: #238636;
-        }
-
-        .warning {
-            border-color: #d29922;
-        }
-
-        .error {
-            border-color: #f85149;
+        @media (max-width: 900px) {
+            main {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/acorn@8/dist/acorn.min.js"></script>
 </head>
 
 <body>
+<div class="app">
+    <header>
+        <h1>Cakrawala Workstation</h1>
+        <p>NJOS semantic analysis environment</p>
+    </header>
 
-<div class="container">
+    <main>
+        <section class="panel">
+            <div class="panel-header">Code Editor</div>
 
-    <h1>Cakrawala Workstation</h1>
+            <textarea id="codeEditor">const username = "Miu";
 
-    <div class="subtitle">
-        NJOS-powered code analysis workstation
-    </div>
+function greet(name) {
+    return ussername + name;
+}
 
-    <textarea
-        id="codeInput"
-        placeholder="Tulis JavaScript di sini..."
-    ></textarea>
+greet(username);</textarea>
 
-    <div class="buttons">
-        <button id="checkButton">
-            Check Code
-        </button>
+            <div class="toolbar">
+                <button id="analyzeButton">Analyze</button>
+            </div>
+        </section>
 
-        <button id="clearButton">
-            Clear
-        </button>
-    </div>
-
-    <div id="result" class="result">
-        Ready.
-    </div>
-
+        <section class="panel">
+            <div class="panel-header">Analysis</div>
+            <div class="status" id="status">Ready</div>
+            <div class="output" id="output"></div>
+        </section>
+    </main>
 </div>
 
 <script>
-
 const NJOS = {
-
-    version: "0.5.0",
-
-    state: {},
-
-    context: {},
-
-    events: {},
-
-    errors: [],
-
-    tools: {},
-
-    setState(key, value) {
-
-        this.state[key] = value;
-
-        this.emit("state.changed", {
-            key,
-            value
-        });
-
-    },
-
-    getState(key) {
-        return this.state[key];
-    },
-
-    setContext(key, value) {
-        this.context[key] = value;
-    },
-
-    getContext(key) {
-        return this.context[key];
-    },
-
-    clearContext() {
-        this.context = {};
-    },
-
-    on(event, callback) {
-
-        if (!this.events[event]) {
-            this.events[event] = [];
-        }
-
-        this.events[event].push(callback);
-    },
-
-    emit(event, data) {
-
-        const listeners = this.events[event];
-
-        if (!listeners) {
-            return;
-        }
-
-        listeners.forEach(callback => {
-
-            try {
-                callback(data);
-            } catch (error) {
-
-                this.reportError({
-                    message: error.message,
-                    source: "NJOS Event",
-                    severity: "internal"
-                });
-
-            }
-
-        });
-
-    },
-
-    reportError(error) {
-
-        const entry = {
-
-            id:
-                "ERR-" +
-                Date.now() +
-                "-" +
-                Math.floor(
-                    Math.random() * 10000
-                ),
-
-            message:
-                error.message ||
-                "Unknown error",
-
-            source:
-                error.source ||
-                "NJOS",
-
-            severity:
-                error.severity ||
-                "error",
-
-            timestamp:
-                new Date().toISOString()
-
-        };
-
-        this.errors.push(entry);
-
-        this.emit(
-            "error.reported",
-            entry
-        );
-
-        return entry;
-    },
-
-    clearErrors() {
-        this.errors = [];
-    },
-
-    getErrors() {
-        return [...this.errors];
-    },
-
-    registerTool(name, tool) {
-        this.tools[name] = tool;
-    },
-
-    getTool(name) {
-        return this.tools[name];
-    },
-
-    listTools() {
-        return Object.keys(this.tools);
-    },
-
-    info() {
-
-        return {
-
-            name: "NJOS",
-
-            version:
-                this.version,
-
-            tools:
-                this.listTools(),
-
-            errors:
-                this.errors.length
-
-        };
-
-    }
-
+    version: "0.6.0",
+    globals: new Set([
+        "console",
+        "window",
+        "document",
+        "globalThis",
+        "Math",
+        "JSON",
+        "Object",
+        "Array",
+        "String",
+        "Number",
+        "Boolean",
+        "BigInt",
+        "Symbol",
+        "Date",
+        "RegExp",
+        "Error",
+        "EvalError",
+        "RangeError",
+        "ReferenceError",
+        "SyntaxError",
+        "TypeError",
+        "URIError",
+        "Map",
+        "Set",
+        "WeakMap",
+        "WeakSet",
+        "Promise",
+        "Proxy",
+        "Reflect",
+        "Intl",
+        "ArrayBuffer",
+        "DataView",
+        "Uint8Array",
+        "Int8Array",
+        "Uint16Array",
+        "Int16Array",
+        "Uint32Array",
+        "Int32Array",
+        "Float32Array",
+        "Float64Array",
+        "parseInt",
+        "parseFloat",
+        "isNaN",
+        "isFinite",
+        "decodeURI",
+        "decodeURIComponent",
+        "encodeURI",
+        "encodeURIComponent",
+        "setTimeout",
+        "setInterval",
+        "clearTimeout",
+        "clearInterval"
+    ])
 };
 
-
-const CakrawalaNexus = {
-
-    version: "0.5.0",
-
-    njos: NJOS,
-
-    connect() {
-
-        NJOS.emit(
-            "nexus.connected",
-            {
-                version:
-                    this.version
-            }
-        );
-
-    },
-
-    on(event, callback) {
-        NJOS.on(event, callback);
-    },
-
-    emit(event, data) {
-        NJOS.emit(event, data);
-    },
-
-    setContext(key, value) {
-        NJOS.setContext(key, value);
-    },
-
-    getContext(key) {
-        return NJOS.getContext(key);
-    },
-
-    registerTool(name, tool) {
-        NJOS.registerTool(name, tool);
-    },
-
-    getTool(name) {
-        return NJOS.getTool(name);
+class CakrawalaNexus {
+    constructor() {
+        this.listeners = new Map();
     }
 
-};
+    on(event, callback) {
+        if (!this.listeners.has(event)) {
+            this.listeners.set(event, []);
+        }
 
+        this.listeners.get(event).push(callback);
+    }
 
-const CodeParser = {
+    emit(event, data) {
+        const callbacks = this.listeners.get(event) || [];
 
-    name:
-        "JavaScriptParser",
+        for (const callback of callbacks) {
+            callback(data);
+        }
+    }
+}
 
-    version:
-        "0.5.0",
-
+class CodeParser {
     parse(code) {
+        const tokens = [];
 
-        return acorn.parse(
-            code,
-            {
-                ecmaVersion: "latest",
-                sourceType: "script",
-                locations: true,
-                allowHashBang: true
-            }
-        );
-
-    }
-
-};
-
-
-CakrawalaNexus.registerTool(
-    "JavaScriptParser",
-    CodeParser
-);
-
-
-const Normalizer = {
-
-    name:
-        "NormalizedAST",
-
-    version:
-        "0.5.0",
-
-    create(ast) {
+        const tree = acorn.parse(code, {
+            ecmaVersion: "latest",
+            sourceType: "script",
+            locations: true,
+            onToken: tokens
+        });
 
         return {
-
-            language:
-                "javascript",
-
-            type:
-                "Program",
-
-            sourceType:
-                ast.sourceType,
-
-            body:
-                ast.body,
-
-            raw:
-                ast
-
+            tree,
+            tokens
         };
+    }
+}
 
+class SymbolRecord {
+    constructor(name, kind, scope, node) {
+        this.id = SymbolRecord.nextId++;
+        this.name = name;
+        this.kind = kind;
+        this.scope = scope;
+        this.node = node;
+        this.references = [];
+        this.declared = true;
+        this.builtin = false;
+    }
+}
+
+SymbolRecord.nextId = 1;
+
+class Scope {
+    constructor(type, parent = null, node = null) {
+        this.id = Scope.nextId++;
+        this.type = type;
+        this.parent = parent;
+        this.node = node;
+        this.symbols = new Map();
+        this.children = [];
     }
 
-};
+    addChild(scope) {
+        this.children.push(scope);
+    }
 
-
-CakrawalaNexus.registerTool(
-    "Normalizer",
-    Normalizer
-);
-
-
-const ScopeResolver = {
-
-    name:
-        "ScopeResolver",
-
-    version:
-        "0.5.0",
-
-    nextId:
-        0,
-
-    reset() {
-        this.nextId = 0;
-    },
-
-    createScope(
-        type,
-        parent,
-        node
-    ) {
-
-        const scope = {
-
-            id:
-                this.nextId++,
-
-            type,
-
-            parent:
-                parent
-                    ? parent.id
-                    : null,
-
-            start:
-                node &&
-                node.start !== undefined
-                    ? node.start
-                    : 0,
-
-            end:
-                node &&
-                node.end !== undefined
-                    ? node.end
-                    : Infinity,
-
-            symbols: [],
-
-            children: []
-
-        };
-
-        if (parent) {
-            parent.children.push(
-                scope.id
-            );
+    declare(name, kind, node) {
+        if (this.symbols.has(name)) {
+            return this.symbols.get(name);
         }
 
-        return scope;
-    },
+        const symbol = new SymbolRecord(name, kind, this, node);
+        this.symbols.set(name, symbol);
 
-    resolve(ast) {
-
-        this.reset();
-
-        const scopes = [];
-
-        const globalScope =
-            this.createScope(
-                "global",
-                null,
-                ast
-            );
-
-        scopes.push(
-            globalScope
-        );
-
-        const scopeStack = [
-            globalScope
-        ];
-
-        const declarations = [];
-        const references = [];
-
-        const currentScope =
-            () =>
-                scopeStack[
-                    scopeStack.length - 1
-                ];
-
-        const addSymbol =
-            (
-                name,
-                kind,
-                node,
-                scope,
-                options = {}
-            ) => {
-
-                if (!name) {
-                    return null;
-                }
-
-                const symbol = {
-
-                    id:
-                        "SYM-" +
-                        declarations.length,
-
-                    name,
-
-                    kind,
-
-                    type:
-                        options.type ||
-                        kind,
-
-                    position:
-                        node.start,
-
-                    end:
-                        node.end,
-
-                    line:
-                        node.loc.start.line,
-
-                    column:
-                        node.loc.start.column + 1,
-
-                    scope:
-                        scope.id,
-
-                    references: [],
-
-                    declaration:
-                        node
-
-                };
-
-                scope.symbols.push(
-                    symbol
-                );
-
-                declarations.push(
-                    symbol
-                );
-
-                return symbol;
-            };
-
-        const addReference =
-            (
-                name,
-                node,
-                scope,
-                property = false
-            ) => {
-
-                if (!name) {
-                    return;
-                }
-
-                references.push({
-
-                    id:
-                        "REF-" +
-                        references.length,
-
-                    name,
-
-                    position:
-                        node.start,
-
-                    end:
-                        node.end,
-
-                    line:
-                        node.loc.start.line,
-
-                    column:
-                        node.loc.start.column + 1,
-
-                    scope:
-                        scope.id,
-
-                    property
-
-                });
-
-            };
-
-        const declarePattern =
-            (
-                pattern,
-                kind,
-                scope
-            ) => {
-
-                if (!pattern) {
-                    return;
-                }
-
-                if (
-                    pattern.type ===
-                    "Identifier"
-                ) {
-
-                    addSymbol(
-                        pattern.name,
-                        kind,
-                        pattern,
-                        scope
-                    );
-
-                    return;
-                }
-
-                if (
-                    pattern.type ===
-                    "RestElement"
-                ) {
-
-                    declarePattern(
-                        pattern.argument,
-                        kind,
-                        scope
-                    );
-
-                    return;
-                }
-
-                if (
-                    pattern.type ===
-                    "AssignmentPattern"
-                ) {
-
-                    declarePattern(
-                        pattern.left,
-                        kind,
-                        scope
-                    );
-
-                    return;
-                }
-
-                if (
-                    pattern.type ===
-                    "ArrayPattern"
-                ) {
-
-                    pattern.elements.forEach(
-                        element => {
-
-                            declarePattern(
-                                element,
-                                kind,
-                                scope
-                            );
-
-                        }
-                    );
-
-                    return;
-                }
-
-                if (
-                    pattern.type ===
-                    "ObjectPattern"
-                ) {
-
-                    pattern.properties.forEach(
-                        property => {
-
-                            if (
-                                property.type ===
-                                "RestElement"
-                            ) {
-
-                                declarePattern(
-                                    property.argument,
-                                    kind,
-                                    scope
-                                );
-
-                                return;
-                            }
-
-                            declarePattern(
-                                property.value,
-                                kind,
-                                scope
-                            );
-
-                        }
-                    );
-
-                }
-
-            };
-
-        const visit =
-            (
-                node,
-                scope
-            ) => {
-
-                if (!node) {
-                    return;
-                }
-
-                switch (node.type) {
-
-                    case "Program":
-
-                        node.body.forEach(
-                            child =>
-                                visit(
-                                    child,
-                                    scope
-                                )
-                        );
-
-                        break;
-
-
-                    case "VariableDeclaration":
-
-                        node.declarations.forEach(
-                            declaration => {
-
-                                const targetScope =
-                                    declaration.kind ===
-                                    "var"
-                                        ? findFunctionScope(
-                                            scope
-                                        )
-                                        : scope;
-
-                                declarePattern(
-                                    declaration.id,
-                                    declaration.kind,
-                                    targetScope
-                                );
-
-                                if (
-                                    declaration.init
-                                ) {
-
-                                    visit(
-                                        declaration.init,
-                                        scope
-                                    );
-
-                                }
-
-                            }
-                        );
-
-                        break;
-
-
-                    case "FunctionDeclaration":
-
-                        if (node.id) {
-
-                            addSymbol(
-                                node.id.name,
-                                "function",
-                                node.id,
-                                scope,
-                                {
-                                    type:
-                                        "function"
-                                }
-                            );
-
-                        }
-
-                        visitFunction(
-                            node,
-                            scope
-                        );
-
-                        break;
-
-
-                    case "FunctionExpression":
-
-                    case "ArrowFunctionExpression":
-
-                        visitFunction(
-                            node,
-                            scope
-                        );
-
-                        break;
-
-
-                    case "BlockStatement": {
-
-                        const blockScope =
-                            this.createScope(
-                                "block",
-                                scope,
-                                node
-                            );
-
-                        scopes.push(
-                            blockScope
-                        );
-
-                        scopeStack.push(
-                            blockScope
-                        );
-
-                        node.body.forEach(
-                            child =>
-                                visit(
-                                    child,
-                                    blockScope
-                                )
-                        );
-
-                        scopeStack.pop();
-
-                        break;
-                    }
-
-
-                    case "Identifier":
-
-                        addReference(
-                            node.name,
-                            node,
-                            scope,
-                            false
-                        );
-
-                        break;
-
-
-                    case "MemberExpression":
-
-                        visit(
-                            node.object,
-                            scope
-                        );
-
-                        if (
-                            node.computed
-                        ) {
-
-                            visit(
-                                node.property,
-                                scope
-                            );
-
-                        }
-
-                        break;
-
-
-                    case "OptionalMemberExpression":
-
-                        visit(
-                            node.object,
-                            scope
-                        );
-
-                        if (
-                            node.computed
-                        ) {
-
-                            visit(
-                                node.property,
-                                scope
-                            );
-
-                        }
-
-                        break;
-
-
-                    case "Property":
-
-                        if (
-                            node.computed
-                        ) {
-
-                            visit(
-                                node.key,
-                                scope
-                            );
-
-                        }
-
-                        visit(
-                            node.value,
-                            scope
-                        );
-
-                        break;
-
-
-                    case "ObjectPattern":
-
-                        node.properties.forEach(
-                            property =>
-                                declarePattern(
-                                    property.value,
-                                    "pattern",
-                                    scope
-                                )
-                        );
-
-                        break;
-
-
-                    case "ClassDeclaration":
-
-                        if (node.id) {
-
-                            addSymbol(
-                                node.id.name,
-                                "class",
-                                node.id,
-                                scope,
-                                {
-                                    type:
-                                        "class"
-                                }
-                            );
-
-                        }
-
-                        visit(
-                            node.superClass,
-                            scope
-                        );
-
-                        visit(
-                            node.body,
-                            scope
-                        );
-
-                        break;
-
-
-                    case "ClassBody":
-
-                        node.body.forEach(
-                            element =>
-                                visit(
-                                    element,
-                                    scope
-                                )
-                        );
-
-                        break;
-
-
-                    case "MethodDefinition":
-
-                        if (
-                            node.computed
-                        ) {
-
-                            visit(
-                                node.key,
-                                scope
-                            );
-
-                        }
-
-                        visit(
-                            node.value,
-                            scope
-                        );
-
-                        break;
-
-
-                    case "ExpressionStatement":
-
-                        visit(
-                            node.expression,
-                            scope
-                        );
-
-                        break;
-
-
-                    case "CallExpression":
-
-                        visit(
-                            node.callee,
-                            scope
-                        );
-
-                        node.arguments.forEach(
-                            argument =>
-                                visit(
-                                    argument,
-                                    scope
-                                )
-                        );
-
-                        break;
-
-
-                    case "NewExpression":
-
-                        visit(
-                            node.callee,
-                            scope
-                        );
-
-                        node.arguments.forEach(
-                            argument =>
-                                visit(
-                                    argument,
-                                    scope
-                                )
-                        );
-
-                        break;
-
-
-                    case "BinaryExpression":
-
-                    case "LogicalExpression":
-
-                    case "AssignmentExpression":
-
-                    case "SequenceExpression":
-
-                        if (
-                            node.left
-                        ) {
-
-                            visit(
-                                node.left,
-                                scope
-                            );
-
-                        }
-
-                        if (
-                            node.right
-                        ) {
-
-                            visit(
-                                node.right,
-                                scope
-                            );
-
-                        }
-
-                        if (
-                            node.expressions
-                        ) {
-
-                            node.expressions.forEach(
-                                expression =>
-                                    visit(
-                                        expression,
-                                        scope
-                                    )
-                            );
-
-                        }
-
-                        break;
-
-
-                    case "UnaryExpression":
-
-                    case "UpdateExpression":
-
-                        visit(
-                            node.argument,
-                            scope
-                        );
-
-                        break;
-
-
-                    case "ConditionalExpression":
-
-                        visit(
-                            node.test,
-                            scope
-                        );
-
-                        visit(
-                            node.consequent,
-                            scope
-                        );
-
-                        visit(
-                            node.alternate,
-                            scope
-                        );
-
-                        break;
-
-
-                    case "IfStatement":
-
-                        visit(
-                            node.test,
-                            scope
-                        );
-
-                        visit(
-                            node.consequent,
-                            scope
-                        );
-
-                        visit(
-                            node.alternate,
-                            scope
-                        );
-
-                        break;
-
-
-                    case "ForStatement":
-
-                        visit(
-                            node.init,
-                            scope
-                        );
-
-                        visit(
-                            node.test,
-                            scope
-                        );
-
-                        visit(
-                            node.update,
-                            scope
-                        );
-
-                        visit(
-                            node.body,
-                            scope
-                        );
-
-                        break;
-
-
-                    case "ForInStatement":
-
-                    case "ForOfStatement":
-
-                        visit(
-                            node.left,
-                            scope
-                        );
-
-                        visit(
-                            node.right,
-                            scope
-                        );
-
-                        visit(
-                            node.body,
-                            scope
-                        );
-
-                        break;
-
-
-                    case "WhileStatement":
-
-                    case "DoWhileStatement":
-
-                        visit(
-                            node.test,
-                            scope
-                        );
-
-                        visit(
-                            node.body,
-                            scope
-                        );
-
-                        break;
-
-
-                    case "ReturnStatement":
-
-                    case "ThrowStatement":
-
-                        visit(
-                            node.argument,
-                            scope
-                        );
-
-                        break;
-
-
-                    case "TryStatement":
-
-                        visit(
-                            node.block,
-                            scope
-                        );
-
-                        visit(
-                            node.handler,
-                            scope
-                        );
-
-                        visit(
-                            node.finalizer,
-                            scope
-                        );
-
-                        break;
-
-
-                    case "CatchClause": {
-
-                        const catchScope =
-                            this.createScope(
-                                "catch",
-                                scope,
-                                node
-                            );
-
-                        scopes.push(
-                            catchScope
-                        );
-
-                        scopeStack.push(
-                            catchScope
-                        );
-
-                        declarePattern(
-                            node.param,
-                            "catch",
-                            catchScope
-                        );
-
-                        visit(
-                            node.body,
-                            catchScope
-                        );
-
-                        scopeStack.pop();
-
-                        break;
-                    }
-
-
-                    case "SwitchStatement":
-
-                        visit(
-                            node.discriminant,
-                            scope
-                        );
-
-                        node.cases.forEach(
-                            switchCase => {
-
-                                visit(
-                                    switchCase.test,
-                                    scope
-                                );
-
-                                switchCase.consequent.forEach(
-                                    statement =>
-                                        visit(
-                                            statement,
-                                            scope
-                                        )
-                                );
-
-                            }
-                        );
-
-                        break;
-
-
-                    case "ArrayExpression":
-
-                        node.elements.forEach(
-                            element =>
-                                visit(
-                                    element,
-                                    scope
-                                )
-                        );
-
-                        break;
-
-
-                    case "ObjectExpression":
-
-                        node.properties.forEach(
-                            property =>
-                                visit(
-                                    property,
-                                    scope
-                                )
-                        );
-
-                        break;
-
-
-                    case "TemplateLiteral":
-
-                        node.expressions.forEach(
-                            expression =>
-                                visit(
-                                    expression,
-                                    scope
-                                )
-                        );
-
-                        break;
-
-
-                    case "TaggedTemplateExpression":
-
-                        visit(
-                            node.tag,
-                            scope
-                        );
-
-                        visit(
-                            node.quasi,
-                            scope
-                        );
-
-                        break;
-
-
-                    case "AwaitExpression":
-
-                    case "YieldExpression":
-
-                        visit(
-                            node.argument,
-                            scope
-                        );
-
-                        break;
-
-
-                    case "ImportDeclaration":
-
-                        node.specifiers.forEach(
-                            specifier => {
-
-                                addSymbol(
-                                    specifier.local.name,
-                                    "import",
-                                    specifier.local,
-                                    scope,
-                                    {
-                                        type:
-                                            "import"
-                                    }
-                                );
-
-                            }
-                        );
-
-                        break;
-
-
-                    case "ExportNamedDeclaration":
-
-                        visit(
-                            node.declaration,
-                            scope
-                        );
-
-                        break;
-
-
-                    case "ExportDefaultDeclaration":
-
-                        visit(
-                            node.declaration,
-                            scope
-                        );
-
-                        break;
-
-
-                    default:
-
-                        visitChildren(
-                            node,
-                            scope
-                        );
-
-                        break;
-
-                }
-
-            };
-
-        const visitFunction =
-            (
-                node,
-                parentScope
-            ) => {
-
-                const functionScope =
-                    this.createScope(
-                        "function",
-                        parentScope,
-                        node
-                    );
-
-                scopes.push(
-                    functionScope
-                );
-
-                scopeStack.push(
-                    functionScope
-                );
-
-                if (node.id) {
-
-                    addSymbol(
-                        node.id.name,
-                        "function",
-                        node.id,
-                        functionScope,
-                        {
-                            type:
-                                "function-name"
-                        }
-                    );
-
-                }
-
-                node.params.forEach(
-                    parameter => {
-
-                        declarePattern(
-                            parameter,
-                            "parameter",
-                            functionScope
-                        );
-
-                        visit(
-                            parameter,
-                            functionScope
-                        );
-
-                    }
-                );
-
-                visit(
-                    node.body,
-                    functionScope
-                );
-
-                scopeStack.pop();
-
-            };
-
-        const visitChildren =
-            (
-                node,
-                scope
-            ) => {
-
-                Object.keys(node).forEach(
-                    key => {
-
-                        if (
-                            key === "loc" ||
-                            key === "start" ||
-                            key === "end"
-                        ) {
-                            return;
-                        }
-
-                        const value =
-                            node[key];
-
-                        if (
-                            !value ||
-                            typeof value !==
-                                "object"
-                        ) {
-                            return;
-                        }
-
-                        if (
-                            Array.isArray(value)
-                        ) {
-
-                            value.forEach(
-                                child => {
-
-                                    if (
-                                        child &&
-                                        typeof child.type ===
-                                            "string"
-                                    ) {
-
-                                        visit(
-                                            child,
-                                            scope
-                                        );
-
-                                    }
-
-                                }
-                            );
-
-                        } else if (
-                            value.type
-                        ) {
-
-                            visit(
-                                value,
-                                scope
-                            );
-
-                        }
-
-                    }
-                );
-
-            };
-
-        const findFunctionScope =
-            scope => {
-
-                let current =
-                    scope;
-
-                while (current) {
-
-                    if (
-                        current.type ===
-                        "function" ||
-                        current.type ===
-                        "global"
-                    ) {
-
-                        return current;
-
-                    }
-
-                    current =
-                        scopes.find(
-                            candidate =>
-                                candidate.id ===
-                                current.parent
-                        );
-
-                }
-
-                return globalScope;
-
-            };
-
-        visit(
-            ast,
-            globalScope
-        );
-
-        return {
-
-            scopes,
-
-            declarations,
-
-            references
-
-        };
-
+        return symbol;
     }
 
-};
-
-
-CakrawalaNexus.registerTool(
-    "ScopeResolver",
-    ScopeResolver
-);
-
-
-const SymbolResolver = {
-
-    name:
-        "SymbolResolver",
-
-    version:
-        "0.5.0",
-
-    resolve(
-        references,
-        scopes
-    ) {
-
-        return references.map(
-            reference => {
-
-                const symbol =
-                    this.resolveReference(
-                        reference,
-                        scopes
-                    );
-
-                return {
-
-                    ...reference,
-
-                    resolved:
-                        !!symbol,
-
-                    symbol:
-                        symbol || null
-
-                };
-
-            }
-        );
-
-    },
-
-    resolveReference(
-        reference,
-        scopes
-    ) {
-
-        let scope =
-            scopes.find(
-                item =>
-                    item.id ===
-                    reference.scope
-            );
+    resolve(name) {
+        let scope = this;
 
         while (scope) {
-
-            const symbol =
-                scope.symbols.find(
-                    candidate =>
-                        candidate.name ===
-                        reference.name
-                );
-
-            if (symbol) {
-                return symbol;
+            if (scope.symbols.has(name)) {
+                return scope.symbols.get(name);
             }
 
-            scope =
-                scopes.find(
-                    candidate =>
-                        candidate.id ===
-                        scope.parent
-                );
-
+            scope = scope.parent;
         }
 
         return null;
-
     }
 
-};
+    functionScope() {
+        let scope = this;
 
+        while (scope && scope.type !== "function" && scope.type !== "global") {
+            scope = scope.parent;
+        }
 
-CakrawalaNexus.registerTool(
-    "SymbolResolver",
-    SymbolResolver
-);
+        return scope;
+    }
+}
 
+Scope.nextId = 1;
 
-const TypoDetector = {
+class ScopeResolver {
+    constructor() {
+        this.globalScope = new Scope("global");
+        this.currentScope = this.globalScope;
+        this.references = [];
+        this.declarations = [];
+        this.functions = [];
+        this.parameters = [];
+        this.builtins = [];
+    }
 
-    name:
-        "TypoDetector",
+    addBuiltins() {
+        for (const name of NJOS.globals) {
+            const symbol = this.globalScope.declare(
+                name,
+                "builtin",
+                null
+            );
 
-    version:
-        "0.5.0",
+            symbol.builtin = true;
+            this.builtins.push(symbol);
+        }
+    }
 
-    keywords: [
+    createScope(type, node) {
+        const scope = new Scope(type, this.currentScope, node);
+        this.currentScope.addChild(scope);
+        return scope;
+    }
 
-        "const",
-        "let",
-        "var",
-        "function",
-        "return",
-        "if",
-        "else",
-        "for",
-        "while",
-        "do",
-        "switch",
-        "case",
-        "break",
-        "continue",
-        "new",
-        "class",
-        "try",
-        "catch",
-        "finally",
-        "throw",
-        "true",
-        "false",
-        "null",
-        "undefined",
-        "this",
-        "typeof",
-        "instanceof",
-        "in",
-        "of",
-        "async",
-        "await"
+    withScope(scope, callback) {
+        const previous = this.currentScope;
+        this.currentScope = scope;
 
-    ],
+        try {
+            callback();
+        } finally {
+            this.currentScope = previous;
+        }
+    }
 
-    analyze(
-        references,
-        scopes
-    ) {
+    declarePattern(pattern, kind) {
+        if (!pattern) {
+            return;
+        }
 
-        const issues = [];
+        if (pattern.type === "Identifier") {
+            const targetScope =
+                kind === "var"
+                    ? this.currentScope.functionScope()
+                    : this.currentScope;
 
-        references.forEach(
-            reference => {
+            const symbol = targetScope.declare(
+                pattern.name,
+                kind,
+                pattern
+            );
 
-                if (
-                    reference.resolved ||
-                    reference.property
-                ) {
-                    return;
+            this.declarations.push({
+                symbol,
+                node: pattern
+            });
+
+            return;
+        }
+
+        if (pattern.type === "RestElement") {
+            this.declarePattern(pattern.argument, kind);
+            return;
+        }
+
+        if (pattern.type === "AssignmentPattern") {
+            this.declarePattern(pattern.left, kind);
+            this.visitExpression(pattern.right);
+            return;
+        }
+
+        if (
+            pattern.type === "ObjectPattern" ||
+            pattern.type === "ArrayPattern"
+        ) {
+            for (const item of pattern.properties || []) {
+                if (!item) {
+                    continue;
                 }
 
-                const candidates =
-                    this.collectCandidates(
-                        reference,
-                        scopes
-                    );
-
-                const suggestion =
-                    this.bestCandidate(
-                        reference.name,
-                        candidates
-                    );
-
-                if (!suggestion) {
-                    return;
+                if (item.type === "RestElement") {
+                    this.declarePattern(item.argument, kind);
+                    continue;
                 }
 
-                const confidence =
-                    this.calculateConfidence(
-                        reference.name,
-                        suggestion.name,
-                        suggestion.scopeDistance
-                    );
-
-                if (
-                    confidence < 0.72
-                ) {
-                    return;
+                if (item.type === "Property") {
+                    this.declarePattern(item.value, kind);
                 }
-
-                issues.push({
-
-                    type:
-                        "possible-typo",
-
-                    severity:
-                        confidence >= 0.9
-                            ? "warning"
-                            : "info",
-
-                    confidence,
-
-                    line:
-                        reference.line,
-
-                    column:
-                        reference.column,
-
-                    name:
-                        reference.name,
-
-                    suggestion:
-                        suggestion.name,
-
-                    evidence:
-                        [
-                            "Identifier tidak ditemukan",
-                            "Symbol dengan nama mirip ditemukan",
-                            `Symbol berada ${suggestion.scopeDistance} tingkat scope dari reference`
-                        ],
-
-                    message:
-                        `Kemungkinan kesalahan ketik "${reference.name}". Apakah maksud Anda "${suggestion.name}"?`
-
-                });
-
             }
-        );
+        }
+    }
 
-        return {
-            issues
+    addReference(node) {
+        const symbol = this.currentScope.resolve(node.name);
+
+        const reference = {
+            name: node.name,
+            node,
+            scope: this.currentScope,
+            symbol,
+            resolved: Boolean(symbol)
         };
 
-    },
+        this.references.push(reference);
 
-    collectCandidates(
-        reference,
-        scopes
-    ) {
+        if (symbol) {
+            symbol.references.push(reference);
+        }
 
-        const candidates = [];
+        return reference;
+    }
 
-        let scope =
-            scopes.find(
-                item =>
-                    item.id ===
-                    reference.scope
-            );
+    visitPatternReferences(pattern) {
+        if (!pattern) {
+            return;
+        }
 
-        let distance = 0;
+        if (pattern.type === "Identifier") {
+            this.addReference(pattern);
+            return;
+        }
 
-        while (scope) {
+        if (pattern.type === "RestElement") {
+            this.visitPatternReferences(pattern.argument);
+            return;
+        }
 
-            scope.symbols.forEach(
-                symbol => {
+        if (pattern.type === "AssignmentPattern") {
+            this.visitPatternReferences(pattern.left);
+            this.visitExpression(pattern.right);
+            return;
+        }
 
-                    if (
-                        !candidates.some(
-                            candidate =>
-                                candidate.name ===
-                                symbol.name
-                        )
-                    ) {
-
-                        candidates.push({
-
-                            ...symbol,
-
-                            scopeDistance:
-                                distance
-
-                        });
-
-                    }
-
+        if (
+            pattern.type === "ObjectPattern" ||
+            pattern.type === "ArrayPattern"
+        ) {
+            for (const item of pattern.properties || []) {
+                if (!item) {
+                    continue;
                 }
+
+                if (item.type === "RestElement") {
+                    this.visitPatternReferences(item.argument);
+                } else if (item.type === "Property") {
+                    this.visitPatternReferences(item.value);
+                }
+            }
+        }
+    }
+
+    visitFunction(node) {
+        if (node.id) {
+            this.declarePattern(node.id, "function");
+        }
+
+        this.functions.push(node);
+
+        const functionScope = this.createScope(
+            "function",
+            node
+        );
+
+        this.withScope(functionScope, () => {
+            for (const parameter of node.params) {
+                this.declarePattern(parameter, "parameter");
+                this.parameters.push(parameter);
+            }
+
+            const bodyScope = this.createScope(
+                "block",
+                node.body
             );
 
-            scope =
-                scopes.find(
-                    item =>
-                        item.id ===
-                        scope.parent
+            this.withScope(bodyScope, () => {
+                this.visit(node.body);
+            });
+        });
+    }
+
+    visit(node) {
+        if (!node) {
+            return;
+        }
+
+        switch (node.type) {
+            case "Program":
+                for (const statement of node.body) {
+                    this.visit(statement);
+                }
+                break;
+
+            case "VariableDeclaration":
+                for (const declaration of node.declarations) {
+                    this.declarePattern(
+                        declaration.id,
+                        node.kind
+                    );
+
+                    if (declaration.init) {
+                        this.visitExpression(
+                            declaration.init
+                        );
+                    }
+                }
+                break;
+
+            case "FunctionDeclaration":
+                this.visitFunction(node);
+                break;
+
+            case "FunctionExpression":
+            case "ArrowFunctionExpression":
+                this.visitFunction(node);
+                break;
+
+            case "BlockStatement": {
+                for (const statement of node.body) {
+                    this.visit(statement);
+                }
+                break;
+            }
+
+            case "ExpressionStatement":
+                this.visitExpression(node.expression);
+                break;
+
+            case "ReturnStatement":
+                if (node.argument) {
+                    this.visitExpression(node.argument);
+                }
+                break;
+
+            case "IfStatement":
+                this.visitExpression(node.test);
+                this.visit(node.consequent);
+
+                if (node.alternate) {
+                    this.visit(node.alternate);
+                }
+                break;
+
+            case "ForStatement": {
+                const loopScope = this.createScope(
+                    "block",
+                    node
                 );
 
-            distance++;
+                this.withScope(loopScope, () => {
+                    if (node.init) {
+                        if (
+                            node.init.type ===
+                            "VariableDeclaration"
+                        ) {
+                            this.visit(node.init);
+                        } else {
+                            this.visitExpression(
+                                node.init
+                            );
+                        }
+                    }
 
+                    if (node.test) {
+                        this.visitExpression(node.test);
+                    }
+
+                    if (node.update) {
+                        this.visitExpression(node.update);
+                    }
+
+                    this.visit(node.body);
+                });
+
+                break;
+            }
+
+            case "ForInStatement":
+            case "ForOfStatement": {
+                const loopScope = this.createScope(
+                    "block",
+                    node
+                );
+
+                this.withScope(loopScope, () => {
+                    if (
+                        node.left.type ===
+                        "VariableDeclaration"
+                    ) {
+                        this.visit(node.left);
+                    } else {
+                        this.visitExpression(node.left);
+                    }
+
+                    this.visitExpression(node.right);
+                    this.visit(node.body);
+                });
+
+                break;
+            }
+
+            case "WhileStatement":
+            case "DoWhileStatement":
+                this.visitExpression(node.test);
+                this.visit(node.body);
+                break;
+
+            case "SwitchStatement": {
+                this.visitExpression(node.discriminant);
+
+                const switchScope = this.createScope(
+                    "block",
+                    node
+                );
+
+                this.withScope(switchScope, () => {
+                    for (const switchCase of node.cases) {
+                        if (switchCase.test) {
+                            this.visitExpression(
+                                switchCase.test
+                            );
+                        }
+
+                        for (const statement of switchCase.consequent) {
+                            this.visit(statement);
+                        }
+                    }
+                });
+
+                break;
+            }
+
+            case "TryStatement":
+                this.visit(node.block);
+
+                if (node.handler) {
+                    const catchScope = this.createScope(
+                        "catch",
+                        node.handler
+                    );
+
+                    this.withScope(catchScope, () => {
+                        if (node.handler.param) {
+                            this.declarePattern(
+                                node.handler.param,
+                                "catch"
+                            );
+                        }
+
+                        this.visit(node.handler.body);
+                    });
+                }
+
+                if (node.finalizer) {
+                    this.visit(node.finalizer);
+                }
+                break;
+
+            case "ThrowStatement":
+                this.visitExpression(node.argument);
+                break;
+
+            case "ClassDeclaration":
+                this.declarePattern(node.id, "class");
+
+                if (node.superClass) {
+                    this.visitExpression(node.superClass);
+                }
+
+                this.visitClassBody(node.body);
+                break;
+
+            case "ClassExpression":
+                if (node.id) {
+                    this.declarePattern(node.id, "class");
+                }
+
+                if (node.superClass) {
+                    this.visitExpression(node.superClass);
+                }
+
+                this.visitClassBody(node.body);
+                break;
+
+            case "BreakStatement":
+            case "ContinueStatement":
+            case "EmptyStatement":
+            case "DebuggerStatement":
+                break;
+
+            default:
+                this.visitGeneric(node);
+        }
+    }
+
+    visitClassBody(body) {
+        for (const method of body.body || []) {
+            if (method.computed) {
+                this.visitExpression(method.key);
+            }
+
+            if (method.value) {
+                this.visitFunction(method.value);
+            }
+        }
+    }
+
+    visitExpression(node) {
+        if (!node) {
+            return;
         }
 
-        return candidates;
+        switch (node.type) {
+            case "Identifier":
+                this.addReference(node);
+                break;
 
-    },
+            case "Literal":
+                break;
 
-    bestCandidate(
-        target,
-        candidates
-    ) {
+            case "TemplateLiteral":
+                for (const expression of node.expressions) {
+                    this.visitExpression(expression);
+                }
+                break;
 
-        let best = null;
+            case "BinaryExpression":
+            case "LogicalExpression":
+            case "AssignmentExpression":
+                this.visitExpression(node.left);
+                this.visitExpression(node.right);
+                break;
 
-        candidates.forEach(
-            candidate => {
+            case "UnaryExpression":
+            case "UpdateExpression":
+                this.visitExpression(node.argument);
+                break;
 
-                const distance =
-                    this.levenshtein(
-                        target.toLowerCase(),
-                        candidate.name.toLowerCase()
-                    );
+            case "ConditionalExpression":
+                this.visitExpression(node.test);
+                this.visitExpression(node.consequent);
+                this.visitExpression(node.alternate);
+                break;
 
-                const maxLength =
-                    Math.max(
-                        target.length,
-                        candidate.name.length
-                    );
+            case "CallExpression":
+            case "NewExpression":
+                this.visitExpression(node.callee);
 
-                const threshold =
-                    maxLength <= 4
-                        ? 1
-                        : maxLength <= 8
-                            ? 2
-                            : 3;
+                for (const argument of node.arguments) {
+                    this.visitExpression(argument);
+                }
+                break;
 
-                if (
-                    distance >
-                    threshold
-                ) {
-                    return;
+            case "MemberExpression":
+                this.visitExpression(node.object);
+
+                if (node.computed) {
+                    this.visitExpression(node.property);
                 }
 
-                const score =
-                    this.calculateConfidence(
-                        target,
-                        candidate.name,
-                        candidate.scopeDistance
-                    );
+                break;
 
-                if (
-                    !best ||
-                    score >
-                    best.score
-                ) {
+            case "ChainExpression":
+                this.visitExpression(node.expression);
+                break;
 
-                    best = {
-
-                        ...candidate,
-
-                        distance,
-
-                        score
-
-                    };
-
+            case "ArrayExpression":
+                for (const element of node.elements) {
+                    this.visitExpression(element);
                 }
+                break;
 
-            }
-        );
+            case "ObjectExpression":
+                for (const property of node.properties) {
+                    if (property.type === "SpreadElement") {
+                        this.visitExpression(
+                            property.argument
+                        );
+                        continue;
+                    }
 
-        return best;
+                    if (property.computed) {
+                        this.visitExpression(property.key);
+                    }
 
-    },
+                    this.visitExpression(property.value);
+                }
+                break;
 
-    calculateConfidence(
-        target,
-        candidate,
-        scopeDistance
-    ) {
+            case "ArrowFunctionExpression":
+            case "FunctionExpression":
+                this.visitFunction(node);
+                break;
 
-        const distance =
-            this.levenshtein(
-                target.toLowerCase(),
-                candidate.toLowerCase()
-            );
+            case "SequenceExpression":
+                for (const expression of node.expressions) {
+                    this.visitExpression(expression);
+                }
+                break;
 
-        const length =
-            Math.max(
-                target.length,
-                candidate.length
-            );
+            case "AwaitExpression":
+            case "YieldExpression":
+                this.visitExpression(node.argument);
+                break;
 
-        if (!length) {
-            return 0;
+            case "AssignmentPattern":
+                this.visitExpression(node.right);
+                break;
+
+            default:
+                this.visitGeneric(node);
+        }
+    }
+
+    visitGeneric(node) {
+        if (!node || typeof node !== "object") {
+            return;
         }
 
-        const similarity =
-            1 -
-            distance /
-            length;
-
-        const scopeBonus =
-            scopeDistance === 0
-                ? 0.12
-                : scopeDistance === 1
-                    ? 0.06
-                    : 0;
-
-        return Math.min(
-            1,
-            similarity +
-            scopeBonus
-        );
-
-    },
-
-    findKeywordTypo(
-        word
-    ) {
-
-        let best = null;
-
-        this.keywords.forEach(
-            keyword => {
-
-                const distance =
-                    this.levenshtein(
-                        word.toLowerCase(),
-                        keyword
-                    );
-
-                if (
-                    distance > 1
-                ) {
-                    return;
-                }
-
-                if (
-                    !best ||
-                    distance <
-                    best.distance
-                ) {
-
-                    best = {
-
-                        keyword,
-
-                        distance
-
-                    };
-
-                }
-
+        for (const key of Object.keys(node)) {
+            if (
+                key === "loc" ||
+                key === "start" ||
+                key === "end"
+            ) {
+                continue;
             }
-        );
 
-        return best;
+            const value = node[key];
 
-    },
+            if (Array.isArray(value)) {
+                for (const item of value) {
+                    if (
+                        item &&
+                        typeof item.type === "string"
+                    ) {
+                        if (
+                            item.type === "Identifier"
+                        ) {
+                            this.addReference(item);
+                        } else {
+                            this.visit(item);
+                        }
+                    }
+                }
+            } else if (
+                value &&
+                typeof value.type === "string"
+            ) {
+                if (value.type === "Identifier") {
+                    this.addReference(value);
+                } else {
+                    this.visit(value);
+                }
+            }
+        }
+    }
 
-    levenshtein(
-        a,
-        b
-    ) {
+    resolve(tree) {
+        this.addBuiltins();
+        this.visit(tree);
 
+        return {
+            globalScope: this.globalScope,
+            references: this.references,
+            declarations: this.declarations,
+            functions: this.functions,
+            parameters: this.parameters,
+            builtins: this.builtins
+        };
+    }
+}
+
+class TypoDetector {
+    constructor(scopeData) {
+        this.scopeData = scopeData;
+    }
+
+    distance(a, b) {
         const matrix = [];
 
-        for (
-            let i = 0;
-            i <= b.length;
-            i++
-        ) {
-
+        for (let i = 0; i <= b.length; i++) {
             matrix[i] = [i];
-
         }
 
-        for (
-            let j = 0;
-            j <= a.length;
-            j++
-        ) {
-
+        for (let j = 0; j <= a.length; j++) {
             matrix[0][j] = j;
-
         }
 
-        for (
-            let i = 1;
-            i <= b.length;
-            i++
-        ) {
-
-            for (
-                let j = 1;
-                j <= a.length;
-                j++
-            ) {
-
-                if (
-                    b.charAt(i - 1) ===
-                    a.charAt(j - 1)
-                ) {
-
+        for (let i = 1; i <= b.length; i++) {
+            for (let j = 1; j <= a.length; j++) {
+                if (b[i - 1] === a[j - 1]) {
                     matrix[i][j] =
                         matrix[i - 1][j - 1];
-
                 } else {
-
                     matrix[i][j] =
                         Math.min(
-
                             matrix[i - 1][j] + 1,
-
                             matrix[i][j - 1] + 1,
-
                             matrix[i - 1][j - 1] + 1
-
                         );
-
                 }
-
             }
-
         }
 
         return matrix[b.length][a.length];
-
     }
 
-};
+    similarity(a, b) {
+        if (!a.length && !b.length) {
+            return 1;
+        }
 
-
-CakrawalaNexus.registerTool(
-    "TypoDetector",
-    TypoDetector
-);
-
-
-const Analyzer = {
-
-    name:
-        "Analyzer",
-
-    version:
-        "0.5.0",
-
-    analyze(
-        resolvedReferences,
-        scopes,
-        ast
-    ) {
-
-        const issues = [];
-
-        const typoDetector =
-            CakrawalaNexus.getTool(
-                "TypoDetector"
-            );
-
-        const typoResult =
-            typoDetector.analyze(
-                resolvedReferences,
-                scopes
-            );
-
-        issues.push(
-            ...typoResult.issues
+        const distance = this.distance(
+            a.toLowerCase(),
+            b.toLowerCase()
         );
 
-        resolvedReferences.forEach(
-            reference => {
+        return 1 -
+            distance /
+            Math.max(a.length, b.length);
+    }
 
-                if (
-                    reference.resolved ||
-                    reference.property
-                ) {
-                    return;
-                }
+    scopeDistance(from, target) {
+        let distance = 0;
+        let scope = from;
 
-                const hasTypo =
-                    typoResult.issues.some(
-                        issue =>
-                            issue.line ===
-                                reference.line &&
-                            issue.column ===
-                                reference.column
-                    );
-
-                if (hasTypo) {
-                    return;
-                }
-
-                issues.push({
-
-                    type:
-                        "undeclared-variable",
-
-                    severity:
-                        "warning",
-
-                    confidence:
-                        1,
-
-                    line:
-                        reference.line,
-
-                    column:
-                        reference.column,
-
-                    name:
-                        reference.name,
-
-                    evidence:
-                        [
-                            "Identifier tidak ditemukan",
-                            "Tidak ada symbol yang cocok pada scope chain"
-                        ],
-
-                    message:
-                        `Identifier "${reference.name}" belum dideklarasikan.`
-
-                });
-
+        while (scope) {
+            if (scope === target) {
+                return distance;
             }
-        );
 
-        scopes.forEach(
-            scope => {
+            scope = scope.parent;
+            distance++;
+        }
 
-                scope.symbols.forEach(
-                    symbol => {
+        return Infinity;
+    }
 
-                        if (
-                            symbol.kind ===
-                            "function" ||
-                            symbol.kind ===
-                            "class" ||
-                            symbol.kind ===
-                            "import"
-                        ) {
-                            return;
-                        }
+    candidates(reference) {
+        const result = [];
+        const seen = new Set();
 
-                        const used =
-                            resolvedReferences.some(
-                                reference =>
-                                    reference.resolved &&
-                                    reference.symbol &&
-                                    reference.symbol.id ===
-                                        symbol.id
-                            );
+        let scope = reference.scope;
 
-                        if (used) {
-                            return;
-                        }
+        while (scope) {
+            for (const symbol of scope.symbols.values()) {
+                if (
+                    symbol.builtin ||
+                    seen.has(symbol.id)
+                ) {
+                    continue;
+                }
 
-                        issues.push({
+                seen.add(symbol.id);
 
-                            type:
-                                "unused-variable",
+                if (symbol.name === reference.name) {
+                    continue;
+                }
 
-                            severity:
-                                "info",
-
-                            confidence:
-                                1,
-
-                            line:
-                                symbol.line,
-
-                            column:
-                                symbol.column,
-
-                            name:
-                                symbol.name,
-
-                            evidence:
-                                [
-                                    "Symbol berhasil dibuat",
-                                    "Tidak ditemukan reference yang mengarah ke symbol"
-                                ],
-
-                            message:
-                                `Variabel "${symbol.name}" dideklarasikan tetapi belum digunakan.`
-
-                        });
-
-                    }
+                const similarity = this.similarity(
+                    reference.name,
+                    symbol.name
                 );
 
+                if (similarity >= 0.65) {
+                    result.push({
+                        symbol,
+                        similarity,
+                        scopeDistance:
+                            this.scopeDistance(
+                                reference.scope,
+                                symbol.scope
+                            )
+                    });
+                }
             }
-        );
 
-        const keywordIssues =
-            this.detectKeywordTypos(
-                ast
+            scope = scope.parent;
+        }
+
+        return result.sort((a, b) => {
+            if (
+                b.similarity !==
+                a.similarity
+            ) {
+                return (
+                    b.similarity -
+                    a.similarity
+                );
+            }
+
+            return (
+                a.scopeDistance -
+                b.scopeDistance
             );
+        });
+    }
 
-        issues.push(
-            ...keywordIssues
-        );
-
-        return {
-            issues
-        };
-
-    },
-
-    detectKeywordTypos(ast) {
-
+    detect() {
         const issues = [];
 
-        const source =
-            ast.raw;
-
-        const keywords =
-            TypoDetector.keywords;
-
-        const tokens =
-            [];
-
-        try {
-
-            acorn.parse(
-                source,
-                {
-                    ecmaVersion: "latest",
-                    sourceType: "script",
-                    locations: true,
-                    onToken:
-                        tokens
-                }
-            );
-
-        } catch (error) {
-
-            return issues;
-
-        }
-
-        const identifierTokens =
-            tokens.filter(
-                token =>
-                    token.type &&
-                    token.type.label ===
-                        "name"
-            );
-
-        identifierTokens.forEach(
-            token => {
-
-                const value =
-                    token.value;
-
-                if (
-                    typeof value !==
-                    "string"
-                ) {
-                    return;
-                }
-
-                if (
-                    keywords.includes(
-                        value
-                    )
-                ) {
-                    return;
-                }
-
-                const result =
-                    TypoDetector.findKeywordTypo(
-                        value
-                    );
-
-                if (!result) {
-                    return;
-                }
-
-                const context =
-                    source.substring(
-                        Math.max(
-                            0,
-                            token.start - 20
-                        ),
-                        token.start
-                    );
-
-                if (
-                    !/[;{}()=]/.test(
-                        context.slice(-1)
-                    )
-                ) {
-                    return;
-                }
-
-                const confidence =
-                    result.distance === 1
-                        ? 0.86
-                        : 0.7;
-
-                issues.push({
-
-                    type:
-                        "keyword-typo",
-
-                    severity:
-                        "warning",
-
-                    confidence,
-
-                    line:
-                        token.loc.start.line,
-
-                    column:
-                        token.loc.start.column + 1,
-
-                    name:
-                        value,
-
-                    suggestion:
-                        result.keyword,
-
-                    evidence:
-                        [
-                            "Token tidak cocok dengan keyword valid",
-                            "Edit distance sangat kecil",
-                            "Posisi token menyerupai penggunaan keyword"
-                        ],
-
-                    message:
-                        `Kemungkinan keyword salah ketik "${value}". Apakah maksud Anda "${result.keyword}"?`
-
-                });
-
+        for (const reference of this.scopeData.references) {
+            if (reference.resolved) {
+                continue;
             }
-        );
+
+            const candidates =
+                this.candidates(reference);
+
+            if (!candidates.length) {
+                continue;
+            }
+
+            const best = candidates[0];
+
+            let confidence =
+                best.similarity * 100;
+
+            if (best.scopeDistance <= 1) {
+                confidence += 5;
+            } else if (best.scopeDistance === 2) {
+                confidence -= 2;
+            }
+
+            confidence = Math.max(
+                0,
+                Math.min(99, Math.round(confidence))
+            );
+
+            if (confidence < 70) {
+                continue;
+            }
+
+            issues.push({
+                type: "typo",
+                severity: "info",
+                name: reference.name,
+                suggestion: best.symbol.name,
+                confidence,
+                node: reference.node,
+                evidence: [
+                    "Identifier tidak ditemukan",
+                    "Symbol dengan nama mirip ditemukan",
+                    `Symbol berada ${best.scopeDistance} tingkat scope dari reference`
+                ]
+            });
+        }
 
         return issues;
+    }
+}
 
+class Analyzer {
+    constructor(scopeData) {
+        this.scopeData = scopeData;
     }
 
-};
+    analyzeUnused() {
+        const issues = [];
 
+        for (const declaration of this.scopeData.declarations) {
+            const symbol = declaration.symbol;
 
-CakrawalaNexus.registerTool(
-    "Analyzer",
-    Analyzer
-);
+            if (symbol.builtin) {
+                continue;
+            }
 
+            if (
+                symbol.kind === "function" &&
+                symbol.scope.type === "global"
+            ) {
+                continue;
+            }
 
-const CodeChecker = {
+            if (symbol.references.length === 0) {
+                issues.push({
+                    type: "unused",
+                    severity: "info",
+                    name: symbol.name,
+                    confidence: 100,
+                    node: symbol.node,
+                    evidence: [
+                        "Symbol berhasil dibuat",
+                        "Tidak ditemukan reference yang mengarah ke symbol"
+                    ]
+                });
+            }
+        }
 
-    name:
-        "CodeChecker",
+        return issues;
+    }
 
-    version:
-        "0.5.0",
+    analyzeUndeclared() {
+        const issues = [];
+
+        for (const reference of this.scopeData.references) {
+            if (reference.resolved) {
+                continue;
+            }
+
+            const candidates = this.scopeData.globalScope.symbols;
+
+            if (candidates.has(reference.name)) {
+                continue;
+            }
+
+            issues.push({
+                type: "undeclared",
+                severity: "warning",
+                name: reference.name,
+                confidence: 100,
+                node: reference.node,
+                evidence: [
+                    "Identifier tidak ditemukan",
+                    "Tidak ada symbol yang cocok pada scope chain"
+                ]
+            });
+        }
+
+        return issues;
+    }
+}
+
+class CodeChecker {
+    constructor() {
+        this.parser = new CodeParser();
+    }
 
     check(code) {
-
-        if (
-            typeof code !==
-            "string"
-        ) {
-
-            return {
-
-                success:
-                    false,
-
-                error:
-                    "Input kode tidak valid."
-
-            };
-
-        }
-
-        if (
-            !code.trim()
-        ) {
-
-            return {
-
-                success:
-                    false,
-
-                error:
-                    "Kode masih kosong."
-
-            };
-
-        }
-
-        const parser =
-            CakrawalaNexus.getTool(
-                "JavaScriptParser"
-            );
-
         try {
+            const parsed = this.parser.parse(code);
 
-            const ast =
-                parser.parse(code);
+            const scopeResolver =
+                new ScopeResolver();
+
+            const scopeData =
+                scopeResolver.resolve(
+                    parsed.tree
+                );
+
+            const typoDetector =
+                new TypoDetector(
+                    scopeData
+                );
+
+            const analyzer =
+                new Analyzer(
+                    scopeData
+                );
+
+            const typoIssues =
+                typoDetector.detect();
+
+            const unusedIssues =
+                analyzer.analyzeUnused();
+
+            const undeclaredIssues =
+                analyzer.analyzeUndeclared();
+
+            const issues = [
+                ...typoIssues,
+                ...unusedIssues,
+                ...undeclaredIssues
+            ].sort((a, b) => {
+                return (
+                    a.node.start -
+                    b.node.start
+                );
+            });
 
             return {
-
-                success:
-                    true,
-
-                ast
-
+                success: true,
+                tree: parsed.tree,
+                scopeData,
+                issues
             };
-
         } catch (error) {
-
             return {
-
-                success:
-                    false,
-
-                error:
-                    error
-
+                success: false,
+                error
             };
-
         }
+    }
+}
 
+const nexus = new CakrawalaNexus();
+const checker = new CodeChecker();
+
+const editor =
+    document.getElementById("codeEditor");
+
+const output =
+    document.getElementById("output");
+
+const status =
+    document.getElementById("status");
+
+const button =
+    document.getElementById("analyzeButton");
+
+function formatIssue(issue, index) {
+    const line =
+        issue.node?.loc?.start?.line || 0;
+
+    const column =
+        issue.node?.loc?.start?.column || 0;
+
+    let title = "";
+
+    if (issue.type === "typo") {
+        title =
+            `Kemungkinan kesalahan ketik "${issue.name}". ` +
+            `Apakah maksud Anda "${issue.suggestion}"?`;
     }
 
-};
-
-
-CakrawalaNexus.registerTool(
-    "CodeChecker",
-    CodeChecker
-);
-
-
-CakrawalaNexus.on(
-    "code.checked",
-    function(checkResult) {
-
-        if (
-            !checkResult.success
-        ) {
-            return;
-        }
-
-        const normalizer =
-            CakrawalaNexus.getTool(
-                "Normalizer"
-            );
-
-        const resolver =
-            CakrawalaNexus.getTool(
-                "ScopeResolver"
-            );
-
-        const symbolResolver =
-            CakrawalaNexus.getTool(
-                "SymbolResolver"
-            );
-
-        const ast =
-            normalizer.create(
-                checkResult.ast
-            );
-
-        const scopeData =
-            resolver.resolve(
-                ast.raw
-            );
-
-        const resolvedReferences =
-            symbolResolver.resolve(
-                scopeData.references,
-                scopeData.scopes
-            );
-
-        const analyzer =
-            CakrawalaNexus.getTool(
-                "Analyzer"
-            );
-
-        const analysis =
-            analyzer.analyze(
-                resolvedReferences,
-                scopeData.scopes,
-                ast
-            );
-
-        NJOS.setContext(
-            "ast",
-            ast
-        );
-
-        NJOS.setContext(
-            "scopeData",
-            scopeData
-        );
-
-        NJOS.setContext(
-            "resolvedReferences",
-            resolvedReferences
-        );
-
-        NJOS.setContext(
-            "analysis",
-            analysis
-        );
-
-        CakrawalaNexus.emit(
-            "analysis.completed",
-            analysis
-        );
-
+    if (issue.type === "unused") {
+        title =
+            `Variabel "${issue.name}" dideklarasikan tetapi belum digunakan.`;
     }
-);
 
+    if (issue.type === "undeclared") {
+        title =
+            `Identifier "${issue.name}" belum dideklarasikan.`;
+    }
 
-const codeInput =
-    document.getElementById(
-        "codeInput"
+    return [
+        `${index}. [${issue.severity}] ${title}`,
+        `   Kepercayaan: ${issue.confidence}%`,
+        `   Baris ${line}, Kolom ${column + 1}`,
+        `   Bukti:`,
+        ...issue.evidence.map(
+            evidence => `   - ${evidence}`
+        )
+    ].join("\n");
+}
+
+function render(result) {
+    if (!result.success) {
+        status.textContent = "Syntax error";
+        output.textContent =
+            `ERROR\n\n${result.error.message}\n\n` +
+            `Baris ${result.error.loc?.line || 0}, ` +
+            `Kolom ${(result.error.loc?.column || 0) + 1}`;
+
+        return;
+    }
+
+    const {
+        scopeData,
+        issues
+    } = result;
+
+    const userDeclarations =
+        scopeData.declarations.filter(
+            item => !item.symbol.builtin
+        );
+
+    const userSymbols =
+        userDeclarations.length;
+
+    const resolved =
+        scopeData.references.filter(
+            reference => reference.resolved
+        ).length;
+
+    const scopes =
+        countScopes(
+            scopeData.globalScope
+        );
+
+    const lines = [
+        "ANALISIS CAKRAWALA",
+        "==============================",
+        "",
+        "Sintaks: OK",
+        "Bahasa: JavaScript",
+        `Deklarasi: ${userDeclarations.length}`,
+        `Fungsi: ${scopeData.functions.length}`,
+        `Parameter: ${scopeData.parameters.length}`,
+        `Cakupan: ${scopes}`,
+        `Simbol: ${userSymbols}`,
+        `Referensi: ${scopeData.references.length}`,
+        `Ter-resolve: ${resolved}`,
+        "",
+        "MASALAH",
+        "==============================",
+        ""
+    ];
+
+    if (!issues.length) {
+        lines.push(
+            "Tidak ada masalah yang terdeteksi."
+        );
+    } else {
+        issues.forEach((issue, index) => {
+            lines.push(
+                formatIssue(
+                    issue,
+                    index + 1
+                )
+            );
+            lines.push("");
+        });
+    }
+
+    output.textContent =
+        lines.join("\n");
+
+    status.textContent =
+        `${issues.length} masalah ditemukan`;
+}
+
+function countScopes(scope) {
+    let count = 1;
+
+    for (const child of scope.children) {
+        count += countScopes(child);
+    }
+
+    return count;
+}
+
+function analyze() {
+    const code = editor.value;
+
+    status.textContent =
+        "Analyzing...";
+
+    const result =
+        checker.check(code);
+
+    render(result);
+
+    nexus.emit(
+        "analysis:complete",
+        result
     );
+}
 
-const checkButton =
-    document.getElementById(
-        "checkButton"
-    );
-
-const clearButton =
-    document.getElementById(
-        "clearButton"
-    );
-
-const result =
-    document.getElementById(
-        "result"
-    );
-
-
-checkButton.addEventListener(
+button.addEventListener(
     "click",
-    function() {
+    analyze
+);
 
-        const code =
-            codeInput.value;
-
-        NJOS.setContext(
-            "lastCode",
-            code
-        );
-
-        NJOS.clearErrors();
-
-        NJOS.setState(
-            "status",
-            "checking"
-        );
-
-        const checker =
-            CakrawalaNexus.getTool(
-                "CodeChecker"
-            );
-
-        const checkResult =
-            checker.check(code);
-
-        if (
-            !checkResult.success
-        ) {
-
-            NJOS.setState(
-                "status",
-                "error"
-            );
-
-            result.className =
-                "result error";
-
-            const line =
-                checkResult.error.loc
-                    ? checkResult.error.loc.line
-                    : "?";
-
-            const column =
-                checkResult.error.loc
-                    ? checkResult.error.loc.column + 1
-                    : "?";
-
-            result.textContent =
-                "ERROR\n\n" +
-                checkResult.error.message +
-                "\n\n" +
-                `Baris ${line}, Kolom ${column}`;
-
-            return;
-
-        }
-
-        CakrawalaNexus.emit(
-            "code.checked",
-            checkResult
-        );
-
-        const ast =
-            NJOS.getContext(
-                "ast"
-            );
-
-        const scopeData =
-            NJOS.getContext(
-                "scopeData"
-            );
-
-        const resolvedReferences =
-            NJOS.getContext(
-                "resolvedReferences"
-            );
-
-        const analysis =
-            NJOS.getContext(
-                "analysis"
-            );
-
-        const declarations =
-            scopeData.declarations;
-
-        const functions =
-            scopeData.declarations.filter(
-                declaration =>
-                    declaration.kind ===
-                    "function"
-            );
-
-        const parameters =
-            scopeData.declarations.filter(
-                declaration =>
-                    declaration.kind ===
-                    "parameter"
-            );
-
-        const symbols =
-            scopeData.declarations;
-
-        const resolvedCount =
-            resolvedReferences.filter(
-                reference =>
-                    reference.resolved
-            ).length;
-
-        let output =
-            "ANALISIS CAKRAWALA\n";
-
-        output +=
-            "==============================\n\n";
-
-        output +=
-            "Sintaks: OK\n";
-
-        output +=
-            "Bahasa: JavaScript\n";
-
-        output +=
-            `Deklarasi: ${declarations.length}\n`;
-
-        output +=
-            `Fungsi: ${functions.length}\n`;
-
-        output +=
-            `Parameter: ${parameters.length}\n`;
-
-        output +=
-            `Cakupan: ${scopeData.scopes.length}\n`;
-
-        output +=
-            `Simbol: ${symbols.length}\n`;
-
-        output +=
-            `Referensi: ${resolvedReferences.length}\n`;
-
-        output +=
-            `Ter-resolve: ${resolvedCount}\n\n`;
-
-        output +=
-            "MASALAH\n";
-
-        output +=
-            "==============================\n\n";
-
-        if (
-            analysis.issues.length ===
-            0
-        ) {
-
-            output +=
-                "Tidak ada masalah yang terdeteksi.";
-
-            result.className =
-                "result success";
-
-        } else {
-
-            analysis.issues.forEach(
-                (issue, index) => {
-
-                    const confidence =
-                        Math.round(
-                            issue.confidence *
-                            100
-                        );
-
-                    output +=
-                        `${index + 1}. ` +
-                        `[${issue.severity}] ` +
-                        issue.message +
-                        "\n";
-
-                    output +=
-                        `   Kepercayaan: ${confidence}%\n`;
-
-                    output +=
-                        `   Baris ${issue.line}, ` +
-                        `Kolom ${issue.column}\n`;
-
-                    if (
-                        issue.evidence
-                    ) {
-
-                        output +=
-                            "   Bukti:\n";
-
-                        issue.evidence.forEach(
-                            evidence => {
-
-                                output +=
-                                    `   - ${evidence}\n`;
-
-                            }
-                        );
-
-                    }
-
-                    output +=
-                        "\n";
-
-                }
-            );
-
-            result.className =
-                "result warning";
-
-        }
-
-        result.textContent =
-            output;
-
-        NJOS.setState(
-            "status",
-            "complete"
-        );
-
+nexus.on(
+    "analysis:complete",
+    result => {
+        window.__CAKRAWALA_LAST_RESULT__ =
+            result;
     }
 );
 
-
-clearButton.addEventListener(
-    "click",
-    function() {
-
-        codeInput.value = "";
-
-        result.textContent =
-            "Ready.";
-
-        result.className =
-            "result";
-
-        NJOS.clearContext();
-
-        NJOS.clearErrors();
-
-        NJOS.setState(
-            "status",
-            "idle"
-        );
-
-    }
-);
-
-
-CakrawalaNexus.connect();
-
-console.log(
-    "NJOS:",
-    NJOS.info()
-);
-
-console.log(
-    "Tools:",
-    NJOS.listTools()
-);
-
+analyze();
 </script>
-
 </body>
 </html>
-               
+           
 
-        
-                 
+                
