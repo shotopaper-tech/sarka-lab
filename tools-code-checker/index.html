@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cakrawala Workstation</title>
 
-    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">
 
 <style>
 * {
@@ -33,7 +33,12 @@ body {
     height: 100%;
     overflow: hidden;
     background:
-        radial-gradient(circle at 50% 42%, #162438 0%, #0b111b 48%, #06090e 100%);
+        radial-gradient(
+            circle at 50% 42%,
+            #162438 0%,
+            #0b111b 48%,
+            #06090e 100%
+        );
 }
 
 .app::before {
@@ -42,8 +47,15 @@ body {
     inset: 0;
     pointer-events: none;
     background:
-        linear-gradient(rgba(71, 112, 160, .025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(71, 112, 160, .025) 1px, transparent 1px);
+        linear-gradient(
+            rgba(71, 112, 160, .025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(71, 112, 160, .025) 1px,
+            transparent 1px
+        );
     background-size: 32px 32px;
 }
 
@@ -60,7 +72,12 @@ body {
     padding: 8px 10px;
     border: 1px solid #243c58;
     border-radius: 12px;
-    background: linear-gradient(180deg, rgba(15, 25, 39, .96), rgba(8, 13, 21, .96));
+    background:
+        linear-gradient(
+            180deg,
+            rgba(15, 25, 39, .96),
+            rgba(8, 13, 21, .96)
+        );
     box-shadow:
         0 0 25px rgba(29, 85, 145, .10),
         inset 0 1px rgba(111, 161, 211, .06);
@@ -103,7 +120,8 @@ body {
 .pill.online {
     border-color: #315c4b;
     color: #78c89b;
-    box-shadow: inset 0 0 12px rgba(64, 170, 113, .06);
+    box-shadow:
+        inset 0 0 12px rgba(64, 170, 113, .06);
 }
 
 .workspace {
@@ -123,7 +141,12 @@ body {
     overflow: hidden;
     border: 1px solid #233b56;
     border-radius: 12px;
-    background: linear-gradient(180deg, rgba(11, 19, 30, .96), rgba(7, 12, 19, .96));
+    background:
+        linear-gradient(
+            180deg,
+            rgba(11, 19, 30, .96),
+            rgba(7, 12, 19, .96)
+        );
     box-shadow:
         0 0 22px rgba(18, 70, 120, .08),
         inset 0 1px rgba(107, 158, 210, .05);
@@ -137,12 +160,13 @@ body {
     left: 18px;
     right: 18px;
     height: 1px;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        #416d98,
-        transparent
-    );
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #416d98,
+            transparent
+        );
     opacity: .7;
 }
 
@@ -154,11 +178,12 @@ body {
     align-items: center;
     padding: 0 12px;
     border-bottom: 1px solid #1e334b;
-    background: linear-gradient(
-        90deg,
-        rgba(28, 58, 88, .25),
-        transparent
-    );
+    background:
+        linear-gradient(
+            90deg,
+            rgba(28, 58, 88, .25),
+            transparent
+        );
     color: #7893ad;
     font-size: 9px;
     letter-spacing: 1.7px;
@@ -229,133 +254,25 @@ body {
     display: block;
 }
 
-#worldView {
+#view-editor {
     overflow: hidden;
+}
+
+#view-analyzer,
+#view-variables,
+#view-runtime,
+#view-nexus {
     background:
         linear-gradient(
-            rgba(62, 106, 145, .025) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(62, 106, 145, .025) 1px,
-            transparent 1px
-        ),
-        #0b131d;
-    background-size: 32px 32px;
-}
-
-#worldView::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-        radial-gradient(
-            circle at center,
-            rgba(42, 82, 116, .14),
-            transparent 55%
+            180deg,
+            rgba(10, 19, 30, .96),
+            rgba(7, 13, 21, .96)
         );
-    pointer-events: none;
-}
-
-.world-label {
-    position: absolute;
-    z-index: 4;
-    top: 13px;
-    left: 15px;
-    padding: 6px 8px;
-    border: 1px solid #24405b;
-    border-radius: 5px;
-    background: rgba(5, 10, 16, .75);
-    color: #607b94;
-    font-family: Consolas, monospace;
-    font-size: 8px;
-    letter-spacing: 1px;
-}
-
-.world-grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-        linear-gradient(
-            rgba(92, 136, 173, .035) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(92, 136, 173, .035) 1px,
-            transparent 1px
-        );
-    background-size: 24px 24px;
-}
-
-#companionCanvas {
-    position: absolute;
-    z-index: 5;
-    width: 48px;
-    height: 48px;
-    image-rendering: pixelated;
-    transform: translate(-50%, -50%);
-}
-
-.companion-shadow {
-    position: absolute;
-    z-index: 4;
-    width: 25px;
-    height: 8px;
-    border-radius: 50%;
-    background: rgba(0, 0, 0, .42);
-    transform: translate(-50%, -50%);
-    filter: blur(1px);
-}
-
-.location-node {
-    position: absolute;
-    z-index: 3;
-    width: 96px;
-    padding: 9px 5px;
-    border: 1px solid #294662;
-    border-radius: 7px;
-    background: rgba(8, 15, 23, .85);
-    color: #66839c;
-    text-align: center;
-    font-size: 8px;
-    letter-spacing: 1px;
-}
-
-.location-node::before {
-    content: "";
-    display: block;
-    width: 7px;
-    height: 7px;
-    margin: 0 auto 6px;
-    border: 1px solid #5284ad;
-    background: #19334b;
-    transform: rotate(45deg);
-}
-
-#editorNode {
-    top: 80px;
-    left: 55px;
-}
-
-#analyzerNode {
-    right: 55px;
-    bottom: 75px;
-}
-
-#nexusNode {
-    top: 55%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.content-inner {
-    padding: 15px;
 }
 
 .code-area {
     width: 100%;
+    height: 100%;
     min-height: 100%;
     padding: 16px;
     border: 0;
@@ -378,9 +295,16 @@ body {
     line-height: 1.7;
 }
 
+.content-inner {
+    padding: 15px;
+}
+
 .info-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(
+        2,
+        minmax(0, 1fr)
+    );
     gap: 8px;
 }
 
@@ -524,6 +448,112 @@ button:hover {
 
 #clearButton:hover {
     border-color: #7b4d52;
+}
+
+.issue {
+    margin-bottom: 10px;
+    padding: 11px;
+    border: 1px solid #26394c;
+    border-radius: 7px;
+    background: #0a121b;
+}
+
+.issue strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 10px;
+}
+
+.issue span {
+    color: #657b90;
+    font-size: 9px;
+}
+
+.issue p {
+    margin: 7px 0 0;
+    color: #b9c7d3;
+    font-size: 10px;
+}
+
+.issue.warning {
+    border-color: #66542a;
+}
+
+.issue.warning strong {
+    color: #d8c071;
+}
+
+.issue.error {
+    border-color: #63333d;
+}
+
+.issue.error strong {
+    color: #e28d99;
+}
+
+.issue.info {
+    border-color: #294967;
+}
+
+.issue.info strong {
+    color: #80acd0;
+}
+
+.analysis-success {
+    margin: 15px;
+    padding: 14px;
+    border: 1px solid #28533e;
+    border-radius: 8px;
+    background: #0a1712;
+}
+
+.analysis-success strong {
+    display: block;
+    color: #78c89b;
+    font-size: 11px;
+}
+
+.analysis-success span {
+    display: block;
+    margin-top: 5px;
+    color: #668978;
+    font-size: 10px;
+}
+
+.empty-state {
+    padding: 15px;
+    color: #617487;
+    font-family: Consolas, monospace;
+    font-size: 10px;
+}
+
+.variable-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4px 10px;
+    margin-bottom: 7px;
+    padding: 10px;
+    border: 1px solid #21384f;
+    border-radius: 7px;
+    background: #0a121c;
+}
+
+.variable-row strong {
+    color: #cbd8e4;
+    font-family: Consolas, monospace;
+    font-size: 10px;
+}
+
+.variable-row span {
+    color: #5f89ae;
+    font-size: 9px;
+}
+
+.variable-row small {
+    grid-column: 1 / -1;
+    color: #53687b;
+    font-family: Consolas, monospace;
+    font-size: 8px;
 }
 
 @media (max-width: 800px) {
@@ -700,47 +730,6 @@ Tekan Analyze untuk menjalankan NJOS.
 
                 </div>
 
-                <div
-                    class="view"
-                    id="worldView">
-
-                    <div class="world-grid"></div>
-
-                    <div class="world-label">
-                        CAKRAWALA FIELD
-                    </div>
-
-                    <div
-                        class="location-node"
-                        id="editorNode">
-                        CODE WORKSHOP
-                    </div>
-
-                    <div
-                        class="location-node"
-                        id="analyzerNode">
-                        ANALYZER
-                    </div>
-
-                    <div
-                        class="location-node"
-                        id="nexusNode">
-                        NEXUS CORE
-                    </div>
-
-                    <div
-                        class="companion-shadow"
-                        id="companionShadow">
-                    </div>
-
-                    <canvas
-                        id="companionCanvas"
-                        width="48"
-                        height="48">
-                    </canvas>
-
-                </div>
-
             </div>
 
         </section>
@@ -821,6 +810,6 @@ Tekan Analyze untuk menjalankan NJOS.
 
 <script src="https://cdn.jsdelivr.net/npm/acorn@8/dist/acorn.min.js"></script>
 <script src="app.js"></script>
+
 </body>
-</html>               
-                       
+</html>
