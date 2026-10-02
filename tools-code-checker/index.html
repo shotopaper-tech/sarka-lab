@@ -16,13 +16,13 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: #090d12;
-    color: #e5ebf0;
+    background: #070a10;
+    color: #dfe7ef;
     font-family: Arial, sans-serif;
 }
 
 body {
-    min-height: 100vh;
+    user-select: none;
 }
 
 .app {
@@ -31,39 +31,56 @@ body {
     height: 100%;
     overflow: hidden;
     background:
-        radial-gradient(circle at 50% 20%, #18222c 0%, #0b1016 55%, #080b10 100%);
+        radial-gradient(circle at 50% 42%, #162438 0%, #0b111b 48%, #06090e 100%);
+}
+
+.app::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(rgba(71, 112, 160, .025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(71, 112, 160, .025) 1px, transparent 1px);
+    background-size: 32px 32px;
 }
 
 .topbar {
     position: absolute;
     z-index: 10;
-    top: 16px;
-    left: 18px;
-    right: 18px;
+    top: 15px;
+    left: 17px;
+    right: 17px;
+    height: 58px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 8px 10px;
+    border: 1px solid #243c58;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(15, 25, 39, .96), rgba(8, 13, 21, .96));
+    box-shadow:
+        0 0 25px rgba(29, 85, 145, .10),
+        inset 0 1px rgba(111, 161, 211, .06);
 }
 
 .brand {
-    padding: 10px 14px;
-    border: 1px solid #26313c;
-    border-radius: 9px;
-    background: rgba(8, 12, 17, .9);
+    padding: 5px 10px;
 }
 
 .brand strong {
     display: block;
+    color: #e9f2fb;
     font-size: 14px;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
 }
 
 .brand span {
     display: block;
-    margin-top: 3px;
-    color: #697581;
-    font-size: 10px;
-    letter-spacing: 1px;
+    margin-top: 4px;
+    color: #63809d;
+    font-size: 9px;
+    letter-spacing: 2px;
 }
 
 .system {
@@ -73,45 +90,76 @@ body {
 
 .pill {
     padding: 8px 11px;
-    border: 1px solid #26313c;
-    border-radius: 8px;
-    background: rgba(8, 12, 17, .9);
-    color: #7e8a96;
-    font-size: 10px;
+    border: 1px solid #29415c;
+    border-radius: 7px;
+    background: #0b131e;
+    color: #70859a;
+    font-size: 9px;
+    letter-spacing: .7px;
 }
 
 .pill.online {
-    color: #7ed49a;
+    border-color: #315c4b;
+    color: #78c89b;
+    box-shadow: inset 0 0 12px rgba(64, 170, 113, .06);
 }
 
 .workspace {
     position: absolute;
-    top: 92px;
-    right: 18px;
-    bottom: 126px;
-    left: 18px;
+    top: 87px;
+    right: 17px;
+    bottom: 118px;
+    left: 17px;
     display: grid;
-    grid-template-columns: 210px minmax(0, 1fr) 230px;
+    grid-template-columns: 205px minmax(0, 1fr) 225px;
     gap: 10px;
 }
 
 .panel {
     position: relative;
+    min-width: 0;
     overflow: hidden;
-    border: 1px solid #202a34;
+    border: 1px solid #233b56;
     border-radius: 12px;
-    background: rgba(10, 15, 21, .88);
+    background: linear-gradient(180deg, rgba(11, 19, 30, .96), rgba(7, 12, 19, .96));
+    box-shadow:
+        0 0 22px rgba(18, 70, 120, .08),
+        inset 0 1px rgba(107, 158, 210, .05);
+}
+
+.panel::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 18px;
+    right: 18px;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #416d98,
+        transparent
+    );
+    opacity: .7;
 }
 
 .panel-title {
-    height: 38px;
+    position: relative;
+    z-index: 2;
+    height: 39px;
     display: flex;
     align-items: center;
     padding: 0 12px;
-    border-bottom: 1px solid #202a34;
-    color: #87939e;
-    font-size: 10px;
-    letter-spacing: 1.4px;
+    border-bottom: 1px solid #1e334b;
+    background: linear-gradient(
+        90deg,
+        rgba(28, 58, 88, .25),
+        transparent
+    );
+    color: #7893ad;
+    font-size: 9px;
+    letter-spacing: 1.7px;
     text-transform: uppercase;
 }
 
@@ -120,320 +168,394 @@ body {
 }
 
 .tool {
+    position: relative;
     margin-bottom: 5px;
-    padding: 10px;
+    padding: 10px 11px;
+    border: 1px solid transparent;
     border-radius: 7px;
-    color: #aab4bd;
+    color: #899baa;
     font-size: 11px;
+    cursor: pointer;
+    transition: .15s ease;
+}
+
+.tool:hover {
+    border-color: #294966;
+    background: rgba(28, 59, 88, .25);
+    color: #cbd9e5;
 }
 
 .tool.active {
-    background: #18222c;
-    color: #e4eaf0;
+    border-color: #315b80;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(39, 82, 120, .48),
+            rgba(24, 45, 67, .22)
+        );
+    color: #e5eef6;
+    box-shadow:
+        inset 3px 0 #5894c7,
+        0 0 15px rgba(46, 111, 167, .07);
 }
 
 .tool span {
     display: block;
-    margin-top: 3px;
-    color: #5e6b77;
-    font-size: 9px;
+    margin-top: 4px;
+    color: #526579;
+    font-size: 8px;
 }
 
-#companionArea {
+.tool.active span {
+    color: #6685a0;
+}
+
+.workspace-content {
     position: relative;
-    height: calc(100% - 38px);
+    height: calc(100% - 39px);
+    overflow: hidden;
+}
+
+.view {
+    position: absolute;
+    inset: 0;
+    display: none;
+    overflow: auto;
+}
+
+.view.active {
+    display: block;
+}
+
+#worldView {
     overflow: hidden;
     background:
-        linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px),
-        #0d141b;
+        linear-gradient(
+            rgba(62, 106, 145, .025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(62, 106, 145, .025) 1px,
+            transparent 1px
+        ),
+        #0b131d;
     background-size: 32px 32px;
 }
 
-#companionArea::after {
+#worldView::before {
     content: "";
     position: absolute;
     inset: 0;
-    pointer-events: none;
     background:
-        radial-gradient(circle at center, transparent 30%, rgba(0,0,0,.28) 100%);
+        radial-gradient(
+            circle at center,
+            rgba(42, 82, 116, .14),
+            transparent 55%
+        );
+    pointer-events: none;
 }
 
-.editor-preview {
+.world-label {
     position: absolute;
-    top: 16px;
-    left: 16px;
-    right: 16px;
-    padding: 14px;
-    border: 1px solid #1e2933;
-    border-radius: 8px;
-    background: #0a0f14;
+    z-index: 4;
+    top: 13px;
+    left: 15px;
+    padding: 6px 8px;
+    border: 1px solid #24405b;
+    border-radius: 5px;
+    background: rgba(5, 10, 16, .75);
+    color: #607b94;
     font-family: Consolas, monospace;
-    font-size: 11px;
-    line-height: 1.8;
-    color: #87939e;
+    font-size: 8px;
+    letter-spacing: 1px;
 }
 
-.editor-preview .keyword {
-    color: #d48a93;
+.world-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(
+            rgba(92, 136, 173, .035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(92, 136, 173, .035) 1px,
+            transparent 1px
+        );
+    background-size: 24px 24px;
 }
 
-.editor-preview .name {
-    color: #c7d2dc;
-}
-
-.editor-preview .string {
-    color: #8bb59a;
+#companionCanvas {
+    position: absolute;
+    z-index: 5;
+    width: 48px;
+    height: 48px;
+    image-rendering: pixelated;
+    transform: translate(-50%, -50%);
 }
 
 .companion-shadow {
     position: absolute;
-    z-index: 2;
-    width: 18px;
-    height: 6px;
+    z-index: 4;
+    width: 25px;
+    height: 8px;
     border-radius: 50%;
-    background: rgba(0,0,0,.35);
+    background: rgba(0, 0, 0, .42);
     transform: translate(-50%, -50%);
-    pointer-events: none;
+    filter: blur(1px);
 }
 
-#companion {
+.location-node {
     position: absolute;
     z-index: 3;
-    width: 32px;
-    height: 40px;
-    transform: translate(-50%, -50%);
-    image-rendering: pixelated;
-    pointer-events: none;
+    width: 96px;
+    padding: 9px 5px;
+    border: 1px solid #294662;
+    border-radius: 7px;
+    background: rgba(8, 15, 23, .85);
+    color: #66839c;
+    text-align: center;
+    font-size: 8px;
+    letter-spacing: 1px;
 }
 
-.status-card {
+.location-node::before {
+    content: "";
+    display: block;
+    width: 7px;
+    height: 7px;
+    margin: 0 auto 6px;
+    border: 1px solid #5284ad;
+    background: #19334b;
+    transform: rotate(45deg);
+}
+
+#editorNode {
+    top: 80px;
+    left: 55px;
+}
+
+#analyzerNode {
+    right: 55px;
+    bottom: 75px;
+}
+
+#nexusNode {
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.content-inner {
+    padding: 15px;
+}
+
+.code-area {
+    width: 100%;
+    min-height: 100%;
+    padding: 16px;
+    border: 0;
+    outline: 0;
+    resize: none;
+    background: #070c12;
+    color: #d8e4ef;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.analysis-output {
+    min-height: 100%;
+    padding: 17px;
+    white-space: pre-wrap;
+    color: #c7d2dd;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.info-card {
     padding: 12px;
+    border: 1px solid #21384f;
+    border-radius: 8px;
+    background: #0a121c;
+}
+
+.info-card strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #d3dee8;
+    font-size: 11px;
+}
+
+.info-card span {
+    color: #62778b;
+    font-family: Consolas, monospace;
+    font-size: 10px;
+}
+
+.event-list {
+    padding: 12px;
+}
+
+.event {
+    margin-bottom: 7px;
+    padding: 9px;
+    border-left: 2px solid #3b668a;
+    background: #0a121b;
+    color: #8ea0b0;
+    font-family: Consolas, monospace;
+    font-size: 10px;
+}
+
+.system-card {
+    padding: 10px;
 }
 
 .status-row {
     display: flex;
     justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid #1c252e;
+    padding: 9px 3px;
+    border-bottom: 1px solid #1a2b3e;
     font-size: 10px;
 }
 
 .status-row span:first-child {
-    color: #64717d;
+    color: #5e7183;
 }
 
 .status-row span:last-child {
-    color: #b8c2cb;
+    color: #b4c3d0;
 }
 
-.event-box {
+.system-box {
     margin: 10px;
     padding: 10px;
-    border: 1px solid #202a34;
-    border-radius: 8px;
-    background: #0b1117;
-    color: #7f8c97;
+    border: 1px solid #213a52;
+    border-radius: 7px;
+    background: #080f17;
+    color: #6d8499;
     font-family: Consolas, monospace;
-    font-size: 10px;
-    line-height: 1.6;
+    font-size: 9px;
+    line-height: 1.7;
 }
 
 .bottom {
     position: absolute;
     z-index: 10;
-    right: 18px;
-    bottom: 18px;
-    left: 18px;
-    display: flex;
-    align-items: end;
-    gap: 10px;
+    right: 17px;
+    bottom: 16px;
+    left: 17px;
 }
 
-.nexus {
-    width: min(500px, 100%);
-    padding: 12px;
-    border: 1px solid #26313c;
-    border-radius: 10px;
-    background: rgba(8,12,17,.94);
+.nexus-bar {
+    min-height: 82px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 11px 13px;
+    border: 1px solid #294561;
+    border-radius: 11px;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(13, 28, 44, .97),
+            rgba(8, 14, 22, .97)
+        );
+    box-shadow:
+        0 0 25px rgba(25, 78, 124, .08),
+        inset 0 1px rgba(109, 157, 202, .05);
 }
 
 .label {
-    color: #65727e;
-    font-size: 9px;
-    letter-spacing: 1.3px;
+    color: #55718b;
+    font-size: 8px;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
 }
 
 #nexusMessage {
-    min-height: 34px;
     margin-top: 5px;
-    color: #c8d1d9;
+    color: #bdcbd7;
     font-family: Consolas, monospace;
-    font-size: 11px;
-    line-height: 1.5;
+    font-size: 10px;
 }
 
 .actions {
     display: flex;
     gap: 6px;
-    margin-top: 8px;
 }
 
 button {
-    border: 1px solid #303c48;
+    border: 1px solid #29445e;
     border-radius: 6px;
-    padding: 8px 12px;
-    background: #151d25;
-    color: #d9e1e8;
+    padding: 8px 13px;
+    background: #0d1925;
+    color: #b9c9d6;
     cursor: pointer;
-    font-size: 10px;
+    font-size: 9px;
 }
 
 button:hover {
-    background: #1c2731;
+    border-color: #4d769b;
+    background: #132438;
 }
 
 #analyzeButton {
-    border-color: #8f303a;
-    background: #742731;
+    border-color: #5e3440;
+    background: #3d1e27;
+    color: #e1bec4;
 }
 
 #analyzeButton:hover {
-    background: #8c2d38;
+    background: #562630;
 }
 
-.editor-window {
-    position: absolute;
-    z-index: 30;
-    inset: 6%;
-    display: none;
-    flex-direction: column;
-    overflow: hidden;
-    border: 1px solid #303b47;
-    border-radius: 13px;
-    background: #090d12;
-    box-shadow: 0 30px 90px rgba(0,0,0,.65);
+#clearButton:hover {
+    border-color: #7b4d52;
 }
 
-.editor-window.open {
-    display: flex;
-}
-
-.editor-header,
-.editor-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 13px;
-    background: #0d131a;
-}
-
-.editor-header {
-    border-bottom: 1px solid #202a34;
-}
-
-.editor-footer {
-    border-top: 1px solid #202a34;
-}
-
-.editor-header strong {
-    font-size: 12px;
-}
-
-.editor-body {
-    flex: 1;
-    min-height: 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-}
-
-.editor-side {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-}
-
-.editor-side + .editor-side {
-    border-left: 1px solid #202a34;
-}
-
-.side-title {
-    padding: 9px 12px;
-    border-bottom: 1px solid #202a34;
-    color: #75818c;
-    font-size: 10px;
-}
-
-textarea {
-    flex: 1;
-    width: 100%;
-    resize: none;
-    border: 0;
-    outline: 0;
-    padding: 15px;
-    background: #070b0f;
-    color: #d8e0e7;
-    font-family: Consolas, Monaco, monospace;
-    font-size: 12px;
-    line-height: 1.65;
-}
-
-.output {
-    flex: 1;
-    overflow: auto;
-    padding: 15px;
-    white-space: pre-wrap;
-    color: #c8d1d9;
-    font-family: Consolas, Monaco, monospace;
-    font-size: 11px;
-    line-height: 1.65;
-}
-
-.editor-status {
-    color: #687581;
-    font-size: 10px;
-}
-
-@media (max-width: 850px) {
+@media (max-width: 800px) {
     .workspace {
-        grid-template-columns: 1fr;
+        grid-template-columns: 165px minmax(0, 1fr);
     }
 
-    .workspace > .panel:first-child,
     .workspace > .panel:last-child {
         display: none;
     }
 
-    .bottom {
-        left: 18px;
-    }
-
-    .editor-body {
+    .nexus-bar {
         grid-template-columns: 1fr;
     }
 
-    .editor-side + .editor-side {
-        display: none;
+    .actions {
+        justify-content: flex-end;
     }
 }
 </style>
-
-<script src="https://cdn.jsdelivr.net/npm/acorn@8/dist/acorn.min.js"></script>
 </head>
 
 <body>
 
 <div class="app">
 
-    <div class="topbar">
+    <header class="topbar">
         <div class="brand">
             <strong>CAKRAWALA</strong>
             <span>WORKSTATION</span>
         </div>
 
         <div class="system">
-            <div class="pill online" id="njosStatus">
+            <div class="pill online">
                 ● NJOS ONLINE
             </div>
 
@@ -441,94 +563,202 @@ textarea {
                 IDLE
             </div>
         </div>
-    </div>
+    </header>
 
-    <div class="workspace">
+    <main class="workspace">
 
         <section class="panel">
+
             <div class="panel-title">
                 Tools
             </div>
 
             <div class="tool-list">
-                <div class="tool active">
+
+                <div class="tool active" data-view="editor">
                     Code Editor
                     <span>Source workspace</span>
                 </div>
 
-                <div class="tool">
+                <div class="tool" data-view="analyzer">
                     Analyzer
                     <span>Code intelligence</span>
                 </div>
 
-                <div class="tool">
+                <div class="tool" data-view="variables">
                     Variable Manager
                     <span>Symbol state</span>
                 </div>
 
-                <div class="tool">
+                <div class="tool" data-view="runtime">
                     Runtime Monitor
                     <span>Execution state</span>
                 </div>
 
-                <div class="tool">
+                <div class="tool" data-view="nexus">
                     Nexus
                     <span>System bridge</span>
                 </div>
+
             </div>
+
         </section>
 
         <section class="panel">
-            <div class="panel-title">
-                Code Workspace
+
+            <div class="panel-title" id="workspaceTitle">
+                Code Editor
             </div>
 
-            <div id="companionArea">
+            <div class="workspace-content">
 
-                <div class="editor-preview">
-                    <span class="keyword">const</span>
-                    <span class="name">username</span>
-                    =
-                    <span class="string">"Miu"</span>;
+                <div class="view active" id="view-editor">
 
-                    <br>
+                    <textarea
+                        class="code-area"
+                        id="codeEditor">const username = "Miu";
 
-                    <span class="keyword">function</span>
-                    <span class="name">greet</span>(name) {
+function greet(name) {
+    return ussername + name;
+}
 
-                    <br>
-                    &nbsp;&nbsp;
-                    <span class="keyword">return</span>
-                    username + name;
+greet(username);</textarea>
 
-                    <br>
-                    }
+                </div>
+
+                <div class="view" id="view-analyzer">
+
+                    <div
+                        class="analysis-output"
+                        id="analysisOutput">
+Belum ada analisis.
+
+Tekan Analyze untuk menjalankan NJOS.
+                    </div>
+
+                </div>
+
+                <div class="view" id="view-variables">
+
+                    <div
+                        class="content-inner"
+                        id="variableContent">
+                        Belum ada data symbol.
+                    </div>
+
+                </div>
+
+                <div class="view" id="view-runtime">
+
+                    <div class="content-inner">
+
+                        <div class="info-grid">
+
+                            <div class="info-card">
+                                <strong>NJOS</strong>
+                                <span>ONLINE</span>
+                            </div>
+
+                            <div class="info-card">
+                                <strong>Companion</strong>
+                                <span id="runtimeCompanion">
+                                    IDLE
+                                </span>
+                            </div>
+
+                            <div class="info-card">
+                                <strong>Nexus</strong>
+                                <span id="runtimeNexus">
+                                    READY
+                                </span>
+                            </div>
+
+                            <div class="info-card">
+                                <strong>Engine</strong>
+                                <span>
+                                    Cakrawala
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="view" id="view-nexus">
+
+                    <div
+                        class="event-list"
+                        id="eventList">
+                        <div class="event">
+                            [system] Nexus initialized.
+                        </div>
+                    </div>
+
                 </div>
 
                 <div
-                    class="companion-shadow"
-                    id="companionShadow">
+                    class="view"
+                    id="worldView">
+
+                    <div class="world-grid"></div>
+
+                    <div class="world-label">
+                        CAKRAWALA FIELD
+                    </div>
+
+                    <div
+                        class="location-node"
+                        id="editorNode">
+                        CODE WORKSHOP
+                    </div>
+
+                    <div
+                        class="location-node"
+                        id="analyzerNode">
+                        ANALYZER
+                    </div>
+
+                    <div
+                        class="location-node"
+                        id="nexusNode">
+                        NEXUS CORE
+                    </div>
+
+                    <div
+                        class="companion-shadow"
+                        id="companionShadow">
+                    </div>
+
+                    <canvas
+                        id="companionCanvas"
+                        width="48"
+                        height="48">
+                    </canvas>
+
                 </div>
 
-                <canvas
-                    id="companion"
-                    width="32"
-                    height="40">
-                </canvas>
-
             </div>
+
         </section>
 
         <section class="panel">
+
             <div class="panel-title">
                 System
             </div>
 
-            <div class="status-card">
+            <div class="system-card">
 
                 <div class="status-row">
                     <span>Core</span>
                     <span>NJOS 0.6</span>
+                </div>
+
+                <div class="status-row">
+                    <span>Parser</span>
+                    <span>ACORN</span>
                 </div>
 
                 <div class="status-row">
@@ -538,31 +768,39 @@ textarea {
 
                 <div class="status-row">
                     <span>Companion</span>
-                    <span id="companionStatus">IDLE</span>
+                    <span id="companionStatus">
+                        IDLE
+                    </span>
                 </div>
 
             </div>
 
-            <div class="event-box" id="eventBox">
+            <div
+                class="system-box"
+                id="systemBox">
                 waiting for system events...
             </div>
+
         </section>
 
-    </div>
+    </main>
 
-    <div class="bottom">
+    <footer class="bottom">
 
-        <div class="nexus">
+        <div class="nexus-bar">
 
-            <div class="label">
-                Nexus communication
-            </div>
+            <div>
+                <div class="label">
+                    Nexus communication
+                </div>
 
-            <div id="nexusMessage">
-                Cakrawala sedang menunggu aktivitas.
+                <div id="nexusMessage">
+                    Cakrawala sedang menunggu aktivitas.
+                </div>
             </div>
 
             <div class="actions">
+
                 <button id="analyzeButton">
                     Analyze
                 </button>
@@ -570,76 +808,16 @@ textarea {
                 <button id="clearButton">
                     Clear
                 </button>
-            </div>
-
-        </div>
-
-    </div>
-
-    <section
-        class="editor-window"
-        id="editorWindow">
-
-        <div class="editor-header">
-            <strong>
-                Code Workshop
-            </strong>
-
-            <button id="closeEditor">
-                Close
-            </button>
-        </div>
-
-        <div class="editor-body">
-
-            <div class="editor-side">
-
-                <div class="side-title">
-                    Code Editor
-                </div>
-
-                <textarea id="codeEditor">const username = "Miu";
-
-function greet(name) {
-    return ussername + name;
-}
-
-greet(username);</textarea>
-
-            </div>
-
-            <div class="editor-side">
-
-                <div class="side-title">
-                    Analysis
-                </div>
-
-                <div
-                    class="output"
-                    id="output">
-                </div>
 
             </div>
 
         </div>
 
-        <div class="editor-footer">
-
-            <div
-                class="editor-status"
-                id="analysisStatus">
-                Ready
-            </div>
-
-            <button id="editorAnalyze">
-                Analyze
-            </button>
-
-        </div>
-
-    </section>
+    </footer>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/acorn@8/dist/acorn.min.js"></script>
 
 <script>
 const NJOS = {
@@ -692,9 +870,9 @@ class CakrawalaNexus {
         const callbacks =
             this.listeners.get(event) || [];
 
-        for (const callback of callbacks) {
-            callback(data);
-        }
+        callbacks.forEach(callback =>
+            callback(data)
+        );
     }
 }
 
@@ -766,12 +944,8 @@ class Scope {
 
 class ScopeResolver {
     constructor() {
-        this.global =
-            new Scope("global");
-
-        this.current =
-            this.global;
-
+        this.global = new Scope("global");
+        this.current = this.global;
         this.declarations = [];
         this.references = [];
         this.functions = [];
@@ -779,7 +953,7 @@ class ScopeResolver {
     }
 
     addBuiltins() {
-        for (const name of NJOS.globals) {
+        NJOS.globals.forEach(name => {
             const symbol =
                 this.global.declare(
                     name,
@@ -788,7 +962,7 @@ class ScopeResolver {
                 );
 
             symbol.builtin = true;
-        }
+        });
     }
 
     child(type) {
@@ -798,9 +972,7 @@ class ScopeResolver {
                 this.current
             );
 
-        this.current.children.push(
-            scope
-        );
+        this.current.children.push(scope);
 
         return scope;
     }
@@ -874,20 +1046,19 @@ class ScopeResolver {
             pattern.type ===
             "ObjectPattern"
         ) {
-            for (
-                const property
-                of pattern.properties
-            ) {
-                if (
-                    property.type ===
-                    "Property"
-                ) {
-                    this.declarePattern(
-                        property.value,
-                        kind
-                    );
+            pattern.properties.forEach(
+                property => {
+                    if (
+                        property.type ===
+                        "Property"
+                    ) {
+                        this.declarePattern(
+                            property.value,
+                            kind
+                        );
+                    }
                 }
-            }
+            );
 
             return;
         }
@@ -896,15 +1067,13 @@ class ScopeResolver {
             pattern.type ===
             "ArrayPattern"
         ) {
-            for (
-                const element
-                of pattern.elements
-            ) {
-                this.declarePattern(
-                    element,
-                    kind
-                );
-            }
+            pattern.elements.forEach(
+                element =>
+                    this.declarePattern(
+                        element,
+                        kind
+                    )
+            );
         }
     }
 
@@ -922,18 +1091,14 @@ class ScopeResolver {
             resolved: Boolean(symbol)
         };
 
-        this.references.push(
-            reference
-        );
+        this.references.push(reference);
 
         if (symbol) {
-            symbol.references.push(
-                reference
-            );
+            symbol.references.push(reference);
         }
     }
 
-    function(node) {
+    visitFunction(node) {
         if (node.id) {
             this.declarePattern(
                 node.id,
@@ -949,23 +1114,32 @@ class ScopeResolver {
         this.withScope(
             functionScope,
             () => {
-                for (
-                    const parameter
-                    of node.params
-                ) {
-                    this.declarePattern(
-                        parameter,
-                        "parameter"
-                    );
+                node.params.forEach(
+                    parameter => {
+                        this.declarePattern(
+                            parameter,
+                            "parameter"
+                        );
 
-                    this.parameters.push(
-                        parameter
+                        this.parameters.push(
+                            parameter
+                        );
+                    }
+                );
+
+                if (
+                    node.body.type ===
+                    "BlockStatement"
+                ) {
+                    node.body.body.forEach(
+                        statement =>
+                            this.visit(statement)
+                    );
+                } else {
+                    this.expression(
+                        node.body
                     );
                 }
-
-                this.visit(
-                    node.body
-                );
             }
         );
     }
@@ -1001,26 +1175,32 @@ class ScopeResolver {
             case "FunctionDeclaration":
             case "FunctionExpression":
             case "ArrowFunctionExpression":
-                this.function(node);
+                this.visitFunction(node);
                 break;
 
-            case "BlockStatement":
-                node.body.forEach(
-                    statement =>
-                        this.visit(statement)
+            case "BlockStatement": {
+                const block =
+                    this.child("block");
+
+                this.withScope(
+                    block,
+                    () => {
+                        node.body.forEach(
+                            statement =>
+                                this.visit(statement)
+                        );
+                    }
                 );
+
                 break;
+            }
 
             case "ExpressionStatement":
-                this.expression(
-                    node.expression
-                );
+                this.expression(node.expression);
                 break;
 
             case "ReturnStatement":
-                this.expression(
-                    node.argument
-                );
+                this.expression(node.argument);
                 break;
 
             case "IfStatement":
@@ -1051,19 +1231,6 @@ class ScopeResolver {
             case "DoWhileStatement":
                 this.expression(node.test);
                 this.visit(node.body);
-                break;
-
-            case "TryStatement":
-                this.visit(node.block);
-
-                if (node.handler) {
-                    this.visit(node.handler.body);
-                }
-
-                if (node.finalizer) {
-                    this.visit(node.finalizer);
-                }
-
                 break;
 
             default:
@@ -1104,7 +1271,6 @@ class ScopeResolver {
                     argument =>
                         this.expression(argument)
                 );
-
                 break;
 
             case "MemberExpression":
@@ -1113,7 +1279,6 @@ class ScopeResolver {
                 if (node.computed) {
                     this.expression(node.property);
                 }
-
                 break;
 
             case "ArrayExpression":
@@ -1142,15 +1307,15 @@ class ScopeResolver {
                 );
                 break;
 
-            case "FunctionExpression":
-            case "ArrowFunctionExpression":
-                this.function(node);
-                break;
-
             case "ConditionalExpression":
                 this.expression(node.test);
                 this.expression(node.consequent);
                 this.expression(node.alternate);
+                break;
+
+            case "FunctionExpression":
+            case "ArrowFunctionExpression":
+                this.visitFunction(node);
                 break;
 
             default:
@@ -1166,31 +1331,27 @@ class ScopeResolver {
             return;
         }
 
-        for (
-            const key of Object.keys(node)
-        ) {
+        Object.keys(node).forEach(key => {
             if (
                 key === "loc" ||
                 key === "start" ||
                 key === "end"
             ) {
-                continue;
+                return;
             }
 
             const value = node[key];
 
             if (Array.isArray(value)) {
-                value.forEach(
-                    item => {
-                        if (
-                            item &&
-                            typeof item.type ===
-                            "string"
-                        ) {
-                            this.visit(item);
-                        }
+                value.forEach(item => {
+                    if (
+                        item &&
+                        typeof item.type ===
+                        "string"
+                    ) {
+                        this.visit(item);
                     }
-                );
+                });
             } else if (
                 value &&
                 typeof value.type ===
@@ -1198,7 +1359,7 @@ class ScopeResolver {
             ) {
                 this.visit(value);
             }
-        }
+        });
     }
 
     resolve(tree) {
@@ -1221,20 +1382,18 @@ class TypoDetector {
     }
 
     distance(a, b) {
-        const rows = b.length + 1;
-        const cols = a.length + 1;
         const matrix = [];
 
-        for (let i = 0; i < rows; i++) {
+        for (let i = 0; i <= b.length; i++) {
             matrix[i] = [i];
         }
 
-        for (let j = 0; j < cols; j++) {
+        for (let j = 0; j <= a.length; j++) {
             matrix[0][j] = j;
         }
 
-        for (let i = 1; i < rows; i++) {
-            for (let j = 1; j < cols; j++) {
+        for (let i = 1; i <= b.length; i++) {
+            for (let j = 1; j <= a.length; j++) {
                 matrix[i][j] =
                     b[i - 1] === a[j - 1]
                         ? matrix[i - 1][j - 1]
@@ -1246,14 +1405,14 @@ class TypoDetector {
             }
         }
 
-        return matrix[rows - 1][cols - 1];
+        return matrix[b.length][a.length];
     }
 
     similarity(a, b) {
-        const max =
+        const length =
             Math.max(a.length, b.length);
 
-        if (!max) {
+        if (!length) {
             return 1;
         }
 
@@ -1261,87 +1420,85 @@ class TypoDetector {
             this.distance(
                 a.toLowerCase(),
                 b.toLowerCase()
-            ) / max;
+            ) / length;
     }
 
     detect() {
         const issues = [];
 
-        for (
-            const reference
-            of this.data.references
-        ) {
-            if (reference.resolved) {
-                continue;
-            }
-
-            let best = null;
-
-            let scope =
-                reference.scope;
-
-            while (scope) {
-                for (
-                    const symbol
-                    of scope.symbols.values()
-                ) {
-                    if (
-                        symbol.builtin ||
-                        symbol.name ===
-                        reference.name
-                    ) {
-                        continue;
-                    }
-
-                    const similarity =
-                        this.similarity(
-                            reference.name,
-                            symbol.name
-                        );
-
-                    if (
-                        similarity >= .68 &&
-                        (
-                            !best ||
-                            similarity >
-                            best.similarity
-                        )
-                    ) {
-                        best = {
-                            symbol,
-                            similarity
-                        };
-                    }
+        this.data.references.forEach(
+            reference => {
+                if (reference.resolved) {
+                    return;
                 }
 
-                scope = scope.parent;
+                let scope =
+                    reference.scope;
+
+                let best = null;
+
+                while (scope) {
+                    scope.symbols.forEach(
+                        symbol => {
+                            if (
+                                symbol.builtin ||
+                                symbol.name ===
+                                reference.name
+                            ) {
+                                return;
+                            }
+
+                            const similarity =
+                                this.similarity(
+                                    reference.name,
+                                    symbol.name
+                                );
+
+                            if (
+                                similarity >= .68 &&
+                                (
+                                    !best ||
+                                    similarity >
+                                    best.similarity
+                                )
+                            ) {
+                                best = {
+                                    symbol,
+                                    similarity
+                                };
+                            }
+                        }
+                    );
+
+                    scope = scope.parent;
+                }
+
+                if (!best) {
+                    return;
+                }
+
+                issues.push({
+                    type: "typo",
+                    severity: "info",
+                    name: reference.name,
+                    suggestion:
+                        best.symbol.name,
+                    confidence:
+                        Math.min(
+                            99,
+                            Math.round(
+                                best.similarity *
+                                100
+                            )
+                        ),
+                    node: reference.node,
+                    evidence: [
+                        "Identifier tidak ditemukan",
+                        "Symbol dengan nama mirip ditemukan"
+                    ]
+                });
             }
-
-            if (!best) {
-                continue;
-            }
-
-            const confidence =
-                Math.min(
-                    99,
-                    Math.round(
-                        best.similarity * 100
-                    )
-                );
-
-            issues.push({
-                type: "typo",
-                severity: "info",
-                name: reference.name,
-                suggestion: best.symbol.name,
-                confidence,
-                node: reference.node,
-                evidence: [
-                    "Identifier tidak ditemukan",
-                    "Symbol dengan nama mirip ditemukan"
-                ]
-            });
-        }
+        );
 
         return issues;
     }
@@ -1355,39 +1512,38 @@ class Analyzer {
     unused() {
         const issues = [];
 
-        for (
-            const declaration
-            of this.data.declarations
-        ) {
-            const symbol =
-                declaration.symbol;
+        this.data.declarations.forEach(
+            declaration => {
+                const symbol =
+                    declaration.symbol;
 
-            if (
-                symbol.builtin ||
-                symbol.references.length
-            ) {
-                continue;
+                if (
+                    symbol.builtin ||
+                    symbol.references.length
+                ) {
+                    return;
+                }
+
+                if (
+                    symbol.kind === "function" &&
+                    symbol.scope.type === "global"
+                ) {
+                    return;
+                }
+
+                issues.push({
+                    type: "unused",
+                    severity: "info",
+                    name: symbol.name,
+                    confidence: 100,
+                    node: symbol.node,
+                    evidence: [
+                        "Symbol berhasil dibuat",
+                        "Tidak ditemukan reference"
+                    ]
+                });
             }
-
-            if (
-                symbol.kind === "function" &&
-                symbol.scope.type === "global"
-            ) {
-                continue;
-            }
-
-            issues.push({
-                type: "unused",
-                severity: "info",
-                name: symbol.name,
-                confidence: 100,
-                node: symbol.node,
-                evidence: [
-                    "Symbol berhasil dibuat",
-                    "Tidak ditemukan reference yang mengarah ke symbol"
-                ]
-            });
-        }
+        );
 
         return issues;
     }
@@ -1395,26 +1551,25 @@ class Analyzer {
     undeclared() {
         const issues = [];
 
-        for (
-            const reference
-            of this.data.references
-        ) {
-            if (reference.resolved) {
-                continue;
-            }
+        this.data.references.forEach(
+            reference => {
+                if (reference.resolved) {
+                    return;
+                }
 
-            issues.push({
-                type: "undeclared",
-                severity: "warning",
-                name: reference.name,
-                confidence: 100,
-                node: reference.node,
-                evidence: [
-                    "Identifier tidak ditemukan",
-                    "Tidak ada symbol pada scope chain"
-                ]
-            });
-        }
+                issues.push({
+                    type: "undeclared",
+                    severity: "warning",
+                    name: reference.name,
+                    confidence: 100,
+                    node: reference.node,
+                    evidence: [
+                        "Identifier tidak ditemukan",
+                        "Tidak ada symbol pada scope chain"
+                    ]
+                });
+            }
+        );
 
         return issues;
     }
@@ -1486,30 +1641,29 @@ class CodeChecker {
 const nexus =
     new CakrawalaNexus();
 
-const checker =
-    new CodeChecker();
-
-const companionArea =
+const codeEditor =
     document.getElementById(
-        "companionArea"
+        "codeEditor"
     );
 
-const companion =
+const analysisOutput =
     document.getElementById(
-        "companion"
+        "analysisOutput"
     );
 
-const companionShadow =
+const variableContent =
     document.getElementById(
-        "companionShadow"
+        "variableContent"
     );
 
-const companionCtx =
-    companion.getContext("2d");
-
-const companionStatus =
+const eventList =
     document.getElementById(
-        "companionStatus"
+        "eventList"
+    );
+
+const workspaceTitle =
+    document.getElementById(
+        "workspaceTitle"
     );
 
 const nexusMessage =
@@ -1527,74 +1681,89 @@ const systemState =
         "systemState"
     );
 
-const editorWindow =
+const systemBox =
     document.getElementById(
-        "editorWindow"
+        "systemBox"
     );
 
-const codeEditor =
+const companionStatus =
     document.getElementById(
-        "codeEditor"
+        "companionStatus"
     );
 
-const output =
+const runtimeCompanion =
     document.getElementById(
-        "output"
+        "runtimeCompanion"
     );
 
-const analysisStatus =
+const runtimeNexus =
     document.getElementById(
-        "analysisStatus"
+        "runtimeNexus"
     );
 
-const companionState = {
+const worldView =
+    document.getElementById(
+        "worldView"
+    );
+
+const companionCanvas =
+    document.getElementById(
+        "companionCanvas"
+    );
+
+const companionCtx =
+    companionCanvas.getContext(
+        "2d"
+    );
+
+const companionShadow =
+    document.getElementById(
+        "companionShadow"
+    );
+
+const companion = {
     x: 150,
-    y: 150,
+    y: 145,
     direction: "down",
-    moving: false,
     frame: 0,
-    frameTimer: 0,
-    speed: .55,
+    timer: 0,
+    moving: true,
     wait: 0,
-    nextDirection: "right",
-    target: null
+    target: null,
+    speed: .6
 };
 
-const directions = [
-    "up",
-    "down",
-    "left",
-    "right"
-];
-
-function companionSize() {
-    return {
-        width:
-            companionArea.clientWidth,
-
-        height:
-            companionArea.clientHeight
-    };
+function setMessage(message) {
+    nexusMessage.textContent =
+        message;
 }
 
-function randomDirection() {
-    return directions[
-        Math.floor(
-            Math.random() *
-            directions.length
-        )
-    ];
+function addEvent(message) {
+    const event =
+        document.createElement("div");
+
+    event.className = "event";
+
+    event.textContent =
+        `[nexus] ${message}`;
+
+    eventList.prepend(event);
+
+    while (
+        eventList.children.length > 12
+    ) {
+        eventList.lastElementChild.remove();
+    }
 }
 
-function drawSpritePixel(
+function drawPixel(
     x,
     y,
     width,
     height,
     color
 ) {
-    companionCtx.fillStyle =
-        color;
+    companionCtx.fillStyle = color;
 
     companionCtx.fillRect(
         x,
@@ -1604,446 +1773,317 @@ function drawSpritePixel(
     );
 }
 
-function drawCompanionSprite() {
+function drawCompanion() {
     companionCtx.clearRect(
         0,
         0,
-        companion.width,
-        companion.height
+        48,
+        48
     );
-
-    const frame =
-        companionState.moving
-            ? companionState.frame
-            : 0;
-
-    const skin = "#efc4a1";
-    const hair = "#111419";
-    const robe = "#a52c38";
-    const robeDark = "#681d26";
-    const boot = "#25272b";
 
     companionCtx.imageSmoothingEnabled =
         false;
 
-    if (
-        companionState.direction ===
-        "down"
-    ) {
-        drawSpritePixel(
-            8, 2, 16, 6, hair
-        );
+    const black = "#111217";
+    const black2 = "#202329";
+    const cloak = "#17191e";
+    const cloakLight = "#2b2e35";
+    const cloakDark = "#0b0c10";
+    const eye = "#ffd84a";
+    const eyeGlow = "#fff1a1";
+    const boot = "#090a0d";
 
-        drawSpritePixel(
-            7, 7, 18, 8, skin
-        );
+    const frame =
+        companion.moving
+            ? companion.frame
+            : 0;
 
-        drawSpritePixel(
-            5, 15, 22, 13, robe
-        );
+    if (companion.direction === "down") {
+        drawPixel(13, 5, 21, 8, black);
+        drawPixel(10, 10, 27, 13, black2);
 
-        drawSpritePixel(
-            2, 18, 5, 9, robeDark
-        );
+        drawPixel(13, 14, 7, 3, eye);
+        drawPixel(27, 14, 7, 3, eyeGlow);
 
-        drawSpritePixel(
-            25, 18, 5, 9, robeDark
-        );
+        drawPixel(9, 22, 30, 15, cloak);
+        drawPixel(5, 27, 7, 12, cloakDark);
+        drawPixel(36, 27, 7, 12, cloakDark);
+
+        drawPixel(12, 23, 24, 5, cloakLight);
+        drawPixel(16, 28, 16, 10, cloak);
 
         if (frame === 1) {
-            drawSpritePixel(
-                7, 28, 7, 7, boot
-            );
-
-            drawSpritePixel(
-                19, 30, 7, 7, boot
-            );
+            drawPixel(11, 37, 9, 7, boot);
+            drawPixel(29, 39, 9, 6, boot);
         } else if (frame === 2) {
-            drawSpritePixel(
-                8, 29, 7, 7, boot
-            );
-
-            drawSpritePixel(
-                17, 29, 7, 7, boot
-            );
+            drawPixel(12, 38, 9, 6, boot);
+            drawPixel(27, 38, 9, 6, boot);
         } else {
-            drawSpritePixel(
-                8, 29, 7, 7, boot
-            );
-
-            drawSpritePixel(
-                18, 29, 7, 7, boot
-            );
+            drawPixel(12, 38, 9, 6, boot);
+            drawPixel(29, 38, 9, 6, boot);
         }
     }
 
-    if (
-        companionState.direction ===
-        "up"
-    ) {
-        drawSpritePixel(
-            6, 2, 20, 8, hair
-        );
+    if (companion.direction === "up") {
+        drawPixel(10, 5, 28, 12, black);
+        drawPixel(7, 12, 34, 8, black2);
 
-        drawSpritePixel(
-            5, 10, 22, 5, hair
-        );
+        drawPixel(8, 22, 32, 15, cloak);
+        drawPixel(4, 27, 8, 11, cloakDark);
+        drawPixel(36, 27, 8, 11, cloakDark);
 
-        drawSpritePixel(
-            5, 15, 22, 13, robe
-        );
-
-        drawSpritePixel(
-            2, 18, 5, 9, robeDark
-        );
-
-        drawSpritePixel(
-            25, 18, 5, 9, robeDark
-        );
+        drawPixel(13, 23, 22, 5, cloakLight);
 
         if (frame === 1) {
-            drawSpritePixel(
-                7, 28, 7, 7, boot
-            );
-
-            drawSpritePixel(
-                19, 30, 7, 7, boot
-            );
+            drawPixel(11, 37, 9, 7, boot);
+            drawPixel(29, 39, 9, 6, boot);
         } else if (frame === 2) {
-            drawSpritePixel(
-                8, 29, 7, 7, boot
-            );
-
-            drawSpritePixel(
-                17, 29, 7, 7, boot
-            );
+            drawPixel(12, 38, 9, 6, boot);
+            drawPixel(27, 38, 9, 6, boot);
         } else {
-            drawSpritePixel(
-                8, 29, 7, 7, boot
-            );
-
-            drawSpritePixel(
-                18, 29, 7, 7, boot
-            );
+            drawPixel(12, 38, 9, 6, boot);
+            drawPixel(29, 38, 9, 6, boot);
         }
     }
 
-    if (
-        companionState.direction ===
-        "left"
-    ) {
-        drawSpritePixel(
-            7, 3, 18, 7, hair
-        );
+    if (companion.direction === "left") {
+        drawPixel(11, 5, 24, 9, black);
+        drawPixel(7, 11, 20, 12, black2);
 
-        drawSpritePixel(
-            6, 9, 13, 7, skin
-        );
+        drawPixel(10, 16, 6, 4, eyeGlow);
 
-        drawSpritePixel(
-            4, 15, 23, 13, robe
-        );
-
-        drawSpritePixel(
-            1, 18, 5, 9, robeDark
-        );
+        drawPixel(8, 22, 31, 15, cloak);
+        drawPixel(4, 27, 8, 11, cloakDark);
+        drawPixel(14, 23, 20, 5, cloakLight);
 
         if (frame === 1) {
-            drawSpritePixel(
-                7, 29, 7, 7, boot
-            );
-
-            drawSpritePixel(
-                18, 28, 7, 7, boot
-            );
-        } else if (frame === 2) {
-            drawSpritePixel(
-                7, 29, 7, 7, boot
-            );
-
-            drawSpritePixel(
-                17, 30, 7, 7, boot
-            );
+            drawPixel(11, 38, 9, 6, boot);
+            drawPixel(27, 37, 9, 7, boot);
         } else {
-            drawSpritePixel(
-                7, 29, 7, 7, boot
-            );
-
-            drawSpritePixel(
-                18, 29, 7, 7, boot
-            );
+            drawPixel(11, 38, 9, 6, boot);
+            drawPixel(29, 38, 9, 6, boot);
         }
     }
 
-    if (
-        companionState.direction ===
-        "right"
-    ) {
-        drawSpritePixel(
-            7, 3, 18, 7, hair
-        );
+    if (companion.direction === "right") {
+        drawPixel(13, 5, 24, 9, black);
+        drawPixel(21, 11, 20, 12, black2);
 
-        drawSpritePixel(
-            13, 9, 13, 7, skin
-        );
+        drawPixel(32, 16, 6, 4, eyeGlow);
 
-        drawSpritePixel(
-            5, 15, 23, 13, robe
-        );
-
-        drawSpritePixel(
-            26, 18, 5, 9, robeDark
-        );
+        drawPixel(9, 22, 31, 15, cloak);
+        drawPixel(36, 27, 8, 11, cloakDark);
+        drawPixel(14, 23, 20, 5, cloakLight);
 
         if (frame === 1) {
-            drawSpritePixel(
-                7, 28, 7, 7, boot
-            );
-
-            drawSpritePixel(
-                18, 30, 7, 7, boot
-            );
-        } else if (frame === 2) {
-            drawSpritePixel(
-                8, 29, 7, 7, boot
-            );
-
-            drawSpritePixel(
-                17, 29, 7, 7, boot
-            );
+            drawPixel(10, 37, 9, 7, boot);
+            drawPixel(28, 38, 9, 6, boot);
         } else {
-            drawSpritePixel(
-                8, 29, 7, 7, boot
-            );
-
-            drawSpritePixel(
-                18, 29, 7, 7, boot
-            );
+            drawPixel(10, 38, 9, 6, boot);
+            drawPixel(28, 38, 9, 6, boot);
         }
     }
 }
 
+function randomDirection() {
+    const values = [
+        "up",
+        "down",
+        "left",
+        "right"
+    ];
+
+    return values[
+        Math.floor(
+            Math.random() *
+            values.length
+        )
+    ];
+}
+
 function updateCompanion() {
-    const size =
-        companionSize();
+    const width =
+        worldView.clientWidth;
 
-    const minX = 28;
-    const maxX =
-        Math.max(
-            minX,
-            size.width - 28
-        );
+    const height =
+        worldView.clientHeight;
 
-    const minY = 90;
-    const maxY =
-        Math.max(
-            minY,
-            size.height - 28
-        );
+    const minX = 30;
+    const maxX = width - 30;
+    const minY = 65;
+    const maxY = height - 30;
 
-    if (companionState.target) {
+    if (companion.target) {
         const dx =
-            companionState.target.x -
-            companionState.x;
+            companion.target.x -
+            companion.x;
 
         const dy =
-            companionState.target.y -
-            companionState.y;
+            companion.target.y -
+            companion.y;
 
         const distance =
             Math.hypot(dx, dy);
 
         if (distance < 5) {
-            companionState.target =
-                null;
-
-            companionState.moving =
-                false;
-
-            companionState.wait = 70;
+            companion.target = null;
+            companion.wait = 80;
+            companion.moving = false;
         } else {
-            companionState.moving =
-                true;
+            companion.moving = true;
 
-            const nx = dx / distance;
-            const ny = dy / distance;
+            companion.x +=
+                (dx / distance) *
+                1.1;
 
-            companionState.x +=
-                nx * 1.1;
-
-            companionState.y +=
-                ny * 1.1;
+            companion.y +=
+                (dy / distance) *
+                1.1;
 
             if (
-                Math.abs(nx) >
-                Math.abs(ny)
+                Math.abs(dx) >
+                Math.abs(dy)
             ) {
-                companionState.direction =
-                    nx > 0
+                companion.direction =
+                    dx > 0
                         ? "right"
                         : "left";
             } else {
-                companionState.direction =
-                    ny > 0
+                companion.direction =
+                    dy > 0
                         ? "down"
                         : "up";
             }
         }
-    } else if (
-        companionState.wait > 0
-    ) {
-        companionState.wait--;
-        companionState.moving = false;
-
-        if (
-            companionState.wait === 0
-        ) {
-            companionState.nextDirection =
-                randomDirection();
-        }
+    } else if (companion.wait > 0) {
+        companion.wait--;
+        companion.moving = false;
     } else {
-        companionState.moving = true;
+        companion.moving = true;
 
-        companionState.direction =
-            companionState.nextDirection;
+        const direction =
+            companion.direction;
 
-        if (
-            companionState.direction ===
-            "up"
-        ) {
-            companionState.y -=
-                companionState.speed;
+        if (direction === "up") {
+            companion.y -= companion.speed;
+        }
+
+        if (direction === "down") {
+            companion.y += companion.speed;
+        }
+
+        if (direction === "left") {
+            companion.x -= companion.speed;
+        }
+
+        if (direction === "right") {
+            companion.x += companion.speed;
         }
 
         if (
-            companionState.direction ===
-            "down"
+            companion.x <= minX ||
+            companion.x >= maxX ||
+            companion.y <= minY ||
+            companion.y >= maxY
         ) {
-            companionState.y +=
-                companionState.speed;
-        }
-
-        if (
-            companionState.direction ===
-            "left"
-        ) {
-            companionState.x -=
-                companionState.speed;
-        }
-
-        if (
-            companionState.direction ===
-            "right"
-        ) {
-            companionState.x +=
-                companionState.speed;
-        }
-
-        if (
-            companionState.x <= minX ||
-            companionState.x >= maxX ||
-            companionState.y <= minY ||
-            companionState.y >= maxY
-        ) {
-            companionState.x =
+            companion.x =
                 Math.max(
                     minX,
                     Math.min(
                         maxX,
-                        companionState.x
+                        companion.x
                     )
                 );
 
-            companionState.y =
+            companion.y =
                 Math.max(
                     minY,
                     Math.min(
                         maxY,
-                        companionState.y
+                        companion.y
                     )
                 );
 
-            companionState.wait =
-                35;
-
-            companionState.nextDirection =
+            companion.direction =
                 randomDirection();
 
-            companionState.moving =
-                false;
+            companion.wait = 35;
+        }
+
+        if (Math.random() < .006) {
+            companion.direction =
+                randomDirection();
+
+            companion.wait = 30;
         }
     }
 
-    companionState.frameTimer++;
+    companion.timer++;
 
     if (
-        companionState.moving &&
-        companionState.frameTimer >= 7
+        companion.moving &&
+        companion.timer >= 8
     ) {
-        companionState.frameTimer = 0;
+        companion.timer = 0;
 
-        companionState.frame =
-            (companionState.frame + 1) % 4;
+        companion.frame =
+            (companion.frame + 1) % 4;
     }
 
-    if (!companionState.moving) {
-        companionState.frame = 0;
+    if (!companion.moving) {
+        companion.frame = 0;
     }
 
-    companion.style.left =
-        `${companionState.x}px`;
+    companionCanvas.style.left =
+        `${companion.x}px`;
 
-    companion.style.top =
-        `${companionState.y}px`;
+    companionCanvas.style.top =
+        `${companion.y}px`;
 
     companionShadow.style.left =
-        `${companionState.x}px`;
+        `${companion.x}px`;
 
     companionShadow.style.top =
-        `${companionState.y + 16}px`;
+        `${companion.y + 15}px`;
 
-    companionStatus.textContent =
-        companionState.moving
-            ? companionState.direction.toUpperCase()
+    drawCompanion();
+
+    const status =
+        companion.moving
+            ? companion.direction.toUpperCase()
             : "IDLE";
 
-    drawCompanionSprite();
+    companionStatus.textContent =
+        status;
+
+    runtimeCompanion.textContent =
+        status;
 }
 
 function companionLoop() {
     updateCompanion();
+
     requestAnimationFrame(
         companionLoop
     );
 }
 
 function moveCompanionTo(x, y) {
-    companionState.target = {
+    companion.target = {
         x,
         y
     };
 }
 
-function setMessage(message) {
-    nexusMessage.textContent =
-        message;
-}
-
-function setState(state) {
-    systemState.textContent =
-        state;
-}
-
 function countScopes(scope) {
     let count = 1;
 
-    for (
-        const child
-        of scope.children
-    ) {
-        count +=
-            countScopes(child);
-    }
+    scope.children.forEach(
+        child => {
+            count +=
+                countScopes(child);
+        }
+    );
 
     return count;
 }
@@ -2053,9 +2093,9 @@ function formatIssue(issue, index) {
         issue.node?.loc?.start?.line || 0;
 
     const column =
-        issue.node?.loc?.start?.column || 0;
+        (issue.node?.loc?.start?.column || 0) + 1;
 
-    let title = "";
+    let title;
 
     if (issue.type === "typo") {
         title =
@@ -2076,29 +2116,29 @@ function formatIssue(issue, index) {
     return [
         `${index}. [${issue.severity}] ${title}`,
         `   Kepercayaan: ${issue.confidence}%`,
-        `   Baris ${line}, Kolom ${column + 1}`,
+        `   Baris ${line}, Kolom ${column}`,
         "   Bukti:",
         ...issue.evidence.map(
-            evidence =>
-                `   - ${evidence}`
+            item =>
+                `   - ${item}`
         )
     ].join("\n");
 }
 
 function renderAnalysis(result) {
     if (!result.success) {
-        analysisStatus.textContent =
-            "Syntax error";
-
-        output.textContent =
-            "ERROR\n\n" +
-            result.error.message +
-            "\n\n" +
-            `Baris ${
-                result.error.loc?.line || 0
-            }, Kolom ${
-                (result.error.loc?.column || 0) + 1
-            }`;
+        analysisOutput.textContent =
+            [
+                "ERROR",
+                "",
+                result.error.message,
+                "",
+                `Baris ${
+                    result.error.loc?.line || 0
+                }, Kolom ${
+                    (result.error.loc?.column || 0) + 1
+                }`
+            ].join("\n");
 
         return;
     }
@@ -2113,8 +2153,8 @@ function renderAnalysis(result) {
 
     const resolved =
         data.references.filter(
-            reference =>
-                reference.resolved
+            item =>
+                item.resolved
         ).length;
 
     const lines = [
@@ -2155,45 +2195,96 @@ function renderAnalysis(result) {
         );
     }
 
-    output.textContent =
+    analysisOutput.textContent =
         lines.join("\n");
-
-    analysisStatus.textContent =
-        result.issues.length
-            ? `${result.issues.length} masalah ditemukan`
-            : "Tidak ada masalah";
 }
 
-function analyzeCode() {
+function renderVariables(result) {
+    if (
+        !result ||
+        !result.success
+    ) {
+        variableContent.innerHTML =
+            "<div class='info-card'>Belum ada hasil analisis.</div>";
+
+        return;
+    }
+
+    const symbols =
+        result.data.declarations.filter(
+            item =>
+                !item.symbol.builtin
+        );
+
+    if (!symbols.length) {
+        variableContent.innerHTML =
+            "<div class='info-card'>Tidak ada symbol.</div>";
+
+        return;
+    }
+
+    variableContent.innerHTML = `
+        <div class="info-grid">
+            ${symbols.map(item => `
+                <div class="info-card">
+                    <strong>${item.symbol.name}</strong>
+                    <span>
+                        ${item.symbol.kind}
+                        · references:
+                        ${item.symbol.references.length}
+                    </span>
+                </div>
+            `).join("")}
+        </div>
+    `;
+}
+
+let lastResult = null;
+
+function analyze() {
     const code =
         codeEditor.value;
 
-    setState("ANALYZING");
+    systemState.textContent =
+        "ANALYZING";
+
     nexusStatus.textContent =
+        "PROCESSING";
+
+    runtimeNexus.textContent =
         "PROCESSING";
 
     setMessage(
         "NJOS sedang menganalisis kode."
     );
 
-    const result =
-        checker.check(code);
-
-    renderAnalysis(result);
-
-    nexus.emit(
+    addEvent(
         "analysis:start"
     );
 
-    setTimeout(() => {
-        nexus.emit(
-            "analysis:complete",
-            result
-        );
+    const result =
+        new CodeChecker().check(code);
 
-        setState("NJOS ONLINE");
+    lastResult = result;
+
+    renderAnalysis(result);
+    renderVariables(result);
+
+    setTimeout(() => {
         nexusStatus.textContent =
             "READY";
+
+        runtimeNexus.textContent =
+            "READY";
+
+        systemState.textContent =
+            "NJOS ONLINE";
+
+        addEvent(
+            result.success
+                ? "analysis:complete"
+                : "analysis:error"
+        );
 
         if (
             result.success &&
@@ -2204,8 +2295,8 @@ function analyzeCode() {
             );
 
             moveCompanionTo(
-                companionArea.clientWidth - 55,
-                companionArea.clientHeight - 55
+                worldView.clientWidth - 55,
+                worldView.clientHeight - 55
             );
         } else if (result.success) {
             setMessage(
@@ -2213,44 +2304,91 @@ function analyzeCode() {
             );
 
             moveCompanionTo(
-                companionArea.clientWidth / 2,
-                companionArea.clientHeight / 2
+                worldView.clientWidth / 2,
+                worldView.clientHeight / 2
+            );
+        } else {
+            setMessage(
+                "NJOS menemukan kesalahan sintaks."
             );
         }
-    }, 600);
+    }, 350);
 }
+
+document
+    .querySelectorAll(".tool")
+    .forEach(tool => {
+        tool.addEventListener(
+            "click",
+            () => {
+                document
+                    .querySelectorAll(".tool")
+                    .forEach(item =>
+                        item.classList.remove(
+                            "active"
+                        )
+                    );
+
+                tool.classList.add("active");
+
+                const target =
+                    tool.dataset.view;
+
+                document
+                    .querySelectorAll(".view")
+                    .forEach(view =>
+                        view.classList.remove(
+                            "active"
+                        )
+                    );
+
+                const selected =
+                    document.getElementById(
+                        `view-${target}`
+                    );
+
+                if (selected) {
+                    selected.classList.add(
+                        "active"
+                    );
+                }
+
+                const names = {
+                    editor: "Code Editor",
+                    analyzer: "Analyzer",
+                    variables: "Variable Manager",
+                    runtime: "Runtime Monitor",
+                    nexus: "Nexus"
+                };
+
+                workspaceTitle.textContent =
+                    names[target] || target;
+
+                if (target === "runtime") {
+                    systemBox.textContent =
+                        "Runtime monitor active.";
+                }
+
+                if (target === "nexus") {
+                    systemBox.textContent =
+                        "Nexus event stream active.";
+                }
+
+                if (target === "analyzer") {
+                    systemBox.textContent =
+                        lastResult
+                            ? "Latest NJOS analysis loaded."
+                            : "Waiting for analysis.";
+                }
+            }
+        );
+    });
 
 document
     .getElementById("analyzeButton")
     .addEventListener(
         "click",
-        () => {
-            editorWindow.classList.add(
-                "open"
-            );
-
-            analyzeCode();
-        }
-    );
-
-document
-    .getElementById("editorAnalyze")
-    .addEventListener(
-        "click",
-        analyzeCode
-    );
-
-document
-    .getElementById("closeEditor")
-    .addEventListener(
-        "click",
-        () => {
-            editorWindow.classList.remove(
-                "open"
-            );
-
-            setState("NJOS ONLINE");
-        }
+        analyze
     );
 
 document
@@ -2259,35 +2397,43 @@ document
         "click",
         () => {
             codeEditor.value = "";
-            output.textContent = "";
+            analysisOutput.textContent =
+                "Belum ada analisis.";
 
-            analysisStatus.textContent =
-                "Ready";
+            variableContent.innerHTML =
+                "<div class='info-card'>Belum ada data symbol.</div>";
+
+            lastResult = null;
+
+            systemState.textContent =
+                "IDLE";
 
             nexusStatus.textContent =
                 "READY";
 
-            setState("IDLE");
+            runtimeNexus.textContent =
+                "READY";
 
             setMessage(
                 "Workspace dibersihkan."
             );
 
-            companionState.target =
-                null;
+            addEvent(
+                "workspace:clear"
+            );
 
-            companionState.wait =
-                50;
+            companion.target = null;
+            companion.wait = 70;
         }
     );
 
 nexus.on(
     "analysis:start",
     () => {
-        companionState.moving =
-            true;
-
         companionStatus.textContent =
+            "WORKING";
+
+        runtimeCompanion.textContent =
             "WORKING";
     }
 );
@@ -2297,29 +2443,6 @@ nexus.on(
     result => {
         window.__CAKRAWALA_LAST_RESULT__ =
             result;
-
-        companionStatus.textContent =
-            "IDLE";
-    }
-);
-
-window.addEventListener(
-    "resize",
-    () => {
-        const size =
-            companionSize();
-
-        companionState.x =
-            Math.min(
-                companionState.x,
-                size.width - 28
-            );
-
-        companionState.y =
-            Math.min(
-                companionState.y,
-                size.height - 28
-            );
     }
 );
 
@@ -2327,53 +2450,69 @@ document.addEventListener(
     "keydown",
     event => {
         if (
-            event.target.tagName ===
-            "TEXTAREA"
+            event.target === codeEditor
         ) {
             return;
         }
 
-        const speed = 2.2;
+        const speed = 2;
 
         if (
             event.key === "ArrowUp" ||
             event.key.toLowerCase() === "w"
         ) {
-            companionState.target = null;
-            companionState.direction = "up";
-            companionState.moving = true;
-            companionState.y -= speed;
+            companion.target = null;
+            companion.direction = "up";
+            companion.moving = true;
+            companion.y -= speed;
         }
 
         if (
             event.key === "ArrowDown" ||
             event.key.toLowerCase() === "s"
         ) {
-            companionState.target = null;
-            companionState.direction = "down";
-            companionState.moving = true;
-            companionState.y += speed;
+            companion.target = null;
+            companion.direction = "down";
+            companion.moving = true;
+            companion.y += speed;
         }
 
         if (
             event.key === "ArrowLeft" ||
             event.key.toLowerCase() === "a"
         ) {
-            companionState.target = null;
-            companionState.direction = "left";
-            companionState.moving = true;
-            companionState.x -= speed;
+            companion.target = null;
+            companion.direction = "left";
+            companion.moving = true;
+            companion.x -= speed;
         }
 
         if (
             event.key === "ArrowRight" ||
             event.key.toLowerCase() === "d"
         ) {
-            companionState.target = null;
-            companionState.direction = "right";
-            companionState.moving = true;
-            companionState.x += speed;
+            companion.target = null;
+            companion.direction = "right";
+            companion.moving = true;
+            companion.x += speed;
         }
+    }
+);
+
+window.addEventListener(
+    "resize",
+    () => {
+        companion.x =
+            Math.min(
+                companion.x,
+                worldView.clientWidth - 30
+            );
+
+        companion.y =
+            Math.min(
+                companion.y,
+                worldView.clientHeight - 30
+            );
     }
 );
 
@@ -2381,4 +2520,5 @@ companionLoop();
 </script>
 
 </body>
-</html>
+</html>               
+                       
