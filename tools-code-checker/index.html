@@ -2,275 +2,419 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cakrawala Workstation</title>
 
 <style>
-*{
-    box-sizing:border-box;
+* {
+    box-sizing: border-box;
 }
 
-html,body{
-    margin:0;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:#081017;
-    color:#e7edf2;
-    font-family:Arial,sans-serif;
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #090d12;
+    color: #e5ebf0;
+    font-family: Arial, sans-serif;
 }
 
-#app{
-    position:relative;
-    width:100%;
-    height:100%;
-    overflow:hidden;
+body {
+    min-height: 100vh;
 }
 
-#world{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    image-rendering:pixelated;
-    background:#18291f;
+.app {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 50% 20%, #18222c 0%, #0b1016 55%, #080b10 100%);
 }
 
-.hud{
-    position:absolute;
-    inset:0;
-    pointer-events:none;
+.topbar {
+    position: absolute;
+    z-index: 10;
+    top: 16px;
+    left: 18px;
+    right: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.card{
-    background:rgba(5,10,15,.91);
-    border:1px solid #293947;
-    border-radius:10px;
-    box-shadow:0 12px 35px rgba(0,0,0,.35);
-    backdrop-filter:blur(8px);
+.brand {
+    padding: 10px 14px;
+    border: 1px solid #26313c;
+    border-radius: 9px;
+    background: rgba(8, 12, 17, .9);
 }
 
-.top{
-    position:absolute;
-    top:14px;
-    left:16px;
-    right:16px;
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
+.brand strong {
+    display: block;
+    font-size: 14px;
+    letter-spacing: 2px;
 }
 
-.brand{
-    padding:11px 14px;
+.brand span {
+    display: block;
+    margin-top: 3px;
+    color: #697581;
+    font-size: 10px;
+    letter-spacing: 1px;
 }
 
-.brand b{
-    display:block;
-    letter-spacing:3px;
+.system {
+    display: flex;
+    gap: 7px;
 }
 
-.brand small{
-    color:#71808b;
-    letter-spacing:1px;
+.pill {
+    padding: 8px 11px;
+    border: 1px solid #26313c;
+    border-radius: 8px;
+    background: rgba(8, 12, 17, .9);
+    color: #7e8a96;
+    font-size: 10px;
 }
 
-.status{
-    display:flex;
-    gap:7px;
+.pill.online {
+    color: #7ed49a;
 }
 
-.pill{
-    padding:9px 12px;
-    font-size:10px;
-    letter-spacing:.8px;
+.workspace {
+    position: absolute;
+    top: 92px;
+    right: 18px;
+    bottom: 126px;
+    left: 18px;
+    display: grid;
+    grid-template-columns: 210px minmax(0, 1fr) 230px;
+    gap: 10px;
 }
 
-.online{
-    color:#75e39a;
+.panel {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #202a34;
+    border-radius: 12px;
+    background: rgba(10, 15, 21, .88);
 }
 
-.location{
-    position:absolute;
-    top:78px;
-    left:16px;
-    padding:10px 13px;
+.panel-title {
+    height: 38px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    border-bottom: 1px solid #202a34;
+    color: #87939e;
+    font-size: 10px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
 }
 
-.location small{
-    display:block;
-    color:#6f7d88;
-    font-size:9px;
-    letter-spacing:1.4px;
+.tool-list {
+    padding: 8px;
 }
 
-.location b{
-    display:block;
-    margin-top:4px;
-    font-size:12px;
+.tool {
+    margin-bottom: 5px;
+    padding: 10px;
+    border-radius: 7px;
+    color: #aab4bd;
+    font-size: 11px;
 }
 
-.bottom{
-    position:absolute;
-    left:16px;
-    right:16px;
-    bottom:16px;
-    display:flex;
-    justify-content:space-between;
-    align-items:end;
-    gap:12px;
+.tool.active {
+    background: #18222c;
+    color: #e4eaf0;
 }
 
-.nexus{
-    width:min(480px,calc(100vw - 32px));
-    padding:13px;
-    pointer-events:auto;
+.tool span {
+    display: block;
+    margin-top: 3px;
+    color: #5e6b77;
+    font-size: 9px;
 }
 
-.label{
-    font-size:9px;
-    color:#71808d;
-    letter-spacing:1.4px;
+#companionArea {
+    position: relative;
+    height: calc(100% - 38px);
+    overflow: hidden;
+    background:
+        linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px),
+        #0d141b;
+    background-size: 32px 32px;
 }
 
-.message{
-    margin-top:7px;
-    min-height:35px;
-    font:12px/1.5 Consolas,monospace;
+#companionArea::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at center, transparent 30%, rgba(0,0,0,.28) 100%);
 }
 
-.buttons{
-    display:flex;
-    gap:7px;
-    margin-top:9px;
+.editor-preview {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    padding: 14px;
+    border: 1px solid #1e2933;
+    border-radius: 8px;
+    background: #0a0f14;
+    font-family: Consolas, monospace;
+    font-size: 11px;
+    line-height: 1.8;
+    color: #87939e;
 }
 
-button{
-    border:1px solid #344555;
-    background:#111a23;
-    color:#e8edf2;
-    border-radius:7px;
-    padding:9px 14px;
-    cursor:pointer;
+.editor-preview .keyword {
+    color: #d48a93;
 }
 
-button:hover{
-    background:#1b2935;
+.editor-preview .name {
+    color: #c7d2dc;
 }
 
-button.primary{
-    background:#822c36;
-    border-color:#ad3d49;
+.editor-preview .string {
+    color: #8bb59a;
 }
 
-.controls{
-    width:205px;
-    padding:12px;
+.companion-shadow {
+    position: absolute;
+    z-index: 2;
+    width: 18px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(0,0,0,.35);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
 }
 
-.controls p{
-    margin:7px 0 0;
-    color:#aab5bf;
-    font-size:11px;
-    line-height:1.65;
+#companion {
+    position: absolute;
+    z-index: 3;
+    width: 32px;
+    height: 40px;
+    transform: translate(-50%, -50%);
+    image-rendering: pixelated;
+    pointer-events: none;
 }
 
-.window{
-    position:absolute;
-    z-index:20;
-    inset:7%;
-    display:none;
-    flex-direction:column;
-    overflow:hidden;
-    background:#080d12;
-    border:1px solid #2b3a48;
-    border-radius:13px;
-    box-shadow:0 30px 100px #000b;
-    pointer-events:auto;
+.status-card {
+    padding: 12px;
 }
 
-.window.open{
-    display:flex;
+.status-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #1c252e;
+    font-size: 10px;
 }
 
-.head{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:11px 14px;
-    background:#0d151d;
-    border-bottom:1px solid #202d38;
+.status-row span:first-child {
+    color: #64717d;
 }
 
-.head b{
-    font-size:13px;
+.status-row span:last-child {
+    color: #b8c2cb;
 }
 
-.editor{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    flex:1;
-    min-height:0;
+.event-box {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #202a34;
+    border-radius: 8px;
+    background: #0b1117;
+    color: #7f8c97;
+    font-family: Consolas, monospace;
+    font-size: 10px;
+    line-height: 1.6;
 }
 
-.pane{
-    display:flex;
-    flex-direction:column;
-    min-width:0;
+.bottom {
+    position: absolute;
+    z-index: 10;
+    right: 18px;
+    bottom: 18px;
+    left: 18px;
+    display: flex;
+    align-items: end;
+    gap: 10px;
 }
 
-.pane+.pane{
-    border-left:1px solid #202d38;
+.nexus {
+    width: min(500px, 100%);
+    padding: 12px;
+    border: 1px solid #26313c;
+    border-radius: 10px;
+    background: rgba(8,12,17,.94);
 }
 
-.pane-title{
-    padding:9px 12px;
-    border-bottom:1px solid #202d38;
-    color:#84929e;
-    font-size:11px;
+.label {
+    color: #65727e;
+    font-size: 9px;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
 }
 
-textarea,
-.output{
-    flex:1;
-    min-height:0;
-    width:100%;
-    border:0;
-    outline:0;
-    background:#070b0f;
-    color:#dce6ef;
-    padding:15px;
-    font:12px/1.65 Consolas,monospace;
+#nexusMessage {
+    min-height: 34px;
+    margin-top: 5px;
+    color: #c8d1d9;
+    font-family: Consolas, monospace;
+    font-size: 11px;
+    line-height: 1.5;
 }
 
-.output{
-    overflow:auto;
-    white-space:pre-wrap;
+.actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
 }
 
-.foot{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:9px 12px;
-    background:#0d151d;
-    border-top:1px solid #202d38;
+button {
+    border: 1px solid #303c48;
+    border-radius: 6px;
+    padding: 8px 12px;
+    background: #151d25;
+    color: #d9e1e8;
+    cursor: pointer;
+    font-size: 10px;
 }
 
-.foot small{
-    color:#74818c;
+button:hover {
+    background: #1c2731;
 }
 
-@media(max-width:800px){
-    .controls{
-        display:none;
+#analyzeButton {
+    border-color: #8f303a;
+    background: #742731;
+}
+
+#analyzeButton:hover {
+    background: #8c2d38;
+}
+
+.editor-window {
+    position: absolute;
+    z-index: 30;
+    inset: 6%;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #303b47;
+    border-radius: 13px;
+    background: #090d12;
+    box-shadow: 0 30px 90px rgba(0,0,0,.65);
+}
+
+.editor-window.open {
+    display: flex;
+}
+
+.editor-header,
+.editor-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 13px;
+    background: #0d131a;
+}
+
+.editor-header {
+    border-bottom: 1px solid #202a34;
+}
+
+.editor-footer {
+    border-top: 1px solid #202a34;
+}
+
+.editor-header strong {
+    font-size: 12px;
+}
+
+.editor-body {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.editor-side {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.editor-side + .editor-side {
+    border-left: 1px solid #202a34;
+}
+
+.side-title {
+    padding: 9px 12px;
+    border-bottom: 1px solid #202a34;
+    color: #75818c;
+    font-size: 10px;
+}
+
+textarea {
+    flex: 1;
+    width: 100%;
+    resize: none;
+    border: 0;
+    outline: 0;
+    padding: 15px;
+    background: #070b0f;
+    color: #d8e0e7;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+.output {
+    flex: 1;
+    overflow: auto;
+    padding: 15px;
+    white-space: pre-wrap;
+    color: #c8d1d9;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 11px;
+    line-height: 1.65;
+}
+
+.editor-status {
+    color: #687581;
+    font-size: 10px;
+}
+
+@media (max-width: 850px) {
+    .workspace {
+        grid-template-columns: 1fr;
     }
 
-    .editor{
-        grid-template-columns:1fr;
+    .workspace > .panel:first-child,
+    .workspace > .panel:last-child {
+        display: none;
     }
 
-    .pane+.pane{
-        display:none;
+    .bottom {
+        left: 18px;
+    }
+
+    .editor-body {
+        grid-template-columns: 1fr;
+    }
+
+    .editor-side + .editor-side {
+        display: none;
     }
 }
 </style>
@@ -280,94 +424,181 @@ textarea,
 
 <body>
 
-<div id="app">
+<div class="app">
 
-<canvas id="world"></canvas>
-
-<div class="hud">
-
-    <div class="top">
-
-        <div class="card brand">
-            <b>CAKRAWALA</b>
-            <small>WORKSTATION</small>
+    <div class="topbar">
+        <div class="brand">
+            <strong>CAKRAWALA</strong>
+            <span>WORKSTATION</span>
         </div>
 
-        <div class="status">
-            <div class="card pill online">● NJOS ONLINE</div>
-            <div class="card pill" id="state">IDLE</div>
-        </div>
+        <div class="system">
+            <div class="pill online" id="njosStatus">
+                ● NJOS ONLINE
+            </div>
 
+            <div class="pill" id="systemState">
+                IDLE
+            </div>
+        </div>
     </div>
 
-    <div class="card location">
-        <small>LOCATION</small>
-        <b id="location">Cakrawala Field</b>
+    <div class="workspace">
+
+        <section class="panel">
+            <div class="panel-title">
+                Tools
+            </div>
+
+            <div class="tool-list">
+                <div class="tool active">
+                    Code Editor
+                    <span>Source workspace</span>
+                </div>
+
+                <div class="tool">
+                    Analyzer
+                    <span>Code intelligence</span>
+                </div>
+
+                <div class="tool">
+                    Variable Manager
+                    <span>Symbol state</span>
+                </div>
+
+                <div class="tool">
+                    Runtime Monitor
+                    <span>Execution state</span>
+                </div>
+
+                <div class="tool">
+                    Nexus
+                    <span>System bridge</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-title">
+                Code Workspace
+            </div>
+
+            <div id="companionArea">
+
+                <div class="editor-preview">
+                    <span class="keyword">const</span>
+                    <span class="name">username</span>
+                    =
+                    <span class="string">"Miu"</span>;
+
+                    <br>
+
+                    <span class="keyword">function</span>
+                    <span class="name">greet</span>(name) {
+
+                    <br>
+                    &nbsp;&nbsp;
+                    <span class="keyword">return</span>
+                    username + name;
+
+                    <br>
+                    }
+                </div>
+
+                <div
+                    class="companion-shadow"
+                    id="companionShadow">
+                </div>
+
+                <canvas
+                    id="companion"
+                    width="32"
+                    height="40">
+                </canvas>
+
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-title">
+                System
+            </div>
+
+            <div class="status-card">
+
+                <div class="status-row">
+                    <span>Core</span>
+                    <span>NJOS 0.6</span>
+                </div>
+
+                <div class="status-row">
+                    <span>Nexus</span>
+                    <span id="nexusStatus">READY</span>
+                </div>
+
+                <div class="status-row">
+                    <span>Companion</span>
+                    <span id="companionStatus">IDLE</span>
+                </div>
+
+            </div>
+
+            <div class="event-box" id="eventBox">
+                waiting for system events...
+            </div>
+        </section>
+
     </div>
 
     <div class="bottom">
 
-        <div class="card nexus">
+        <div class="nexus">
 
             <div class="label">
-                NEXUS COMMUNICATION
+                Nexus communication
             </div>
 
-            <div class="message" id="message">
+            <div id="nexusMessage">
                 Cakrawala sedang menunggu aktivitas.
             </div>
 
-            <div class="buttons">
-                <button class="primary" id="analyze">
+            <div class="actions">
+                <button id="analyzeButton">
                     Analyze
                 </button>
 
-                <button id="clear">
+                <button id="clearButton">
                     Clear
                 </button>
             </div>
 
         </div>
 
-        <div class="card controls">
+    </div>
 
-            <div class="label">
-                CAKRAWALA CONTROL
-            </div>
+    <section
+        class="editor-window"
+        id="editorWindow">
 
-            <p>
-                WASD / Arrow: bergerak<br>
-                E: naik / turun kuda<br>
-                Enter: buka Workshop
-            </p>
+        <div class="editor-header">
+            <strong>
+                Code Workshop
+            </strong>
 
+            <button id="closeEditor">
+                Close
+            </button>
         </div>
 
-    </div>
+        <div class="editor-body">
 
-</div>
+            <div class="editor-side">
 
-<div class="window" id="window">
+                <div class="side-title">
+                    Code Editor
+                </div>
 
-    <div class="head">
-
-        <b>Code Workshop</b>
-
-        <button id="close">
-            Close
-        </button>
-
-    </div>
-
-    <div class="editor">
-
-        <div class="pane">
-
-            <div class="pane-title">
-                Code Editor
-            </div>
-
-            <textarea id="code">const username = "Miu";
+                <textarea id="codeEditor">const username = "Miu";
 
 function greet(name) {
     return ussername + name;
@@ -375,43 +606,46 @@ function greet(name) {
 
 greet(username);</textarea>
 
-        </div>
-
-        <div class="pane">
-
-            <div class="pane-title">
-                Analysis
             </div>
 
-            <div class="output" id="output"></div>
+            <div class="editor-side">
+
+                <div class="side-title">
+                    Analysis
+                </div>
+
+                <div
+                    class="output"
+                    id="output">
+                </div>
+
+            </div>
 
         </div>
 
-    </div>
+        <div class="editor-footer">
 
-    <div class="foot">
+            <div
+                class="editor-status"
+                id="analysisStatus">
+                Ready
+            </div>
 
-        <small id="analysisStatus">
-            Ready
-        </small>
+            <button id="editorAnalyze">
+                Analyze
+            </button>
 
-        <button class="primary" id="run">
-            Analyze
-        </button>
+        </div>
 
-    </div>
-
-</div>
+    </section>
 
 </div>
 
 <script>
-
 const NJOS = {
+    version: "0.6.0",
 
-    version:"0.6.0",
-
-    globals:new Set([
+    globals: new Set([
         "console",
         "window",
         "document",
@@ -423,19 +657,13 @@ const NJOS = {
         "String",
         "Number",
         "Boolean",
-        "BigInt",
-        "Symbol",
         "Date",
         "RegExp",
         "Error",
         "Map",
         "Set",
-        "WeakMap",
-        "WeakSet",
         "Promise",
-        "Proxy",
-        "Reflect",
-        "Intl",
+        "Symbol",
         "parseInt",
         "parseFloat",
         "isNaN",
@@ -445,84 +673,73 @@ const NJOS = {
         "clearTimeout",
         "clearInterval"
     ])
-
 };
 
-class Nexus {
-
-    constructor(){
-        this.events = {};
+class CakrawalaNexus {
+    constructor() {
+        this.listeners = new Map();
     }
 
-    on(event,callback){
-
-        if(!this.events[event]){
-            this.events[event] = [];
+    on(event, callback) {
+        if (!this.listeners.has(event)) {
+            this.listeners.set(event, []);
         }
 
-        this.events[event].push(callback);
+        this.listeners.get(event).push(callback);
     }
 
-    emit(event,data){
+    emit(event, data) {
+        const callbacks =
+            this.listeners.get(event) || [];
 
-        for(const callback of this.events[event] || []){
+        for (const callback of callbacks) {
             callback(data);
         }
     }
-
 }
 
-const nexus = new Nexus();
+class SymbolRecord {
+    constructor(name, kind, scope, node) {
+        this.name = name;
+        this.kind = kind;
+        this.scope = scope;
+        this.node = node;
+        this.references = [];
+        this.builtin = false;
+    }
+}
 
 class Scope {
-
-    constructor(type,parent=null){
-
+    constructor(type, parent = null) {
         this.type = type;
         this.parent = parent;
         this.symbols = new Map();
         this.children = [];
-
     }
 
-    add(type){
-
-        const scope = new Scope(type,this);
-
-        this.children.push(scope);
-
-        return scope;
-    }
-
-    declare(name,kind,node){
-
-        if(this.symbols.has(name)){
+    declare(name, kind, node) {
+        if (this.symbols.has(name)) {
             return this.symbols.get(name);
         }
 
-        const symbol = {
+        const symbol =
+            new SymbolRecord(
+                name,
+                kind,
+                this,
+                node
+            );
 
-            name,
-            kind,
-            node,
-            references:[],
-            builtin:false,
-            scope:this
-
-        };
-
-        this.symbols.set(name,symbol);
+        this.symbols.set(name, symbol);
 
         return symbol;
     }
 
-    resolve(name){
-
+    resolve(name) {
         let scope = this;
 
-        while(scope){
-
-            if(scope.symbols.has(name)){
+        while (scope) {
+            if (scope.symbols.has(name)) {
                 return scope.symbols.get(name);
             }
 
@@ -532,504 +749,37 @@ class Scope {
         return null;
     }
 
-    functionScope(){
-
+    functionScope() {
         let scope = this;
 
-        while(
+        while (
             scope &&
             scope.type !== "function" &&
             scope.type !== "global"
-        ){
-
+        ) {
             scope = scope.parent;
-
         }
 
         return scope;
     }
-
 }
 
-class Resolver {
+class ScopeResolver {
+    constructor() {
+        this.global =
+            new Scope("global");
 
-    constructor(){
-
-        this.global = new Scope("global");
-
-        this.scope = this.global;
+        this.current =
+            this.global;
 
         this.declarations = [];
         this.references = [];
         this.functions = [];
         this.parameters = [];
-
     }
 
-    declarePattern(node,kind){
-
-        if(!node){
-            return;
-        }
-
-        if(node.type === "Identifier"){
-
-            const target =
-                kind === "var"
-                ? this.scope.functionScope()
-                : this.scope;
-
-            const symbol =
-                target.declare(
-                    node.name,
-                    kind,
-                    node
-                );
-
-            this.declarations.push({
-                symbol,
-                node
-            });
-
-            return;
-        }
-
-        if(node.type === "RestElement"){
-
-            this.declarePattern(
-                node.argument,
-                kind
-            );
-
-            return;
-        }
-
-        if(node.type === "AssignmentPattern"){
-
-            this.declarePattern(
-                node.left,
-                kind
-            );
-
-            this.expr(node.right);
-
-            return;
-        }
-
-        if(
-            node.type === "ObjectPattern" ||
-            node.type === "ArrayPattern"
-        ){
-
-            for(const item of node.properties || []){
-
-                if(item.type === "RestElement"){
-
-                    this.declarePattern(
-                        item.argument,
-                        kind
-                    );
-
-                }else{
-
-                    this.declarePattern(
-                        item.value,
-                        kind
-                    );
-
-                }
-
-            }
-
-        }
-
-    }
-
-    reference(node){
-
-        const symbol =
-            this.scope.resolve(node.name);
-
-        const reference = {
-
-            name:node.name,
-            node,
-            scope:this.scope,
-            symbol,
-            resolved:!!symbol
-
-        };
-
-        this.references.push(reference);
-
-        if(symbol){
-
-            symbol.references.push(reference);
-
-        }
-
-    }
-
-    function(node){
-
-        if(node.id){
-
-            this.declarePattern(
-                node.id,
-                "function"
-            );
-
-        }
-
-        this.functions.push(node);
-
-        const oldScope = this.scope;
-
-        const functionScope =
-            this.scope.add("function");
-
-        this.scope = functionScope;
-
-        for(const parameter of node.params){
-
-            this.declarePattern(
-                parameter,
-                "parameter"
-            );
-
-            this.parameters.push(parameter);
-
-        }
-
-        if(node.body.type === "BlockStatement"){
-
-            const bodyScope =
-                this.scope.add("block");
-
-            this.scope = bodyScope;
-
-            this.visit(node.body);
-
-        }else{
-
-            this.expr(node.body);
-
-        }
-
-        this.scope = oldScope;
-
-    }
-
-    visit(node){
-
-        if(!node){
-            return;
-        }
-
-        switch(node.type){
-
-            case "Program":
-
-                for(const item of node.body){
-                    this.visit(item);
-                }
-
-                break;
-
-            case "VariableDeclaration":
-
-                for(const declaration of node.declarations){
-
-                    this.declarePattern(
-                        declaration.id,
-                        node.kind
-                    );
-
-                    if(declaration.init){
-                        this.expr(declaration.init);
-                    }
-
-                }
-
-                break;
-
-            case "FunctionDeclaration":
-
-                this.function(node);
-
-                break;
-
-            case "FunctionExpression":
-            case "ArrowFunctionExpression":
-
-                this.function(node);
-
-                break;
-
-            case "BlockStatement":
-
-                for(const item of node.body){
-                    this.visit(item);
-                }
-
-                break;
-
-            case "ExpressionStatement":
-
-                this.expr(node.expression);
-
-                break;
-
-            case "ReturnStatement":
-
-                if(node.argument){
-                    this.expr(node.argument);
-                }
-
-                break;
-
-            case "IfStatement":
-
-                this.expr(node.test);
-                this.visit(node.consequent);
-
-                if(node.alternate){
-                    this.visit(node.alternate);
-                }
-
-                break;
-
-            case "WhileStatement":
-            case "DoWhileStatement":
-
-                this.expr(node.test);
-                this.visit(node.body);
-
-                break;
-
-            case "ForStatement":
-
-                if(node.init){
-
-                    if(node.init.type === "VariableDeclaration"){
-                        this.visit(node.init);
-                    }else{
-                        this.expr(node.init);
-                    }
-
-                }
-
-                if(node.test){
-                    this.expr(node.test);
-                }
-
-                if(node.update){
-                    this.expr(node.update);
-                }
-
-                this.visit(node.body);
-
-                break;
-
-            case "ForInStatement":
-            case "ForOfStatement":
-
-                this.visit(node.left);
-                this.expr(node.right);
-                this.visit(node.body);
-
-                break;
-
-            case "TryStatement":
-
-                this.visit(node.block);
-
-                if(node.handler){
-
-                    const old = this.scope;
-
-                    this.scope =
-                        this.scope.add("catch");
-
-                    this.declarePattern(
-                        node.handler.param,
-                        "catch"
-                    );
-
-                    this.visit(node.handler.body);
-
-                    this.scope = old;
-
-                }
-
-                if(node.finalizer){
-                    this.visit(node.finalizer);
-                }
-
-                break;
-
-            default:
-
-                this.generic(node);
-
-        }
-
-    }
-
-    expr(node){
-
-        if(!node){
-            return;
-        }
-
-        switch(node.type){
-
-            case "Identifier":
-
-                this.reference(node);
-
-                break;
-
-            case "Literal":
-
-                break;
-
-            case "BinaryExpression":
-            case "LogicalExpression":
-            case "AssignmentExpression":
-
-                this.expr(node.left);
-                this.expr(node.right);
-
-                break;
-
-            case "UnaryExpression":
-            case "UpdateExpression":
-
-                this.expr(node.argument);
-
-                break;
-
-            case "ConditionalExpression":
-
-                this.expr(node.test);
-                this.expr(node.consequent);
-                this.expr(node.alternate);
-
-                break;
-
-            case "CallExpression":
-            case "NewExpression":
-
-                this.expr(node.callee);
-
-                for(const argument of node.arguments){
-                    this.expr(argument);
-                }
-
-                break;
-
-            case "MemberExpression":
-
-                this.expr(node.object);
-
-                if(node.computed){
-                    this.expr(node.property);
-                }
-
-                break;
-
-            case "ArrayExpression":
-
-                for(const element of node.elements){
-                    this.expr(element);
-                }
-
-                break;
-
-            case "ObjectExpression":
-
-                for(const property of node.properties){
-
-                    if(property.type === "SpreadElement"){
-
-                        this.expr(property.argument);
-
-                    }else{
-
-                        if(property.computed){
-                            this.expr(property.key);
-                        }
-
-                        this.expr(property.value);
-
-                    }
-
-                }
-
-                break;
-
-            case "TemplateLiteral":
-
-                for(const expression of node.expressions){
-                    this.expr(expression);
-                }
-
-                break;
-
-            case "FunctionExpression":
-            case "ArrowFunctionExpression":
-
-                this.function(node);
-
-                break;
-
-            default:
-
-                this.generic(node);
-
-        }
-
-    }
-
-    generic(node){
-
-        for(const key of Object.keys(node)){
-
-            if(
-                key === "loc" ||
-                key === "start" ||
-                key === "end"
-            ){
-                continue;
-            }
-
-            const value = node[key];
-
-            if(Array.isArray(value)){
-
-                for(const item of value){
-
-                    if(item && item.type){
-                        this.visit(item);
-                    }
-
-                }
-
-            }else if(value && value.type){
-
-                this.visit(value);
-
-            }
-
-        }
-
-    }
-
-    resolve(tree){
-
-        for(const name of NJOS.globals){
-
+    addBuiltins() {
+        for (const name of NJOS.globals) {
             const symbol =
                 this.global.declare(
                     name,
@@ -1038,1057 +788,1322 @@ class Resolver {
                 );
 
             symbol.builtin = true;
-
         }
-
-        this.visit(tree);
-
-        return this;
-
     }
 
+    child(type) {
+        const scope =
+            new Scope(
+                type,
+                this.current
+            );
+
+        this.current.children.push(
+            scope
+        );
+
+        return scope;
+    }
+
+    withScope(scope, callback) {
+        const previous =
+            this.current;
+
+        this.current = scope;
+
+        callback();
+
+        this.current = previous;
+    }
+
+    declarePattern(pattern, kind) {
+        if (!pattern) {
+            return;
+        }
+
+        if (pattern.type === "Identifier") {
+            const target =
+                kind === "var"
+                    ? this.current.functionScope()
+                    : this.current;
+
+            const symbol =
+                target.declare(
+                    pattern.name,
+                    kind,
+                    pattern
+                );
+
+            this.declarations.push({
+                symbol,
+                node: pattern
+            });
+
+            return;
+        }
+
+        if (
+            pattern.type ===
+            "AssignmentPattern"
+        ) {
+            this.declarePattern(
+                pattern.left,
+                kind
+            );
+
+            this.expression(
+                pattern.right
+            );
+
+            return;
+        }
+
+        if (
+            pattern.type ===
+            "RestElement"
+        ) {
+            this.declarePattern(
+                pattern.argument,
+                kind
+            );
+
+            return;
+        }
+
+        if (
+            pattern.type ===
+            "ObjectPattern"
+        ) {
+            for (
+                const property
+                of pattern.properties
+            ) {
+                if (
+                    property.type ===
+                    "Property"
+                ) {
+                    this.declarePattern(
+                        property.value,
+                        kind
+                    );
+                }
+            }
+
+            return;
+        }
+
+        if (
+            pattern.type ===
+            "ArrayPattern"
+        ) {
+            for (
+                const element
+                of pattern.elements
+            ) {
+                this.declarePattern(
+                    element,
+                    kind
+                );
+            }
+        }
+    }
+
+    reference(node) {
+        const symbol =
+            this.current.resolve(
+                node.name
+            );
+
+        const reference = {
+            name: node.name,
+            node,
+            scope: this.current,
+            symbol,
+            resolved: Boolean(symbol)
+        };
+
+        this.references.push(
+            reference
+        );
+
+        if (symbol) {
+            symbol.references.push(
+                reference
+            );
+        }
+    }
+
+    function(node) {
+        if (node.id) {
+            this.declarePattern(
+                node.id,
+                "function"
+            );
+        }
+
+        this.functions.push(node);
+
+        const functionScope =
+            this.child("function");
+
+        this.withScope(
+            functionScope,
+            () => {
+                for (
+                    const parameter
+                    of node.params
+                ) {
+                    this.declarePattern(
+                        parameter,
+                        "parameter"
+                    );
+
+                    this.parameters.push(
+                        parameter
+                    );
+                }
+
+                this.visit(
+                    node.body
+                );
+            }
+        );
+    }
+
+    visit(node) {
+        if (!node) {
+            return;
+        }
+
+        switch (node.type) {
+            case "Program":
+                node.body.forEach(
+                    statement =>
+                        this.visit(statement)
+                );
+                break;
+
+            case "VariableDeclaration":
+                node.declarations.forEach(
+                    declaration => {
+                        this.declarePattern(
+                            declaration.id,
+                            node.kind
+                        );
+
+                        this.expression(
+                            declaration.init
+                        );
+                    }
+                );
+                break;
+
+            case "FunctionDeclaration":
+            case "FunctionExpression":
+            case "ArrowFunctionExpression":
+                this.function(node);
+                break;
+
+            case "BlockStatement":
+                node.body.forEach(
+                    statement =>
+                        this.visit(statement)
+                );
+                break;
+
+            case "ExpressionStatement":
+                this.expression(
+                    node.expression
+                );
+                break;
+
+            case "ReturnStatement":
+                this.expression(
+                    node.argument
+                );
+                break;
+
+            case "IfStatement":
+                this.expression(node.test);
+                this.visit(node.consequent);
+
+                if (node.alternate) {
+                    this.visit(node.alternate);
+                }
+
+                break;
+
+            case "ForStatement":
+                this.expression(node.init);
+                this.expression(node.test);
+                this.expression(node.update);
+                this.visit(node.body);
+                break;
+
+            case "ForOfStatement":
+            case "ForInStatement":
+                this.visit(node.left);
+                this.expression(node.right);
+                this.visit(node.body);
+                break;
+
+            case "WhileStatement":
+            case "DoWhileStatement":
+                this.expression(node.test);
+                this.visit(node.body);
+                break;
+
+            case "TryStatement":
+                this.visit(node.block);
+
+                if (node.handler) {
+                    this.visit(node.handler.body);
+                }
+
+                if (node.finalizer) {
+                    this.visit(node.finalizer);
+                }
+
+                break;
+
+            default:
+                this.generic(node);
+        }
+    }
+
+    expression(node) {
+        if (!node) {
+            return;
+        }
+
+        switch (node.type) {
+            case "Identifier":
+                this.reference(node);
+                break;
+
+            case "Literal":
+                break;
+
+            case "BinaryExpression":
+            case "LogicalExpression":
+            case "AssignmentExpression":
+                this.expression(node.left);
+                this.expression(node.right);
+                break;
+
+            case "UnaryExpression":
+            case "UpdateExpression":
+                this.expression(node.argument);
+                break;
+
+            case "CallExpression":
+            case "NewExpression":
+                this.expression(node.callee);
+
+                node.arguments.forEach(
+                    argument =>
+                        this.expression(argument)
+                );
+
+                break;
+
+            case "MemberExpression":
+                this.expression(node.object);
+
+                if (node.computed) {
+                    this.expression(node.property);
+                }
+
+                break;
+
+            case "ArrayExpression":
+                node.elements.forEach(
+                    element =>
+                        this.expression(element)
+                );
+                break;
+
+            case "ObjectExpression":
+                node.properties.forEach(
+                    property => {
+                        if (
+                            property.type ===
+                            "SpreadElement"
+                        ) {
+                            this.expression(
+                                property.argument
+                            );
+                        } else {
+                            this.expression(
+                                property.value
+                            );
+                        }
+                    }
+                );
+                break;
+
+            case "FunctionExpression":
+            case "ArrowFunctionExpression":
+                this.function(node);
+                break;
+
+            case "ConditionalExpression":
+                this.expression(node.test);
+                this.expression(node.consequent);
+                this.expression(node.alternate);
+                break;
+
+            default:
+                this.generic(node);
+        }
+    }
+
+    generic(node) {
+        if (
+            !node ||
+            typeof node !== "object"
+        ) {
+            return;
+        }
+
+        for (
+            const key of Object.keys(node)
+        ) {
+            if (
+                key === "loc" ||
+                key === "start" ||
+                key === "end"
+            ) {
+                continue;
+            }
+
+            const value = node[key];
+
+            if (Array.isArray(value)) {
+                value.forEach(
+                    item => {
+                        if (
+                            item &&
+                            typeof item.type ===
+                            "string"
+                        ) {
+                            this.visit(item);
+                        }
+                    }
+                );
+            } else if (
+                value &&
+                typeof value.type ===
+                "string"
+            ) {
+                this.visit(value);
+            }
+        }
+    }
+
+    resolve(tree) {
+        this.addBuiltins();
+        this.visit(tree);
+
+        return {
+            global: this.global,
+            declarations: this.declarations,
+            references: this.references,
+            functions: this.functions,
+            parameters: this.parameters
+        };
+    }
 }
 
-class Analyzer {
-
-    constructor(data){
+class TypoDetector {
+    constructor(data) {
         this.data = data;
     }
 
-    typo(){
+    distance(a, b) {
+        const rows = b.length + 1;
+        const cols = a.length + 1;
+        const matrix = [];
 
+        for (let i = 0; i < rows; i++) {
+            matrix[i] = [i];
+        }
+
+        for (let j = 0; j < cols; j++) {
+            matrix[0][j] = j;
+        }
+
+        for (let i = 1; i < rows; i++) {
+            for (let j = 1; j < cols; j++) {
+                matrix[i][j] =
+                    b[i - 1] === a[j - 1]
+                        ? matrix[i - 1][j - 1]
+                        : Math.min(
+                            matrix[i - 1][j] + 1,
+                            matrix[i][j - 1] + 1,
+                            matrix[i - 1][j - 1] + 1
+                        );
+            }
+        }
+
+        return matrix[rows - 1][cols - 1];
+    }
+
+    similarity(a, b) {
+        const max =
+            Math.max(a.length, b.length);
+
+        if (!max) {
+            return 1;
+        }
+
+        return 1 -
+            this.distance(
+                a.toLowerCase(),
+                b.toLowerCase()
+            ) / max;
+    }
+
+    detect() {
         const issues = [];
 
-        const distance = (a,b) => {
-
-            const matrix =
-                Array.from(
-                    {length:b.length + 1},
-                    () => Array(a.length + 1).fill(0)
-                );
-
-            for(let i=0;i<=b.length;i++){
-                matrix[i][0] = i;
-            }
-
-            for(let j=0;j<=a.length;j++){
-                matrix[0][j] = j;
-            }
-
-            for(let i=1;i<=b.length;i++){
-
-                for(let j=1;j<=a.length;j++){
-
-                    matrix[i][j] =
-                        b[i-1] === a[j-1]
-                        ? matrix[i-1][j-1]
-                        : Math.min(
-                            matrix[i-1][j] + 1,
-                            matrix[i][j-1] + 1,
-                            matrix[i-1][j-1] + 1
-                        );
-
-                }
-
-            }
-
-            return matrix[b.length][a.length];
-
-        };
-
-        for(const reference of this.data.references){
-
-            if(reference.resolved){
+        for (
+            const reference
+            of this.data.references
+        ) {
+            if (reference.resolved) {
                 continue;
             }
 
             let best = null;
 
-            let scope = reference.scope;
+            let scope =
+                reference.scope;
 
-            while(scope){
-
-                for(const symbol of scope.symbols.values()){
-
-                    if(
+            while (scope) {
+                for (
+                    const symbol
+                    of scope.symbols.values()
+                ) {
+                    if (
                         symbol.builtin ||
-                        symbol.name === reference.name
-                    ){
+                        symbol.name ===
+                        reference.name
+                    ) {
                         continue;
                     }
 
                     const similarity =
-                        1 -
-                        distance(
-                            reference.name.toLowerCase(),
-                            symbol.name.toLowerCase()
-                        ) /
-                        Math.max(
-                            reference.name.length,
-                            symbol.name.length
+                        this.similarity(
+                            reference.name,
+                            symbol.name
                         );
 
-                    if(
-                        similarity >= .65 &&
-                        (!best || similarity > best.similarity)
-                    ){
-
+                    if (
+                        similarity >= .68 &&
+                        (
+                            !best ||
+                            similarity >
+                            best.similarity
+                        )
+                    ) {
                         best = {
                             symbol,
                             similarity
                         };
-
                     }
-
                 }
 
                 scope = scope.parent;
-
             }
 
-            if(best){
-
-                issues.push({
-
-                    type:"typo",
-                    severity:"info",
-                    name:reference.name,
-                    suggestion:best.symbol.name,
-                    confidence:Math.round(best.similarity * 100),
-                    node:reference.node,
-
-                    evidence:[
-                        "Identifier tidak ditemukan",
-                        "Symbol dengan nama mirip ditemukan"
-                    ]
-
-                });
-
+            if (!best) {
+                continue;
             }
 
+            const confidence =
+                Math.min(
+                    99,
+                    Math.round(
+                        best.similarity * 100
+                    )
+                );
+
+            issues.push({
+                type: "typo",
+                severity: "info",
+                name: reference.name,
+                suggestion: best.symbol.name,
+                confidence,
+                node: reference.node,
+                evidence: [
+                    "Identifier tidak ditemukan",
+                    "Symbol dengan nama mirip ditemukan"
+                ]
+            });
         }
 
         return issues;
+    }
+}
 
+class Analyzer {
+    constructor(data) {
+        this.data = data;
     }
 
-    unused(){
+    unused() {
+        const issues = [];
 
-        return this.data.declarations
+        for (
+            const declaration
+            of this.data.declarations
+        ) {
+            const symbol =
+                declaration.symbol;
 
-            .filter(item =>
-                !item.symbol.builtin &&
-                item.symbol.references.length === 0 &&
-                item.symbol.kind !== "function"
-            )
+            if (
+                symbol.builtin ||
+                symbol.references.length
+            ) {
+                continue;
+            }
 
-            .map(item => ({
+            if (
+                symbol.kind === "function" &&
+                symbol.scope.type === "global"
+            ) {
+                continue;
+            }
 
-                type:"unused",
-                severity:"info",
-                name:item.symbol.name,
-                confidence:100,
-                node:item.node,
-
-                evidence:[
+            issues.push({
+                type: "unused",
+                severity: "info",
+                name: symbol.name,
+                confidence: 100,
+                node: symbol.node,
+                evidence: [
                     "Symbol berhasil dibuat",
                     "Tidak ditemukan reference yang mengarah ke symbol"
                 ]
-
-            }));
-
-    }
-
-    undeclared(excluded){
-
-        return this.data.references
-
-            .filter(reference =>
-                !reference.resolved &&
-                !excluded.has(reference.name)
-            )
-
-            .map(reference => ({
-
-                type:"undeclared",
-                severity:"warning",
-                name:reference.name,
-                confidence:100,
-                node:reference.node,
-
-                evidence:[
-                    "Identifier tidak ditemukan",
-                    "Tidak ada symbol yang cocok pada scope chain"
-                ]
-
-            }));
-
-    }
-
-}
-
-function analyzeCode(code){
-
-    try{
-
-        const tree =
-            acorn.parse(
-                code,
-                {
-                    ecmaVersion:"latest",
-                    sourceType:"script",
-                    locations:true
-                }
-            );
-
-        const data =
-            new Resolver().resolve(tree);
-
-        const analyzer =
-            new Analyzer(data);
-
-        const typoIssues =
-            analyzer.typo();
-
-        const typoNames =
-            new Set(
-                typoIssues.map(issue => issue.name)
-            );
-
-        return {
-
-            ok:true,
-            data,
-
-            issues:[
-                ...typoIssues,
-                ...analyzer.unused(),
-                ...analyzer.undeclared(typoNames)
-            ]
-
-        };
-
-    }catch(error){
-
-        return {
-            ok:false,
-            error
-        };
-
-    }
-
-}
-
-const canvas =
-    document.getElementById("world");
-
-const ctx =
-    canvas.getContext("2d");
-
-const player = {
-
-    x:700,
-    y:500,
-
-    speed:2.5,
-
-    mounted:false,
-
-    target:null,
-
-    frame:0,
-
-    moving:false
-
-};
-
-const horse = {
-
-    x:600,
-    y:515
-
-};
-
-const keys = {};
-
-const buildings = [
-
-    {
-        name:"Code Workshop",
-        x:250,
-        y:190,
-        w:250,
-        h:140,
-        id:"workshop"
-    },
-
-    {
-        name:"Nexus Core",
-        x:650,
-        y:130,
-        w:280,
-        h:190,
-        id:"nexus"
-    },
-
-    {
-        name:"Analyzer Tower",
-        x:1080,
-        y:340,
-        w:240,
-        h:180,
-        id:"analyzer"
-    }
-
-];
-
-function resize(){
-
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
-
-}
-
-addEventListener("resize",resize);
-
-resize();
-
-function screen(x,y){
-
-    return {
-
-        x:
-            x -
-            player.x +
-            canvas.width / 2,
-
-        y:
-            y -
-            player.y +
-            canvas.height / 2
-
-    };
-
-}
-
-function drawPixelCharacter(){
-
-    const p =
-        screen(
-            player.x,
-            player.y
-        );
-
-    const moving =
-        player.moving;
-
-    const bob =
-        moving
-        ? Math.floor(
-            Math.sin(player.frame * 3)
-            * 2
-        )
-        : Math.floor(
-            Math.sin(player.frame)
-            * .5
-        );
-
-    ctx.save();
-
-    ctx.translate(
-        Math.round(p.x),
-        Math.round(p.y + bob)
-    );
-
-    ctx.imageSmoothingEnabled = false;
-
-    if(player.mounted){
-
-        drawMountedCharacter();
-
-    }else{
-
-        drawStandingCharacter();
-
-    }
-
-    ctx.restore();
-
-}
-
-function rect(x,y,w,h,color){
-
-    ctx.fillStyle = color;
-
-    ctx.fillRect(
-        Math.round(x),
-        Math.round(y),
-        Math.round(w),
-        Math.round(h)
-    );
-
-}
-
-function drawStandingCharacter(){
-
-    const walk =
-        player.moving
-        ? Math.sin(player.frame * 4) * 2
-        : 0;
-
-    rect(
-        -10,
-        -39,
-        20,
-        17,
-        "#f1c5a2"
-    );
-
-    rect(
-        -11,
-        -43,
-        22,
-        7,
-        "#101214"
-    );
-
-    rect(
-        -14,
-        -40,
-        5,
-        7,
-        "#101214"
-    );
-
-    rect(
-        7,
-        -40,
-        5,
-        7,
-        "#101214"
-    );
-
-    rect(
-        -13,
-        -20,
-        26,
-        31,
-        "#922d3b"
-    );
-
-    rect(
-        -18,
-        -17,
-        6,
-        27,
-        "#742530"
-    );
-
-    rect(
-        12,
-        -17,
-        6,
-        27,
-        "#742530"
-    );
-
-    rect(
-        -5,
-        -20,
-        10,
-        5,
-        "#bd3b48"
-    );
-
-    rect(
-        -11,
-        10 + walk,
-        8,
-        18,
-        "#16191c"
-    );
-
-    rect(
-        3,
-        10 - walk,
-        8,
-        18,
-        "#16191c"
-    );
-
-    rect(
-        -13,
-        27 + walk,
-        11,
-        4,
-        "#0c0e10"
-    );
-
-    rect(
-        2,
-        27 - walk,
-        11,
-        4,
-        "#0c0e10"
-    );
-
-    rect(
-        -18,
-        -4,
-        5,
-        17,
-        "#f1c5a2"
-    );
-
-    rect(
-        13,
-        -4,
-        5,
-        17,
-        "#f1c5a2"
-    );
-
-    rect(
-        -20,
-        12,
-        7,
-        4,
-        "#d9ad8d"
-    );
-
-    rect(
-        13,
-        12,
-        7,
-        4,
-        "#d9ad8d"
-    );
-
-}
-
-function drawMountedCharacter(){
-
-    const walk =
-        player.moving
-        ? Math.sin(player.frame * 4) * 2
-        : 0;
-
-    drawHorseAt(0,12);
-
-    rect(
-        -9,
-        -53,
-        18,
-        15,
-        "#f1c5a2"
-    );
-
-    rect(
-        -11,
-        -57,
-        22,
-        7,
-        "#101214"
-    );
-
-    rect(
-        -14,
-        -54,
-        5,
-        7,
-        "#101214"
-    );
-
-    rect(
-        8,
-        -54,
-        5,
-        7,
-        "#101214"
-    );
-
-    rect(
-        -14,
-        -37,
-        28,
-        27,
-        "#922d3b"
-    );
-
-    rect(
-        -20,
-        -33,
-        7,
-        25,
-        "#742530"
-    );
-
-    rect(
-        13,
-        -33,
-        7,
-        25,
-        "#742530"
-    );
-
-    rect(
-        -11,
-        -10 + walk,
-        8,
-        9,
-        "#16191c"
-    );
-
-    rect(
-        3,
-        -10 - walk,
-        8,
-        9,
-        "#16191c"
-    );
-
-}
-
-function drawHorseAt(x,y){
-
-    ctx.fillStyle = "#684936";
-
-    ctx.beginPath();
-
-    ctx.ellipse(
-        x,
-        y,
-        43,
-        18,
-        0,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-    ctx.beginPath();
-
-    ctx.ellipse(
-        x + 37,
-        y - 11,
-        17,
-        14,
-        -.2,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-    rect(
-        x + 27,
-        y - 20,
-        5,
-        10,
-        "#3b2b24"
-    );
-
-    rect(
-        x - 27,
-        y + 13,
-        7,
-        25,
-        "#3a2923"
-    );
-
-    rect(
-        x + 15,
-        y + 13,
-        7,
-        25,
-        "#3a2923"
-    );
-
-    rect(
-        x + 48,
-        y - 13,
-        5,
-        4,
-        "#171313"
-    );
-
-}
-
-function drawHorse(){
-
-    if(player.mounted){
-        return;
-    }
-
-    const p =
-        screen(
-            horse.x,
-            horse.y
-        );
-
-    ctx.save();
-
-    ctx.translate(
-        Math.round(p.x),
-        Math.round(p.y)
-    );
-
-    drawHorseAt(0,0);
-
-    ctx.restore();
-
-}
-
-function drawWorld(){
-
-    ctx.fillStyle = "#18291f";
-
-    ctx.fillRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-    ctx.strokeStyle =
-        "rgba(255,255,255,.035)";
-
-    for(
-        let x =
-            (-player.x +
-            canvas.width / 2) % 80;
-
-        x < canvas.width;
-
-        x += 80
-    ){
-
-        ctx.beginPath();
-
-        ctx.moveTo(x,0);
-        ctx.lineTo(x,canvas.height);
-
-        ctx.stroke();
-
-    }
-
-    for(
-        let y =
-            (-player.y +
-            canvas.height / 2) % 80;
-
-        y < canvas.height;
-
-        y += 80
-    ){
-
-        ctx.beginPath();
-
-        ctx.moveTo(0,y);
-        ctx.lineTo(canvas.width,y);
-
-        ctx.stroke();
-
-    }
-
-    ctx.fillStyle = "#5b5044";
-
-    ctx.fillRect(
-        0,
-        canvas.height / 2 + 55,
-        canvas.width,
-        80
-    );
-
-    for(const building of buildings){
-
-        const p =
-            screen(
-                building.x,
-                building.y
-            );
-
-        ctx.fillStyle =
-            building.id === "nexus"
-            ? "#61242d"
-            : "#202a31";
-
-        ctx.fillRect(
-            p.x,
-            p.y,
-            building.w,
-            building.h
-        );
-
-        ctx.strokeStyle =
-            building.id === "nexus"
-            ? "#b94753"
-            : "#45515c";
-
-        ctx.lineWidth = 3;
-
-        ctx.strokeRect(
-            p.x,
-            p.y,
-            building.w,
-            building.h
-        );
-
-        ctx.fillStyle = "#dce3e8";
-
-        ctx.font =
-            "bold 13px Arial";
-
-        ctx.textAlign = "center";
-
-        ctx.fillText(
-            building.name,
-            p.x + building.w / 2,
-            p.y + building.h + 22
-        );
-
-    }
-
-    drawHorse();
-
-    drawPixelCharacter();
-
-}
-
-function movement(){
-
-    let dx = 0;
-    let dy = 0;
-
-    if(keys.w || keys.ArrowUp){
-        dy--;
-    }
-
-    if(keys.s || keys.ArrowDown){
-        dy++;
-    }
-
-    if(keys.a || keys.ArrowLeft){
-        dx--;
-    }
-
-    if(keys.d || keys.ArrowRight){
-        dx++;
-    }
-
-    if(dx || dy){
-
-        player.target = null;
-
-        player.moving = true;
-
-        const length =
-            Math.hypot(dx,dy);
-
-        const speed =
-            player.mounted
-            ? 4.2
-            : player.speed;
-
-        player.x +=
-            dx / length * speed;
-
-        player.y +=
-            dy / length * speed;
-
-        player.frame += .16;
-
-        return;
-
-    }
-
-    if(player.target){
-
-        const dx =
-            player.target.x -
-            player.x;
-
-        const dy =
-            player.target.y -
-            player.y;
-
-        const distance =
-            Math.hypot(dx,dy);
-
-        if(distance < 8){
-
-            player.target = null;
-            player.moving = false;
-
-        }else{
-
-            const speed =
-                player.mounted
-                ? 3.8
-                : 1.8;
-
-            player.x +=
-                dx / distance *
-                speed;
-
-            player.y +=
-                dy / distance *
-                speed;
-
-            player.frame += .12;
-
-            player.moving = true;
-
+            });
         }
 
-        return;
-
+        return issues;
     }
 
-    player.moving = false;
+    undeclared() {
+        const issues = [];
 
-    player.frame += .02;
+        for (
+            const reference
+            of this.data.references
+        ) {
+            if (reference.resolved) {
+                continue;
+            }
 
+            issues.push({
+                type: "undeclared",
+                severity: "warning",
+                name: reference.name,
+                confidence: 100,
+                node: reference.node,
+                evidence: [
+                    "Identifier tidak ditemukan",
+                    "Tidak ada symbol pada scope chain"
+                ]
+            });
+        }
+
+        return issues;
+    }
 }
 
-function loop(){
+class CodeChecker {
+    check(code) {
+        try {
+            const tree =
+                acorn.parse(code, {
+                    ecmaVersion: "latest",
+                    sourceType: "script",
+                    locations: true
+                });
 
-    movement();
+            const resolver =
+                new ScopeResolver();
 
-    drawWorld();
+            const data =
+                resolver.resolve(tree);
 
-    requestAnimationFrame(loop);
+            const typo =
+                new TypoDetector(data)
+                    .detect();
 
+            const typoNames =
+                new Set(
+                    typo.map(
+                        issue =>
+                            issue.name
+                    )
+                );
+
+            const analyzer =
+                new Analyzer(data);
+
+            const issues = [
+                ...typo,
+                ...analyzer.unused(),
+                ...analyzer
+                    .undeclared()
+                    .filter(
+                        issue =>
+                            !typoNames.has(
+                                issue.name
+                            )
+                    )
+            ].sort(
+                (a, b) =>
+                    a.node.start -
+                    b.node.start
+            );
+
+            return {
+                success: true,
+                data,
+                issues
+            };
+
+        } catch (error) {
+            return {
+                success: false,
+                error
+            };
+        }
+    }
 }
 
-loop();
+const nexus =
+    new CakrawalaNexus();
 
-function setMessage(text){
+const checker =
+    new CodeChecker();
 
+const companionArea =
     document.getElementById(
-        "message"
-    ).textContent = text;
+        "companionArea"
+    );
 
-}
-
-function setState(text){
-
+const companion =
     document.getElementById(
-        "state"
-    ).textContent = text;
+        "companion"
+    );
 
+const companionShadow =
+    document.getElementById(
+        "companionShadow"
+    );
+
+const companionCtx =
+    companion.getContext("2d");
+
+const companionStatus =
+    document.getElementById(
+        "companionStatus"
+    );
+
+const nexusMessage =
+    document.getElementById(
+        "nexusMessage"
+    );
+
+const nexusStatus =
+    document.getElementById(
+        "nexusStatus"
+    );
+
+const systemState =
+    document.getElementById(
+        "systemState"
+    );
+
+const editorWindow =
+    document.getElementById(
+        "editorWindow"
+    );
+
+const codeEditor =
+    document.getElementById(
+        "codeEditor"
+    );
+
+const output =
+    document.getElementById(
+        "output"
+    );
+
+const analysisStatus =
+    document.getElementById(
+        "analysisStatus"
+    );
+
+const companionState = {
+    x: 150,
+    y: 150,
+    direction: "down",
+    moving: false,
+    frame: 0,
+    frameTimer: 0,
+    speed: .55,
+    wait: 0,
+    nextDirection: "right",
+    target: null
+};
+
+const directions = [
+    "up",
+    "down",
+    "left",
+    "right"
+];
+
+function companionSize() {
+    return {
+        width:
+            companionArea.clientWidth,
+
+        height:
+            companionArea.clientHeight
+    };
 }
 
-function moveTo(x,y,text){
+function randomDirection() {
+    return directions[
+        Math.floor(
+            Math.random() *
+            directions.length
+        )
+    ];
+}
 
-    player.target = {
+function drawSpritePixel(
+    x,
+    y,
+    width,
+    height,
+    color
+) {
+    companionCtx.fillStyle =
+        color;
+
+    companionCtx.fillRect(
+        x,
+        y,
+        width,
+        height
+    );
+}
+
+function drawCompanionSprite() {
+    companionCtx.clearRect(
+        0,
+        0,
+        companion.width,
+        companion.height
+    );
+
+    const frame =
+        companionState.moving
+            ? companionState.frame
+            : 0;
+
+    const skin = "#efc4a1";
+    const hair = "#111419";
+    const robe = "#a52c38";
+    const robeDark = "#681d26";
+    const boot = "#25272b";
+
+    companionCtx.imageSmoothingEnabled =
+        false;
+
+    if (
+        companionState.direction ===
+        "down"
+    ) {
+        drawSpritePixel(
+            8, 2, 16, 6, hair
+        );
+
+        drawSpritePixel(
+            7, 7, 18, 8, skin
+        );
+
+        drawSpritePixel(
+            5, 15, 22, 13, robe
+        );
+
+        drawSpritePixel(
+            2, 18, 5, 9, robeDark
+        );
+
+        drawSpritePixel(
+            25, 18, 5, 9, robeDark
+        );
+
+        if (frame === 1) {
+            drawSpritePixel(
+                7, 28, 7, 7, boot
+            );
+
+            drawSpritePixel(
+                19, 30, 7, 7, boot
+            );
+        } else if (frame === 2) {
+            drawSpritePixel(
+                8, 29, 7, 7, boot
+            );
+
+            drawSpritePixel(
+                17, 29, 7, 7, boot
+            );
+        } else {
+            drawSpritePixel(
+                8, 29, 7, 7, boot
+            );
+
+            drawSpritePixel(
+                18, 29, 7, 7, boot
+            );
+        }
+    }
+
+    if (
+        companionState.direction ===
+        "up"
+    ) {
+        drawSpritePixel(
+            6, 2, 20, 8, hair
+        );
+
+        drawSpritePixel(
+            5, 10, 22, 5, hair
+        );
+
+        drawSpritePixel(
+            5, 15, 22, 13, robe
+        );
+
+        drawSpritePixel(
+            2, 18, 5, 9, robeDark
+        );
+
+        drawSpritePixel(
+            25, 18, 5, 9, robeDark
+        );
+
+        if (frame === 1) {
+            drawSpritePixel(
+                7, 28, 7, 7, boot
+            );
+
+            drawSpritePixel(
+                19, 30, 7, 7, boot
+            );
+        } else if (frame === 2) {
+            drawSpritePixel(
+                8, 29, 7, 7, boot
+            );
+
+            drawSpritePixel(
+                17, 29, 7, 7, boot
+            );
+        } else {
+            drawSpritePixel(
+                8, 29, 7, 7, boot
+            );
+
+            drawSpritePixel(
+                18, 29, 7, 7, boot
+            );
+        }
+    }
+
+    if (
+        companionState.direction ===
+        "left"
+    ) {
+        drawSpritePixel(
+            7, 3, 18, 7, hair
+        );
+
+        drawSpritePixel(
+            6, 9, 13, 7, skin
+        );
+
+        drawSpritePixel(
+            4, 15, 23, 13, robe
+        );
+
+        drawSpritePixel(
+            1, 18, 5, 9, robeDark
+        );
+
+        if (frame === 1) {
+            drawSpritePixel(
+                7, 29, 7, 7, boot
+            );
+
+            drawSpritePixel(
+                18, 28, 7, 7, boot
+            );
+        } else if (frame === 2) {
+            drawSpritePixel(
+                7, 29, 7, 7, boot
+            );
+
+            drawSpritePixel(
+                17, 30, 7, 7, boot
+            );
+        } else {
+            drawSpritePixel(
+                7, 29, 7, 7, boot
+            );
+
+            drawSpritePixel(
+                18, 29, 7, 7, boot
+            );
+        }
+    }
+
+    if (
+        companionState.direction ===
+        "right"
+    ) {
+        drawSpritePixel(
+            7, 3, 18, 7, hair
+        );
+
+        drawSpritePixel(
+            13, 9, 13, 7, skin
+        );
+
+        drawSpritePixel(
+            5, 15, 23, 13, robe
+        );
+
+        drawSpritePixel(
+            26, 18, 5, 9, robeDark
+        );
+
+        if (frame === 1) {
+            drawSpritePixel(
+                7, 28, 7, 7, boot
+            );
+
+            drawSpritePixel(
+                18, 30, 7, 7, boot
+            );
+        } else if (frame === 2) {
+            drawSpritePixel(
+                8, 29, 7, 7, boot
+            );
+
+            drawSpritePixel(
+                17, 29, 7, 7, boot
+            );
+        } else {
+            drawSpritePixel(
+                8, 29, 7, 7, boot
+            );
+
+            drawSpritePixel(
+                18, 29, 7, 7, boot
+            );
+        }
+    }
+}
+
+function updateCompanion() {
+    const size =
+        companionSize();
+
+    const minX = 28;
+    const maxX =
+        Math.max(
+            minX,
+            size.width - 28
+        );
+
+    const minY = 90;
+    const maxY =
+        Math.max(
+            minY,
+            size.height - 28
+        );
+
+    if (companionState.target) {
+        const dx =
+            companionState.target.x -
+            companionState.x;
+
+        const dy =
+            companionState.target.y -
+            companionState.y;
+
+        const distance =
+            Math.hypot(dx, dy);
+
+        if (distance < 5) {
+            companionState.target =
+                null;
+
+            companionState.moving =
+                false;
+
+            companionState.wait = 70;
+        } else {
+            companionState.moving =
+                true;
+
+            const nx = dx / distance;
+            const ny = dy / distance;
+
+            companionState.x +=
+                nx * 1.1;
+
+            companionState.y +=
+                ny * 1.1;
+
+            if (
+                Math.abs(nx) >
+                Math.abs(ny)
+            ) {
+                companionState.direction =
+                    nx > 0
+                        ? "right"
+                        : "left";
+            } else {
+                companionState.direction =
+                    ny > 0
+                        ? "down"
+                        : "up";
+            }
+        }
+    } else if (
+        companionState.wait > 0
+    ) {
+        companionState.wait--;
+        companionState.moving = false;
+
+        if (
+            companionState.wait === 0
+        ) {
+            companionState.nextDirection =
+                randomDirection();
+        }
+    } else {
+        companionState.moving = true;
+
+        companionState.direction =
+            companionState.nextDirection;
+
+        if (
+            companionState.direction ===
+            "up"
+        ) {
+            companionState.y -=
+                companionState.speed;
+        }
+
+        if (
+            companionState.direction ===
+            "down"
+        ) {
+            companionState.y +=
+                companionState.speed;
+        }
+
+        if (
+            companionState.direction ===
+            "left"
+        ) {
+            companionState.x -=
+                companionState.speed;
+        }
+
+        if (
+            companionState.direction ===
+            "right"
+        ) {
+            companionState.x +=
+                companionState.speed;
+        }
+
+        if (
+            companionState.x <= minX ||
+            companionState.x >= maxX ||
+            companionState.y <= minY ||
+            companionState.y >= maxY
+        ) {
+            companionState.x =
+                Math.max(
+                    minX,
+                    Math.min(
+                        maxX,
+                        companionState.x
+                    )
+                );
+
+            companionState.y =
+                Math.max(
+                    minY,
+                    Math.min(
+                        maxY,
+                        companionState.y
+                    )
+                );
+
+            companionState.wait =
+                35;
+
+            companionState.nextDirection =
+                randomDirection();
+
+            companionState.moving =
+                false;
+        }
+    }
+
+    companionState.frameTimer++;
+
+    if (
+        companionState.moving &&
+        companionState.frameTimer >= 7
+    ) {
+        companionState.frameTimer = 0;
+
+        companionState.frame =
+            (companionState.frame + 1) % 4;
+    }
+
+    if (!companionState.moving) {
+        companionState.frame = 0;
+    }
+
+    companion.style.left =
+        `${companionState.x}px`;
+
+    companion.style.top =
+        `${companionState.y}px`;
+
+    companionShadow.style.left =
+        `${companionState.x}px`;
+
+    companionShadow.style.top =
+        `${companionState.y + 16}px`;
+
+    companionStatus.textContent =
+        companionState.moving
+            ? companionState.direction.toUpperCase()
+            : "IDLE";
+
+    drawCompanionSprite();
+}
+
+function companionLoop() {
+    updateCompanion();
+    requestAnimationFrame(
+        companionLoop
+    );
+}
+
+function moveCompanionTo(x, y) {
+    companionState.target = {
         x,
         y
     };
-
-    setMessage(text);
-
-    setState("MOVING");
-
 }
 
-function openWorkshop(){
+function setMessage(message) {
+    nexusMessage.textContent =
+        message;
+}
 
-    const building =
-        buildings[0];
+function setState(state) {
+    systemState.textContent =
+        state;
+}
 
-    const targetX =
-        building.x +
-        building.w / 2;
+function countScopes(scope) {
+    let count = 1;
 
-    const targetY =
-        building.y +
-        building.h +
-        55;
-
-    if(
-        Math.hypot(
-            player.x - targetX,
-            player.y - targetY
-        ) > 170
-    ){
-
-        moveTo(
-            targetX,
-            targetY,
-            "Cakrawala menuju Code Workshop."
-        );
-
-        const wait =
-            setInterval(() => {
-
-                if(!player.target){
-
-                    clearInterval(wait);
-
-                    document
-                        .getElementById("window")
-                        .classList.add("open");
-
-                    setState("WORKSHOP");
-
-                }
-
-            },100);
-
-    }else{
-
-        document
-            .getElementById("window")
-            .classList.add("open");
-
-        setState("WORKSHOP");
-
+    for (
+        const child
+        of scope.children
+    ) {
+        count +=
+            countScopes(child);
     }
 
+    return count;
 }
 
-function performAnalysis(){
+function formatIssue(issue, index) {
+    const line =
+        issue.node?.loc?.start?.line || 0;
 
-    const code =
-        document.getElementById(
-            "code"
-        ).value;
+    const column =
+        issue.node?.loc?.start?.column || 0;
 
-    const result =
-        analyzeCode(code);
+    let title = "";
 
-    const output =
-        document.getElementById(
-            "output"
-        );
+    if (issue.type === "typo") {
+        title =
+            `Kemungkinan kesalahan ketik "${issue.name}". ` +
+            `Apakah maksud Anda "${issue.suggestion}"?`;
+    }
 
-    const status =
-        document.getElementById(
-            "analysisStatus"
-        );
+    if (issue.type === "unused") {
+        title =
+            `Variabel "${issue.name}" dideklarasikan tetapi belum digunakan.`;
+    }
 
-    if(!result.ok){
+    if (issue.type === "undeclared") {
+        title =
+            `Identifier "${issue.name}" belum dideklarasikan.`;
+    }
+
+    return [
+        `${index}. [${issue.severity}] ${title}`,
+        `   Kepercayaan: ${issue.confidence}%`,
+        `   Baris ${line}, Kolom ${column + 1}`,
+        "   Bukti:",
+        ...issue.evidence.map(
+            evidence =>
+                `   - ${evidence}`
+        )
+    ].join("\n");
+}
+
+function renderAnalysis(result) {
+    if (!result.success) {
+        analysisStatus.textContent =
+            "Syntax error";
 
         output.textContent =
             "ERROR\n\n" +
-            result.error.message;
-
-        status.textContent =
-            "Syntax error";
-
-        nexus.emit(
-            "analysis:error",
-            result.error
-        );
+            result.error.message +
+            "\n\n" +
+            `Baris ${
+                result.error.loc?.line || 0
+            }, Kolom ${
+                (result.error.loc?.column || 0) + 1
+            }`;
 
         return;
-
     }
 
-    const data =
-        result.data;
+    const data = result.data;
 
     const declarations =
         data.declarations.filter(
@@ -2103,272 +2118,266 @@ function performAnalysis(){
         ).length;
 
     const lines = [
-
         "ANALISIS CAKRAWALA",
-
         "==============================",
-
         "",
-
         "Sintaks: OK",
-
         "Bahasa: JavaScript",
-
         `Deklarasi: ${declarations.length}`,
-
         `Fungsi: ${data.functions.length}`,
-
         `Parameter: ${data.parameters.length}`,
-
-        `Cakupan: ${data.global.children.length + 1}`,
-
+        `Cakupan: ${countScopes(data.global)}`,
         `Simbol: ${declarations.length}`,
-
         `Referensi: ${data.references.length}`,
-
         `Ter-resolve: ${resolved}`,
-
         "",
-
         "MASALAH",
-
         "==============================",
-
         ""
-
     ];
 
-    if(result.issues.length === 0){
-
+    if (!result.issues.length) {
         lines.push(
             "Tidak ada masalah yang terdeteksi."
         );
-
-    }else{
-
+    } else {
         result.issues.forEach(
-            (issue,index) => {
-
-                const line =
-                    issue.node?.loc?.start?.line || 0;
-
-                const column =
-                    (issue.node?.loc?.start?.column || 0) + 1;
-
-                let title;
-
-                if(issue.type === "typo"){
-
-                    title =
-                        `Kemungkinan kesalahan ketik "${issue.name}". Apakah maksud Anda "${issue.suggestion}"?`;
-
-                }else if(issue.type === "unused"){
-
-                    title =
-                        `Variabel "${issue.name}" dideklarasikan tetapi belum digunakan.`;
-
-                }else{
-
-                    title =
-                        `Identifier "${issue.name}" belum dideklarasikan.`;
-
-                }
-
+            (issue, index) => {
                 lines.push(
-                    `${index + 1}. [${issue.severity}] ${title}`,
-                    `   Kepercayaan: ${issue.confidence}%`,
-                    `   Baris ${line}, Kolom ${column}`,
-                    "   Bukti:"
+                    formatIssue(
+                        issue,
+                        index + 1
+                    )
                 );
 
-                for(const evidence of issue.evidence){
-
-                    lines.push(
-                        `   - ${evidence}`
-                    );
-
-                }
-
                 lines.push("");
-
             }
         );
-
     }
 
     output.textContent =
         lines.join("\n");
 
-    status.textContent =
+    analysisStatus.textContent =
         result.issues.length
-        ? `${result.issues.length} masalah ditemukan`
-        : "Tidak ada masalah";
+            ? `${result.issues.length} masalah ditemukan`
+            : "Tidak ada masalah";
+}
 
-    nexus.emit(
-        "analysis:complete",
-        result
+function analyzeCode() {
+    const code =
+        codeEditor.value;
+
+    setState("ANALYZING");
+    nexusStatus.textContent =
+        "PROCESSING";
+
+    setMessage(
+        "NJOS sedang menganalisis kode."
     );
 
-    const tower =
-        buildings[2];
+    const result =
+        checker.check(code);
 
-    moveTo(
-        tower.x + tower.w / 2,
-        tower.y + tower.h + 55,
-        "Nexus mengirim Cakrawala menuju Analyzer Tower."
+    renderAnalysis(result);
+
+    nexus.emit(
+        "analysis:start"
     );
 
     setTimeout(() => {
+        nexus.emit(
+            "analysis:complete",
+            result
+        );
 
-        if(!player.target){
+        setState("NJOS ONLINE");
+        nexusStatus.textContent =
+            "READY";
+
+        if (
+            result.success &&
+            result.issues.length
+        ) {
+            setMessage(
+                `${result.issues.length} masalah ditemukan oleh NJOS.`
+            );
+
+            moveCompanionTo(
+                companionArea.clientWidth - 55,
+                companionArea.clientHeight - 55
+            );
+        } else if (result.success) {
+            setMessage(
+                "Analisis selesai. Tidak ditemukan masalah."
+            );
+
+            moveCompanionTo(
+                companionArea.clientWidth / 2,
+                companionArea.clientHeight / 2
+            );
+        }
+    }, 600);
+}
+
+document
+    .getElementById("analyzeButton")
+    .addEventListener(
+        "click",
+        () => {
+            editorWindow.classList.add(
+                "open"
+            );
+
+            analyzeCode();
+        }
+    );
+
+document
+    .getElementById("editorAnalyze")
+    .addEventListener(
+        "click",
+        analyzeCode
+    );
+
+document
+    .getElementById("closeEditor")
+    .addEventListener(
+        "click",
+        () => {
+            editorWindow.classList.remove(
+                "open"
+            );
 
             setState("NJOS ONLINE");
-
         }
+    );
 
-    },1000);
+document
+    .getElementById("clearButton")
+    .addEventListener(
+        "click",
+        () => {
+            codeEditor.value = "";
+            output.textContent = "";
 
-}
+            analysisStatus.textContent =
+                "Ready";
+
+            nexusStatus.textContent =
+                "READY";
+
+            setState("IDLE");
+
+            setMessage(
+                "Workspace dibersihkan."
+            );
+
+            companionState.target =
+                null;
+
+            companionState.wait =
+                50;
+        }
+    );
+
+nexus.on(
+    "analysis:start",
+    () => {
+        companionState.moving =
+            true;
+
+        companionStatus.textContent =
+            "WORKING";
+    }
+);
+
+nexus.on(
+    "analysis:complete",
+    result => {
+        window.__CAKRAWALA_LAST_RESULT__ =
+            result;
+
+        companionStatus.textContent =
+            "IDLE";
+    }
+);
+
+window.addEventListener(
+    "resize",
+    () => {
+        const size =
+            companionSize();
+
+        companionState.x =
+            Math.min(
+                companionState.x,
+                size.width - 28
+            );
+
+        companionState.y =
+            Math.min(
+                companionState.y,
+                size.height - 28
+            );
+    }
+);
 
 document.addEventListener(
     "keydown",
     event => {
-
-        keys[event.key] = true;
-
-        if(
-            event.key.toLowerCase() === "e"
-        ){
-
-            if(player.mounted){
-
-                player.mounted = false;
-
-                horse.x =
-                    player.x + 45;
-
-                horse.y =
-                    player.y + 10;
-
-                setMessage(
-                    "Cakrawala turun dari kuda."
-                );
-
-                setState("IDLE");
-
-                return;
-
-            }
-
-            if(
-                Math.hypot(
-                    player.x - horse.x,
-                    player.y - horse.y
-                ) < 90
-            ){
-
-                player.mounted = true;
-
-                setMessage(
-                    "Cakrawala menaiki kuda."
-                );
-
-                setState("RIDING");
-
-            }else{
-
-                moveTo(
-                    horse.x,
-                    horse.y,
-                    "Cakrawala menuju kudanya."
-                );
-
-            }
-
+        if (
+            event.target.tagName ===
+            "TEXTAREA"
+        ) {
+            return;
         }
 
-        if(event.key === "Enter"){
+        const speed = 2.2;
 
-            openWorkshop();
-
+        if (
+            event.key === "ArrowUp" ||
+            event.key.toLowerCase() === "w"
+        ) {
+            companionState.target = null;
+            companionState.direction = "up";
+            companionState.moving = true;
+            companionState.y -= speed;
         }
 
+        if (
+            event.key === "ArrowDown" ||
+            event.key.toLowerCase() === "s"
+        ) {
+            companionState.target = null;
+            companionState.direction = "down";
+            companionState.moving = true;
+            companionState.y += speed;
+        }
+
+        if (
+            event.key === "ArrowLeft" ||
+            event.key.toLowerCase() === "a"
+        ) {
+            companionState.target = null;
+            companionState.direction = "left";
+            companionState.moving = true;
+            companionState.x -= speed;
+        }
+
+        if (
+            event.key === "ArrowRight" ||
+            event.key.toLowerCase() === "d"
+        ) {
+            companionState.target = null;
+            companionState.direction = "right";
+            companionState.moving = true;
+            companionState.x += speed;
+        }
     }
 );
 
-document.addEventListener(
-    "keyup",
-    event => {
-
-        keys[event.key] = false;
-
-    }
-);
-
-document.getElementById(
-    "analyze"
-).onclick = () => {
-
-    document
-        .getElementById("window")
-        .classList.add("open");
-
-    performAnalysis();
-
-};
-
-document.getElementById(
-    "run"
-).onclick =
-    performAnalysis;
-
-document.getElementById(
-    "clear"
-).onclick = () => {
-
-    document.getElementById(
-        "code"
-    ).value = "";
-
-    document.getElementById(
-        "output"
-    ).textContent = "";
-
-    document.getElementById(
-        "analysisStatus"
-    ).textContent = "Ready";
-
-    setMessage(
-        "Workspace dibersihkan."
-    );
-
-    setState("IDLE");
-
-};
-
-document.getElementById(
-    "close"
-).onclick = () => {
-
-    document
-        .getElementById("window")
-        .classList.remove("open");
-
-    setState("IDLE");
-
-};
-
-nexus.on(
-    "analysis:complete",
-    () => {
-
-        setMessage(
-            "Analysis selesai. NJOS mengirim hasil ke Nexus."
-        );
-
-    }
-);
-
+companionLoop();
 </script>
 
 </body>
