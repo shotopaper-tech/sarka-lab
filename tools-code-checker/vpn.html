@@ -1,1 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>Nexus VPN | Cakrawala</title>
+
+    <link rel="stylesheet" href="nexus-vpn.css">
+</head>
+
+<body>
+
+    <main class="vpn-container">
+
+        <header class="vpn-header">
+            <div>
+                <span class="eyebrow">CAKRAWALA NEXUS</span>
+                <h1>Nexus VPN</h1>
+                <p>Private network connection and tunnel control.</p>
+            </div>
+
+            <div class="status-badge" id="vpnStatus">
+                <span class="status-dot"></span>
+                Disconnected
+            </div>
+        </header>
+
+
+        <section class="vpn-card">
+
+            <div class="connection-info">
+                <span>CONNECTION</span>
+                <h2 id="connectionState">Not Connected</h2>
+                <p id="connectionMessage">
+                    Your secure tunnel is currently inactive.
+                </p>
+            </div>
+
+            <button id="connectButton" class="connect-button">
+                CONNECT
+            </button>
+
+        </section>
+
+
+        <section class="network-grid">
+
+            <div class="info-card">
+                <span>PUBLIC IP</span>
+                <strong id="publicIp">---</strong>
+            </div>
+
+            <div class="info-card">
+                <span>LOCATION</span>
+                <strong id="location">---</strong>
+            </div>
+
+            <div class="info-card">
+                <span>PROTOCOL</span>
+                <strong>WireGuard</strong>
+            </div>
+
+            <div class="info-card">
+                <span>LATENCY</span>
+                <strong id="latency">---</strong>
+            </div>
+
+        </section>
+
+
+        <section class="security-card">
+
+            <div>
+                <span>SECURITY</span>
+                <h2>Nexus Protection</h2>
+            </div>
+
+            <div class="security-status">
+                <span class="status-dot"></span>
+                Ready
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="nexus-vpn.js"></script>
+
+</body>
+</html>
